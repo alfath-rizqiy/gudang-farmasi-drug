@@ -87,12 +87,21 @@ class KemasanController extends Controller
      /**
      * Menghapus data kemasan berdasarkan ID.
      */
-    public function destroy(string $id)
-    {
+    public function destroy($id)
+{
+    try {
         $kemasan = Kemasan::findOrFail($id);
+
+        // Cek apakah kemasan masih punya relasi obat
+        if ($kemasan->obats()->count() > 0) {
+            return redirect()->back()->with('error', 'Data kemasan tidak dapat dihapus karena masih digunakan oleh data obat.');
+        }
+
         $kemasan->delete();
-
-        return redirect()->route('kemasan.index')->with('success', 'Data berhasil dihapus.');
-
+        return redirect()->back()->with('success', 'Data kemasan berhasil dihapus.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data kemasan.');
     }
+}
+
 }

@@ -1,19 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Aturan Pakai')
+@section('title', 'Data aturanpakai')
 
 @section('content')
 
+        {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Aturan Pakai</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data aturanpakai</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
                     <div class="p-6">
 
+        {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('aturanpakai.create') }}" class="btn btn-primary">+ Tambah Aturan Pakai</a>
+                     <a href="{{ route('aturanpakai.create') }}" class="btn-sm btn btn-primary">+ Tambah aturanpakai</a>
                      </div>
                  @endrole
 
@@ -23,7 +25,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>Frekuensi Pemakaian</th>
@@ -34,7 +36,7 @@
                                          @endrole
                                         </tr>
                                     </thead>
-                                    <tbody class="text-center">
+                                    <tbody class="text-start">
                                          @forelse($aturanpakai as $aturanpakai)
                                         <tr>
                                             <td>{{ $aturanpakai->frekuensi_pemakaian }}</td>
@@ -44,14 +46,14 @@
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('aturanpakai.show', $aturanpakai->id) }}" class="btn btn-info btn-icon-split">
+                                                     <a href="{{ route('aturanpakai.show', $aturanpakai->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('aturanpakai.edit', $aturanpakai->id) }}" class="btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('aturanpakai.edit', $aturanpakai->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
@@ -61,7 +63,7 @@
                                                     <form action="{{ route('aturanpakai.destroy', $aturanpakai->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-icon-split show_confirm" data-name="{{ $aturanpakai->frekuensi_pemakaian }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $aturanpakai->nama_aturanpakai }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -88,18 +90,40 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (session('success'))
+            <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6'
+            });
+            </script>
+            @endif
+
+            @if (session('error'))
+            <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+            </script>
+            @endif
+
+
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
 
                 deleteButtons.forEach(function (button) {
                     button.addEventListener("click", function (event) {
-                        event.preventDefault();  // Mencegah form langsung submit
+                        event.preventDefault();
 
                         const form = button.closest("form");
                         const nama = button.getAttribute("data-name");
 
-                         // Menampilkan konfirmasi SweetAlert
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
                             text: `Data "${nama}" akan dihapus secara permanen!`,
@@ -111,27 +135,12 @@
                             cancelButtonText: 'Batal'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                form.submit(); // Submit form jika dikonfirmasi
+                                form.submit();
                             }
                         });
                     });
                 });
                 });
-                </script>
-                @endpush
-
-                @push('scripts')
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                @endif
                 </script>
                 @endpush
     @endsection

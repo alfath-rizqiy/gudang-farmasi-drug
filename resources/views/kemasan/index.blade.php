@@ -1,20 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Kemasan')
+@section('title', 'Data kemasan')
 
 @section('content')
 
+        {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Kemasan</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data kemasan</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
                     <div class="p-6">
 
-        <!-- Tombol Tambah -->
+        {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('kemasan.create') }}" class="btn btn-primary">+ Tambah kemasan</a>
+                     <a href="{{ route('kemasan.create') }}" class="btn-sm btn btn-primary">+ Tambah kemasan</a>
                      </div>
                  @endrole
 
@@ -24,10 +25,10 @@
                             <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <th>Nama kemasan</th>
+                                        <th>Nama Kemasan</th>
                                         <th>Tanggal Produksi</th>
                                         <th>Tanggal Kadaluarsa</th>
                                         <th>Petunjuk Penyimpanan</th>
@@ -36,7 +37,7 @@
                                          @endrole
                                         </tr>
                                     </thead>
-                                    <tbody class="text-center">
+                                    <tbody class="text-start">
                                          @forelse($kemasan as $kemasan)
                                         <tr>
                                             <td>{{ $kemasan->nama_kemasan }}</td>
@@ -47,14 +48,14 @@
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('kemasan.show', $kemasan->id) }}" class="btn btn-info btn-icon-split">
+                                                     <a href="{{ route('kemasan.show', $kemasan->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('kemasan.edit', $kemasan->id) }}" class="btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('kemasan.edit', $kemasan->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
@@ -64,7 +65,7 @@
                                                     <form action="{{ route('kemasan.destroy', $kemasan->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-icon-split show_confirm" data-name="{{ $kemasan->nama_kemasan }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $kemasan->nama_kemasan }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -91,6 +92,29 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (session('success'))
+            <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6'
+            });
+            </script>
+            @endif
+
+            @if (session('error'))
+            <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+            </script>
+            @endif
+
+
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -119,21 +143,6 @@
                     });
                 });
                 });
-                </script>
-                @endpush
-
-                @push('scripts')
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                @endif
                 </script>
                 @endpush
     @endsection

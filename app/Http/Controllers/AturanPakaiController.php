@@ -84,12 +84,21 @@ class AturanPakaiController extends Controller
      /**
      * Menghapus data Aturan Pakai berdasarkan ID.
      */
-    public function destroy(string $id)
-    {
+    public function destroy($id)
+{
+    try {
         $aturanpakai = AturanPakai::findOrFail($id);
+
+        // Cek apakah aturanpakai masih punya relasi obat
+        if ($aturanpakai->obats()->count() > 0) {
+            return redirect()->back()->with('error', 'Data aturanpakai tidak dapat dihapus karena masih digunakan oleh data obat.');
+        }
+
         $aturanpakai->delete();
-
-        return redirect()->route('aturanpakai.index')->with('success', 'Data berhasil dihapus.');
-
+        return redirect()->back()->with('success', 'Data aturanpakai berhasil dihapus.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data aturanpakai.');
     }
+}
+
 }

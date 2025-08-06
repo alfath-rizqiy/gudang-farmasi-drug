@@ -1,21 +1,21 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Obat')
+@section('title', 'Data Metode Pembayaran')
 
 @section('content')
 
         {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Obat</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Metode Pembayaran</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
                     <div class="p-6">
 
         {{-- Tombol Tambah --}}
-                 @role('admin|petugas')
+                 @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">+ Tambah Obat</a>
+                     <a href="{{ route('metodepembayaran.create') }}" class="btn btn-primary">+ Tambah Metode Pembayaran</a>
                      </div>
                  @endrole
 
@@ -28,37 +28,40 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <th>Nama Obat</th>
-                                        <th>Nama Supllier</th>
-                                        <th>Nama Kategori</th>
-                                        <th>Nama Metode Pembayaran</th>
+                                        <th>Nama Metode</th>
+                                        <th>Deskripsi</th>
                                          @role('admin')
                                         <th>Aksi</th>
                                          @endrole
                                         </tr>
                                     </thead>
-                                    <tbody class="text-start">
-                                         @forelse($obats as $obat)
+                                    <tbody class="text-center">
+                                         @forelse($metodepembayaran as $metodepembayaran)
                                         <tr>
-                                            <td>{{ $obat->nama_obat }}</td>
-                                            <td>{{ $obat->supplier->nama_supplier ?? '-' }}</td>
-                                            <td>{{ $obat->kategori->nama_kategori ?? '-' }}</td>
-                                            <td>{{ $obat->metodepembayaran->nama_metode ?? '-' }}</td>
+                                            <td>{{ $metodepembayaran->nama_metode }}</td>
+                                            <td>{{ $metodepembayaran->deskripsi }}</td>
                                          @role('admin')
                                             <td>
-                                                <div class="d-flex justify-content-center">
+                                                 <div class="d-flex justify-content-center">
+                                                    <!-- Detail -->
+                                                     <a href="{{ route('metodepembayaran.show', $metodepembayaran->id) }}" class="btn btn-info btn-icon-split">
+                                                        <span class="icon text-white-50">
+                                                            <i class="fas fa-info"></i>
+                                                        </span>
+                                                        <span class="text">Detail</span>
+                                                    </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('obat.edit', $obat->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('metodepembayaran.edit', $metodepembayaran->id) }}" class="btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('obat.destroy', $obat->id) }}" method="POST">
+                                                    <form action="{{ route('metodepembayaran.destroy', $metodepembayaran->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $obat->nama_obat }}">
+                                                        <button type="submit" class="btn btn-danger btn-icon-split show_confirm" data-name="{{ $metodepembayaran->nama_metode }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -98,7 +101,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
+                            text: Data "${nama}" akan dihapus secara permanen!,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',

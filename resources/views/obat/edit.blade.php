@@ -35,6 +35,34 @@
                  </select>
                 </div>
 
+                <!-- Tambahkan value old untuk memanggil data sebelumnya -->
+                <div class="mb-4">
+                <label for="kategori_id" class="block mb-1 font-semibold">kategori</label>
+                 <select name="kategori_id" id="kategori_id" class="form-control" required>
+                    <option value="">Pilih kategori</option>
+                      @foreach($kategoris as $kategori)
+                      <option value="{{ $kategori->id }}"
+                      {{ old('kategori_id', $obat->kategori_id) == $kategori->id ? 'selected' : '' }}>
+                      {{ $kategori->nama_kategori }}
+                      </option>
+                      @endforeach
+                 </select>
+                </div>
+
+                 <!-- Tambahkan value old untuk memanggil data sebelumnya -->
+                <div class="mb-4">
+                <label for="metodepembayaran_id" class="block mb-1 font-semibold">Metode Pembayaran</label>
+                 <select name="metodepembayaran_id" id="metodepembayaran_id" class="form-control" required>
+                    <option value="">Pilih Metode Pembayaran</option>
+                      @foreach($metode_pembayarans as $metodepembayaran)
+                      <option value="{{ $metodepembayaran ->id }}"
+                      {{ old('metodepembayaran_id', $obat->metodepembayaran_id) == $metodepembayaran->id ? 'selected' : '' }}>
+                      {{ $metodepembayaran->nama_metode }}
+                      </option>
+                      @endforeach
+                 </select>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="{{ route('obat.index') }}" class="btn btn-secondary">Kembali</a>
             </form>

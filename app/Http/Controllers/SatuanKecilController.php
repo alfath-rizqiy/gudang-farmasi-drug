@@ -80,11 +80,21 @@ class SatuanKecilController extends Controller
     /**
      * Menghapus data satuan besar berdasarkan ID.
      */
-    public function destroy(string $id)
-    {
+   public function destroy($id)
+{
+    try {
         $satuankecil = SatuanKecil::findOrFail($id);
-        $satuankecil->delete();
 
-        return redirect()->route('satuankecil.index')->with('success', 'Data berhasil dihapus.');
+        // Cek apakah supplier masih punya relasi obat
+        if ($satuankecil->obats()->count() > 0) {
+            return redirect()->back()->with('error', 'Data satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.');
+        }
+
+        $satuankecil->delete();
+        return redirect()->back()->with('success', 'Data satuankecil berhasil dihapus.');
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data satuankecil.');
     }
+}
+
 }

@@ -1,12 +1,12 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Satuan Besar')
+@section('title', 'SatuanBesar')
 
 @section('content')
 
         {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Satuan Besar</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data SatuanBesar</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
@@ -15,7 +15,7 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('satuanbesar.create') }}" class="btn btn-primary">+ Tambah Satuan Besar</a>
+                     <a href="{{ route('satuanbesar.create') }}" class="btn-sm btn btn-primary">+ Tambah SatuanBesar</a>
                      </div>
                  @endrole
 
@@ -25,7 +25,7 @@
                             <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                         </div>
                         <div class="card-body">
-                            <div class="table-responsive">
+                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
                                         <th>Nama Satuan Besar</th>
@@ -36,7 +36,7 @@
                                          @endrole
                                         </tr>
                                     </thead>
-                                    <tbody class="text-center">
+                                    <tbody class="text-start">
                                          @forelse($satuanbesar as $satuanbesar)
                                         <tr>
                                             <td>{{ $satuanbesar->nama_satuanbesar }}</td>
@@ -46,14 +46,14 @@
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('satuanbesar.show', $satuanbesar->id) }}" class="btn btn-info btn-icon-split">
+                                                     <a href="{{ route('satuanbesar.show', $satuanbesar->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('satuanbesar.edit', $satuanbesar->id) }}" class="btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('satuanbesar.edit', $satuanbesar->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
@@ -63,7 +63,7 @@
                                                     <form action="{{ route('satuanbesar.destroy', $satuanbesar->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-icon-split show_confirm" data-name="{{ $satuanbesar->nama }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $satuanbesar->nama_satuanbesar }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -90,6 +90,29 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            @if (session('success'))
+            <script>
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: '{{ session('success') }}',
+                confirmButtonColor: '#3085d6'
+            });
+            </script>
+            @endif
+
+            @if (session('error'))
+            <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+            </script>
+            @endif
+
+
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -103,7 +126,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: Data "${nama}" akan dihapus secara permanen!,
+                            text: `Data "${nama}" akan dihapus secara permanen!`,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -118,21 +141,6 @@
                     });
                 });
                 });
-                </script>
-                @endpush
-
-                @push('scripts')
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-                <script>
-                @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                @endif
                 </script>
                 @endpush
     @endsection

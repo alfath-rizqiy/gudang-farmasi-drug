@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Supplier;
+use App\Models\SatuanKecil;
+use App\Models\SatuanBesar;
 
 class Obat extends Model
 {

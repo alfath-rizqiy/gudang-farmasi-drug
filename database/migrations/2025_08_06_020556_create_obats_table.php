@@ -20,6 +20,14 @@ return new class extends Migration
           $table->unsignedBigInteger('supplier_id');
           $table->foreign('supplier_id')->references('id')->on('suppliers')->onDelete('restrict');
 
+          // Relasi ke satuan kecil
+          $table->unsignedBigInteger('satuan_kecil_id');
+          $table->foreign('satuan_kecil_id')->references('id')->on('satuan_kecils')->onDelete('restrict');
+
+           // Relasi ke satuan besar
+          $table->unsignedBigInteger('satuan_besar_id');
+          $table->foreign('satuan_besar_id')->references('id')->on('satuan_besars')->onDelete('restrict');
+
         });
     }
 

@@ -29,6 +29,8 @@
             <h6 class="collapse-header">Master Menu</h6>
             <a class="collapse-item {{ request()->is('obat') ? 'active' : '' }}" href="{{ route('obat.index') }}">Obat</a>
             <a class="collapse-item {{ request()->is('supplier') ? 'active' : '' }}" href="{{ route('supplier.index') }}">Supplier</a>
+            <a class="collapse-item {{ request()->is('satuankecil') ? 'active' : '' }}" href="{{ route('satuankecil.index') }}">Tabel Satuan Kecil</a>
+            <a class="collapse-item {{ request()->is('satuanbesar') ? 'active' : '' }}" href="{{ route('satuanbesar.index') }}">Tabel Satuan Besar</a>
         </div>
     </div>
 </li>

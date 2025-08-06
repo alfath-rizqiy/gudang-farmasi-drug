@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SatuanKecilController;
+use App\Http\Controllers\SatuanBesarController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -41,6 +43,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [SupplierController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SupplierController::class, 'update'])->name('update');
         Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('destroy');
+    });
+
+     // Satuan Kecil Route
+    Route::prefix('satuankecil')->name('satuankecil.')->group(function () {
+        Route::get('/', [SatuanKecilController::class, 'index'])->name('index');
+        Route::get('/create', [SatuanKecilController::class, 'create'])->name('create');
+        Route::post('/', [SatuanKecilController::class, 'store'])->name('store');
+        Route::get('/{satuankecil}', [SatuanKecilController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [SatuanKecilController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [SatuanKecilController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SatuanKecilController::class, 'destroy'])->name('destroy');
+    });
+
+    // Satuan Besar Route
+    Route::prefix('satuanbesar')->name('satuanbesar.')->group(function () {
+        Route::get('/', [SatuanBesarController::class, 'index'])->name('index');
+        Route::get('/create', [SatuanBesarController::class, 'create'])->name('create');
+        Route::post('/', [SatuanBesarController::class, 'store'])->name('store');
+        Route::get('/{satuanbesar}', [SatuanBesarController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [SatuanBesarController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [SatuanBesarController::class, 'update'])->name('update');
+        Route::delete('/{id}', [SatuanBesarController::class, 'destroy'])->name('destroy');
     });
 });
 });

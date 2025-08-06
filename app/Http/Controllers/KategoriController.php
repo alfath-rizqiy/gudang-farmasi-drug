@@ -86,11 +86,20 @@ class kategoriController extends Controller
      * Menghapus data kategori berdasarkan ID.
      */
     public function destroy(string $id)
-    {
-        $kategori = Kategori::findOrFail($id); // Ambil data kategori
-        $kategori->delete(); // Hapus dari database
+{
+    try {
+        $kategori = Kategori::findOrFail($id);
 
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('kategori.index')->with('success', 'Data berhasil dihapus.');
+        // Cek apakah kategori masih punya relasi obat
+        if ($kategori->obats()->count() > 0) {
+            return redirect()->back()->with('error', 'Metode pembayaran tidak dapat dihapus karena masih digunakan oleh data obat.');
+        }
+
+        $kategori->delete();
+        return redirect()->back()->with('success', 'Metode pembayaran berhasil dihapus.');
+        
+    } catch (\Exception $e) {
+        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus metode pembayaran.');
     }
+}
 }

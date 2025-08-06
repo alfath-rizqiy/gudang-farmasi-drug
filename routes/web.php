@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\KemasanController;
+use App\Http\Controllers\AturanPakaiController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -41,6 +43,27 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [SupplierController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SupplierController::class, 'update'])->name('update');
         Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('destroy');
+    });
+
+    // Kemasan Route
+    Route::prefix('kemasan')->name('kemasan.')->group(function () {
+        Route::get('/', [KemasanController::class, 'index'])->name('index');
+        Route::get('/create', [KemasanController::class, 'create'])->name('create');
+        Route::post('/', [KemasanController::class, 'store'])->name('store');
+        Route::get('/{kemasan}', [KemasanController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [KemasanController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [KemasanController::class, 'update'])->name('update');
+        Route::delete('/{id}', [KemasanController::class, 'destroy'])->name('destroy');
+    });
+
+     Route::prefix('aturanpakai')->name('aturanpakai.')->group(function () {
+    Route::get('/', [AturanPakaiController::class, 'index'])->name('index');
+    Route::get('/create', [AturanPakaiController::class, 'create'])->name('create');
+    Route::post('/', [AturanPakaiController::class, 'store'])->name('store');
+    Route::get('/{aturanpakai}', [AturanPakaiController::class, 'show'])->name('show');
+    Route::get('/{id}/edit', [AturanPakaiController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [AturanPakaiController::class, 'update'])->name('update');
+    Route::delete('/{id}', [AturanPakaiController::class, 'destroy'])->name('destroy');
     });
 });
 });

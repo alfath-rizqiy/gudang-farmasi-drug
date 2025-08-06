@@ -1,21 +1,20 @@
 @extends('layouts.admin')
 
-@section('title', 'Data Obat')
+@section('title', 'Data Kemasan')
 
 @section('content')
 
-        <!-- Tabel Data -->
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Obat</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Tabel Data Kemasan</h1>
                     <p class="mb-4">DataTables is a third party plugin that is used to generate the demo table below.
                         For more information about DataTables, please visit the <a target="_blank"
                             href="https://datatables.net">official DataTables documentation</a>.</p>
                     <div class="p-6">
 
         <!-- Tombol Tambah -->
-                 @role('admin|petugas')
+                 @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">+ Tambah Obat</a>
+                     <a href="{{ route('kemasan.create') }}" class="btn btn-primary">+ Tambah kemasan</a>
                      </div>
                  @endrole
 
@@ -28,37 +27,44 @@
                             <div class="table-responsive">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <th>Nama Obat</th>
-                                        <th>Nama Supllier</th>
-                                        <th>Nama Kemasan</th>
-                                        <th>Nama Aturan Pakai</th>
+                                        <th>Nama kemasan</th>
+                                        <th>Tanggal Produksi</th>
+                                        <th>Tanggal Kadaluarsa</th>
+                                        <th>Petunjuk Penyimpanan</th>
                                          @role('admin')
                                         <th>Aksi</th>
                                          @endrole
                                         </tr>
                                     </thead>
-                                    <tbody class="text-start">
-                                         @forelse($obats as $obat)
+                                    <tbody class="text-center">
+                                         @forelse($kemasan as $kemasan)
                                         <tr>
-                                            <td>{{ $obat->nama_obat }}</td>
-                                            <td>{{ $obat->supplier->nama_supplier ?? '-' }}</td>
-                                             <td>{{ $obat->kemasan->nama_kemasan ?? '-' }}</td>
-                                            <td>{{ $obat->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
+                                            <td>{{ $kemasan->nama_kemasan }}</td>
+                                            <td>{{ $kemasan->tanggal_produksi }}</td>
+                                            <td>{{ $kemasan->tanggal_kadaluarsa }}</td>
+                                            <td>{{ $kemasan->petunjuk_penyimpanan }}</td>
                                          @role('admin')
                                             <td>
-                                                <div class="d-flex justify-content-center">
+                                                 <div class="d-flex justify-content-center">
+                                                    <!-- Detail -->
+                                                     <a href="{{ route('kemasan.show', $kemasan->id) }}" class="btn btn-info btn-icon-split">
+                                                        <span class="icon text-white-50">
+                                                            <i class="fas fa-info"></i>
+                                                        </span>
+                                                        <span class="text">Detail</span>
+                                                    </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('obat.edit', $obat->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('kemasan.edit', $kemasan->id) }}" class="btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('obat.destroy', $obat->id) }}" method="POST">
+                                                    <form action="{{ route('kemasan.destroy', $kemasan->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $obat->nama_obat }}">
+                                                        <button type="submit" class="btn btn-danger btn-icon-split show_confirm" data-name="{{ $kemasan->nama_kemasan }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>

@@ -35,6 +35,34 @@
                  </select>
                 </div>
 
+                 <!-- Tambahkan value old untuk memanggil data sebelumnya -->
+                <div class="mb-4">
+                <label for="kemasan_id" class="block mb-1 font-semibold">Kemasan</label>
+                 <select name="kemasan_id" id="kemasan_id" class="form-control" required>
+                    <option value="">Pilih Kemasan</option>
+                      @foreach($kemasans as $kemasan)
+                      <option value="{{ $kemasan->id }}"
+                      {{ old('kemasan_id', $obat->kemasan_id) == $kemasan->id ? 'selected' : '' }}>
+                      {{ $kemasan->nama_kemasan }}
+                      </option>
+                      @endforeach
+                 </select>
+                </div>
+
+                 <!-- Tambahkan value old untuk memanggil data sebelumnya -->
+                <div class="mb-4">
+                <label for="aturanpakai_id" class="block mb-1 font-semibold">Aturan Pakai</label>
+                 <select name="aturanpakai_id" id="aturanpakai_id" class="form-control" required>
+                    <option value="">Pilih Aturan Pakai</option>
+                      @foreach($aturan_pakais as $aturanpakai)
+                      <option value="{{ $aturanpakai ->id }}"
+                      {{ old('aturanpakai_id', $obat->aturanpakai_id) == $aturanpakai->id ? 'selected' : '' }}>
+                      {{ $aturanpakai->frekuensi_pemakaian }}
+                      </option>
+                      @endforeach
+                 </select>
+                </div>
+
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="{{ route('obat.index') }}" class="btn btn-secondary">Kembali</a>
             </form>

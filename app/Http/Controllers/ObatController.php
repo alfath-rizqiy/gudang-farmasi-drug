@@ -14,7 +14,8 @@ use App\Models\MetodePembayaran;
 
 class ObatController extends Controller
 {
-
+    
+    // Menampilkan View
     public function index()
     {
        $obats = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
@@ -22,6 +23,7 @@ class ObatController extends Controller
         return view('obat.index', compact('obats')); 
     }
 
+    // Membuat Data
     public function create()
     {
         return view('obat.create', [
@@ -35,9 +37,8 @@ class ObatController extends Controller
         ]);
     }
 
-    /**
-     * Menyimpan data obat baru ke database.
-     */
+  
+    // Menyimpan data obat baru ke database
     public function store(Request $request)
     {
         // Validasi input

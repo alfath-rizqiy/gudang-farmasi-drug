@@ -26,19 +26,15 @@ return new class extends Migration
           $table->unsignedBigInteger('aturanpakai_id');
           $table->foreign('aturanpakai_id')->references('id')->on('aturan_pakais')->onDelete('restrict');
 
-                    // Relasi ke satuan kecil
           $table->unsignedBigInteger('satuan_kecil_id');
           $table->foreign('satuan_kecil_id')->references('id')->on('satuan_kecils')->onDelete('restrict');
 
-           // Relasi ke satuan besar
           $table->unsignedBigInteger('satuan_besar_id');
           $table->foreign('satuan_besar_id')->references('id')->on('satuan_besars')->onDelete('restrict');
 
-          // Relasi ke kategori
           $table->unsignedBigInteger('kategori_id');
           $table->foreign('kategori_id')->references('id')->on('kategoris')->onDelete('restrict');
 
-           // Relasi ke metode pembayaran (jika satu obat hanya punya satu metode)
           $table->unsignedBigInteger('metodepembayaran_id');
           $table->foreign('metodepembayaran_id')->references('id')->on('metode_pembayarans')->onDelete('restrict');
 

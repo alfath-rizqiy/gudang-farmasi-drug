@@ -35,8 +35,7 @@ class Obat extends Model
     /**
      * Relasi ke tabel Supplier: setiap obat dimiliki oleh satu supplier.
      */
-    public function supplier()
-    {
+    public function supplier(){
         return $this->belongsTo(Supplier::class);
     }
 
@@ -44,28 +43,23 @@ class Obat extends Model
         return $this->belongsTo(Kemasan::class);
     }
 
-    //pake 'aturanpakai_id' biar laravelnya baca, soalnya ini ga pake underscore kaya bawaan laravel
     public function aturanpakai() {
-        return $this->belongsTo(AturanPakai::class, 'aturanpakai_id');
+        return $this->belongsTo(AturanPakai::class);
     }
 
-    // Relasi ke tabel SatuanKecil (obat memiliki satu satuan kecil)
     public function satuankecil() {
-        return $this->belongsTo(SatuanKecil::class, 'satuan_kecil_id');
+        return $this->belongsTo(SatuanKecil::class);
     }
 
-    // Relasi ke tabel SatuanBesar (obat memiliki satu satuan besar)
     public function satuanbesar() {
-        return $this->belongsTo(SatuanBesar::class, 'satuan_besar_id');
+        return $this->belongsTo(SatuanBesar::class);
     }
     
-    public function kategori()
-    {
-        return $this->belongsTo(Kategori::class, 'kategori_id');
+    public function kategori() {
+        return $this->belongsTo(Kategori::class);
     }
 
-    public function metodepembayaran()
-    {
-        return $this->belongsTo(MetodePembayaran::class, 'metodepembayaran_id');
+    public function metodepembayaran() {
+        return $this->belongsTo(MetodePembayaran::class);
     }
 }

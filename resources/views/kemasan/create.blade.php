@@ -6,7 +6,7 @@
 <div class="container-fluid">
 
     <!-- Page Heading -->
-    <h1 class="h3 mb-4 text-gray-800">Tambah Data Obat</h1>
+    <h1 class="h3 mb-4 text-gray-800">Tambah Data Kemasan</h1>
 
     <!-- Form Card -->
     <div class="card shadow mb-4">

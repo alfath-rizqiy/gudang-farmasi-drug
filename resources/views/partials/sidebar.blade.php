@@ -19,17 +19,25 @@
         </a>
     </li>
 
-    <li class="nav-item {{ request()->is('obat*') ? 'active' : '' }}">
-    <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseObat" aria-expanded="true" aria-controls="collapseObat">
+    <!-- Nav Master Data -->
+
+    @php
+    $isMasterActive = request()->is('obat*') || request()->is('supplier*') || request()->is('kemasan*') ||
+                      request()->is('satuankecil*') || request()->is('satuanbesar*') || request()->is('aturanpakai*') ||
+                      request()->is('kategori*') || request()->is('metodepembayaran*');
+    @endphp
+
+    <li class="nav-item {{ $isMasterActive ? 'active' : '' }}">
+    <a class="nav-link {{ $isMasterActive ? '' : 'collapsed' }}" href="#" data-toggle="collapse" data-target="#collapseMaster" aria-expanded="true" aria-controls="collapseMaster">
         <i class="fas fa-fw fa-capsules"></i>
         <span>Master Data</span>
     </a>
-    <div id="collapseObat" class="collapse {{ request()->is('obat*') ? 'show' : '' }}" aria-labelledby="headingObat" data-parent="#accordionSidebar">
+    <div id="collapseMaster" class="collapse {{ $isMasterActive ? 'show' : '' }}" aria-labelledby="headingMaster" data-parent="#accordionSidebar">
         <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Master Menu</h6>
             <a class="collapse-item {{ request()->is('obat') ? 'active' : '' }}" href="{{ route('obat.index') }}">Obat</a>
             <a class="collapse-item {{ request()->is('supplier') ? 'active' : '' }}" href="{{ route('supplier.index') }}">Supplier</a>
-            <a class="collapse-item {{ request()->is('kemasan') ? 'active' : '' }}" href="{{ route('kemasan.index') }}">Tabel Kemasan</a>
+            <a class="collapse-item {{ request()->is('kemasan') ? 'active' : '' }}" href="{{ route('kemasan.index') }}">Kemasan</a>
             <a class="collapse-item {{ request()->is('satuankecil') ? 'active' : '' }}" href="{{ route('satuankecil.index') }}">Satuan Kecil</a>
             <a class="collapse-item {{ request()->is('satuanbesar') ? 'active' : '' }}" href="{{ route('satuanbesar.index') }}">Satuan Besar</a>
             <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Tabel Aturan Pakai</a>

@@ -8,6 +8,8 @@ use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\AturanPakaiController;
 use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
+use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\MetodePembayaranController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -88,6 +90,28 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [SatuanBesarController::class, 'edit'])->name('edit');
         Route::put('/{id}', [SatuanBesarController::class, 'update'])->name('update');
         Route::delete('/{id}', [SatuanBesarController::class, 'destroy'])->name('destroy');
+    });
+    
+    // Kategori Route
+    Route::prefix('kategori')->name('kategori.')->group(function () {
+        Route::get('/', [KategoriController::class, 'index'])->name('index');
+        Route::get('/create', [KategoriController::class, 'create'])->name('create');
+        Route::post('/', [KategoriController::class, 'store'])->name('store');
+        Route::get('/{kategori}', [KategoriController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [KategoriController::class, 'update'])->name('update');
+        Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('destroy');
+    });
+
+    // Metode Pembayaran Route
+    Route::prefix('metodepembayaran')->name('metodepembayaran.')->group(function () {
+        Route::get('/', [MetodePembayaranController::class, 'index'])->name('index');
+        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('create');
+        Route::post('/', [MetodePembayaranController::class, 'store'])->name('store');
+        Route::get('/{metodepembayaran}', [MetodePembayaranController::class, 'show'])->name('show');
+        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [MetodePembayaranController::class, 'update'])->name('update');
+        Route::delete('/{id}', [MetodePembayaranController::class, 'destroy'])->name('destroy');
     });
 });
 });

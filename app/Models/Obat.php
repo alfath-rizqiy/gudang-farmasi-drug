@@ -9,6 +9,8 @@ use App\Models\Kemasan;
 use App\Models\AturanPakai;
 use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
+use App\Models\Kategori;
+use App\Models\MetodePembayaran;
 
 class Obat extends Model
 {
@@ -25,12 +27,13 @@ class Obat extends Model
         'kemasan_id',
         'aturanpakai_id',
         'satuan_kecil_id',
-        'satuan_besar_id'
+        'satuan_besar_id',
+        'kategori_id',
+        'metodepembayaran_id',
     ];
 
     /**
-     * Relasi many-to-one ke model tersebut.
-     * Setiap model obat memiliki satu model tsb.
+     * Relasi ke tabel Supplier: setiap obat dimiliki oleh satu supplier.
      */
     public function supplier()
     {
@@ -54,5 +57,15 @@ class Obat extends Model
     // Relasi ke tabel SatuanBesar (obat memiliki satu satuan besar)
     public function satuanbesar() {
         return $this->belongsTo(SatuanBesar::class, 'satuan_besar_id');
+    }
+    
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
+
+    public function metodepembayaran()
+    {
+        return $this->belongsTo(MetodePembayaran::class, 'metodepembayaran_id');
     }
 }

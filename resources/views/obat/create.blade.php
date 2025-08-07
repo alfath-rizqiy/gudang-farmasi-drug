@@ -54,6 +54,18 @@
                       @endforeach
                  </select>
                 </div>
+                    
+                <!-- Pemanggilan ID kategori-->
+                <div class="mb-4">
+                <label for="kategori_id" class="block mb-1 font-semibold">kategori</label>
+                 <select name="kategori_id" id="kategori_id" class="form-control" required>
+                    required>
+                    <option value="">Pilih kategori</option>
+                      @foreach($kategoris as $kategori)
+                      <option value="{{ $kategori->id }}">{{ $kategori->nama_kategori }}</option>
+                      @endforeach
+                 </select>
+                </div>
 
                 <!-- Pemanggilan ID satuan besar-->
                 <div class="mb-4">
@@ -75,6 +87,18 @@
                     <option value="">Pilih Aturan Pakai</option>
                       @foreach($aturan_pakais as $aturanpakai)
                       <option value="{{ $aturanpakai->id }}">{{ $aturanpakai->frekuensi_pemakaian }}</option>
+                      @endforeach
+                 </select>
+                </div>
+                
+                 <!-- Pemanggilan ID Metode Pembayaran-->
+                <div class="mb-4">
+                <label for="metodepembayaran_id" class="block mb-1 font-semibold">Metode Pembayaran</label>
+                 <select name="metodepembayaran_id" id="metodepembayaran_id" class="form-control" required>
+                    required>
+                    <option value="">Pilih Metode Pembayaran</option>
+                      @foreach($metode_pembayarans as $metodepembayaran)
+                      <option value="{{ $metodepembayaran->id }}">{{ $metodepembayaran->nama_metode }}</option>
                       @endforeach
                  </select>
                 </div>

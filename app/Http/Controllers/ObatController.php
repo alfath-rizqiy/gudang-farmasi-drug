@@ -9,15 +9,15 @@ use App\Models\Kemasan;
 use App\Models\AturanPakai;
 use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
-
-
+use App\Models\Kategori;
+use App\Models\MetodePembayaran;
 
 class ObatController extends Controller
 {
 
     public function index()
     {
-       $obats = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar'])->get();
+       $obats = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
 
         return view('obat.index', compact('obats')); 
     }
@@ -30,8 +30,11 @@ class ObatController extends Controller
         'aturan_pakais' => AturanPakai::all(),
         'satuan_kecils' => SatuanKecil::all(),
         'satuan_besars' => SatuanBesar::all(),
+        'kategoris' => Kategori::all(),
+        'metode_pembayarans' => MetodePembayaran::all(),
         ]);
     }
+
     /**
      * Menyimpan data obat baru ke database.
      */
@@ -45,6 +48,8 @@ class ObatController extends Controller
         'aturanpakai_id' => 'required|exists:aturan_pakais,id',
         'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
         'satuan_besar_id' => 'required|exists:satuan_besars,id',
+        'kategori_id' => 'required|exists:kategoris,id',
+        'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
 
@@ -56,16 +61,14 @@ class ObatController extends Controller
             'aturanpakai_id' => $request->aturanpakai_id,
             'satuan_kecil_id' => $request->satuan_kecil_id,
             'satuan_besar_id' => $request->satuan_besar_id,
+            'kategori_id' => $request->kategori_id,
+            'metodepembayaran_id' => $request->metodepembayaran_id,
         ]);
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('obat.index')->with('success', 'obat berhasil ditambahkan.');
     }
 
-     /**
-     * Menampilkan detail dari satu data obat berdasarkan ID.
-     * Mengambil relasi dengan supplier, kemasan, dan aturan pakai.
-     */
     public function show(string $id)
     {
         $obat = Obat::with([
@@ -74,9 +77,11 @@ class ObatController extends Controller
         'aturanpakai',
         'satuankecil',
         'satuanbesar',
+        'kategori',
+        'metodepembayaran',
     ])->findOrFail($id);
 
-        // Tampilkan view detail
+        // Tampilkan ke view show
         return view('obat.show', compact('obat'));
     }
 
@@ -92,8 +97,10 @@ class ObatController extends Controller
         $aturan_pakais = AturanPakai::all();
         $satuan_kecils = SatuanKecil::all();
         $satuan_besars = SatuanBesar::all();
+        $kategoris = Kategori::all();
+        $metode_pembayarans = MetodePembayaran::all(); 
 
-        return view('obat.edit', compact('obat', 'suppliers', 'kemasans', 'aturan_pakais', 'satuan_kecils', 'satuan_besars'));
+        return view('obat.edit', compact('obat', 'suppliers', 'kemasans', 'aturan_pakais', 'satuan_kecils', 'satuan_besars',  'kategoris', 'metode_pembayarans'));
     }
 
     /**
@@ -110,9 +117,11 @@ class ObatController extends Controller
         'aturanpakai_id' => 'required|exists:aturan_pakais,id',
         'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
         'satuan_besar_id' => 'required|exists:satuan_besars,id',
+        'kategori_id' => 'required|exists:kategoris,id',
+        'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
-        // Update data obat
+        // Ambil data obat dan update dengan input baru
         $obat = Obat::findOrFail($id);
         $obat->update([
             'nama_obat' => $request->nama_obat,
@@ -121,9 +130,11 @@ class ObatController extends Controller
             'aturanpakai_id' => $request->aturanpakai_id,
             'satuan_kecil_id' => $request->satuan_kecil_id,
             'satuan_besar_id' => $request->satuan_besar_id,
+            'kategori_id' => $request->kategori_id,
+            'metodepembayaran_id' => $request->metodepembayaran_id,
         ]);
 
-        // Redirect ke index dengan pesan sukses
+        // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('obat.index')->with('success', 'Data berhasil diupdate.');
     }
 

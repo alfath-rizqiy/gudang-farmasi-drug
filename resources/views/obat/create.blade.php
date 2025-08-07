@@ -42,6 +42,30 @@
                       @endforeach
                  </select>
                 </div>
+                      
+                 <!-- Pemanggilan ID satuan kecil-->
+                <div class="mb-4">
+                <label for="satuan_kecil_id" class="block mb-1 font-semibold">Satuan Kecil</label>
+                 <select name="satuan_kecil_id" id="satuan_kecil_id" class="form-control" required>
+                    required>
+                    <option value="">Pilih Satuan Kecil</option>
+                      @foreach($satuan_kecils as $satuankecil)
+                      <option value="{{ $satuankecil->id }}">{{ $satuankecil->nama_satuankecil }}</option>
+                      @endforeach
+                 </select>
+                </div>
+
+                <!-- Pemanggilan ID satuan besar-->
+                <div class="mb-4">
+                <label for="satuan_besar_id" class="block mb-1 font-semibold">Satuan Besar</label>
+                 <select name="satuan_besar_id" id="satuan_besar_id" class="form-control" required>
+                    required>
+                    <option value="">Pilih Satuan Besar</option>
+                      @foreach($satuan_besars as $satuanbesar)
+                      <option value="{{ $satuanbesar->id }}">{{ $satuanbesar->nama_satuanbesar }}</option>
+                      @endforeach
+                 </select>
+                </div>
 
                  <!-- Pemanggilan ID aturan pakai-->
                 <div class="mb-4">

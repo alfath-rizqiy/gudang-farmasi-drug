@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\Supplier;
 use App\Models\Kemasan;
 use App\Models\AturanPakai;
+use App\Models\SatuanKecil;
+use App\Models\SatuanBesar;
 
 class Obat extends Model
 {
@@ -19,9 +21,11 @@ class Obat extends Model
      */
     protected $fillable = [
         'nama_obat', 
-        'supplier_id', //yang kaya gini tu id relasi ke tabel tersebut
+        'supplier_id',
         'kemasan_id',
         'aturanpakai_id',
+        'satuan_kecil_id',
+        'satuan_besar_id'
     ];
 
     /**
@@ -40,5 +44,15 @@ class Obat extends Model
     //pake 'aturanpakai_id' biar laravelnya baca, soalnya ini ga pake underscore kaya bawaan laravel
     public function aturanpakai() {
         return $this->belongsTo(AturanPakai::class, 'aturanpakai_id');
+    }
+
+    // Relasi ke tabel SatuanKecil (obat memiliki satu satuan kecil)
+    public function satuankecil() {
+        return $this->belongsTo(SatuanKecil::class, 'satuan_kecil_id');
+    }
+
+    // Relasi ke tabel SatuanBesar (obat memiliki satu satuan besar)
+    public function satuanbesar() {
+        return $this->belongsTo(SatuanBesar::class, 'satuan_besar_id');
     }
 }

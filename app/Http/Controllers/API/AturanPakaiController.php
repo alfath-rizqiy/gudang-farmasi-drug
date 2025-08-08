@@ -2,103 +2,109 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AturanPakai;
 
 class AturanPakaiController extends Controller
 {
-    /**
-     * Menampilkan semua data Aturan Pakai.
-     * Mengambil semua record dari tabel aturan_pakai dan mengirimkannya ke view index.
-     */
+    // GET /api/aturanpakai
     public function index()
     {
         $aturanpakai = AturanPakai::all();
-        return view('aturanpakai.index', compact('aturanpakai')); 
+        return response()->json([
+            'success' => true,
+            'data' => $aturanpakai
+        ], 200);
     }
 
-    /**
-     * Menampilkan form untuk membuat data Aturan Pakai baru.
-     */
-    public function create()
-    {
-        return view('aturanpakai.create');
-    }
-
-     /**
-     * Menyimpan data Aturan Pakai baru ke database.
-     * Validasi input, lalu simpan menggunakan mass assignment.
-     */
+    // POST /api/aturanpakai
     public function store(Request $request)
     {
         $validated = $request->validate([
-        'frekuensi_pemakaian' => 'required|string',
-        'waktu_pemakaian'     => 'required|string',
-        'deskripsi'           => 'nullable|string',
-    ]);
+            'frekuensi_pemakaian' => 'required|string',
+            'waktu_pemakaian'     => 'required|string',
+            'deskripsi'           => 'nullable|string',
+        ]);
 
-    AturanPakai::create($validated);
+        $aturanpakai = AturanPakai::create($validated);
 
-    return redirect()->route('aturanpakai.index')->with('success', 'Aturan Pakai berhasil ditambahkan.');
-
+        return response()->json([
+            'success' => true,
+            'message' => 'Aturan Pakai berhasil ditambahkan.',
+            'data'    => $aturanpakai
+        ], 201);
     }
 
-    /**
-     * Menampilkan detail dari satu data Aturan Pakai berdasarkan ID.
-     * Mengambil relasi dengan tabel obats jika ada.
-     */
-    public function show(string $id)
+    // GET /api/aturanpakai/{id}
+    public function show($id)
     {
-        $aturanpakai = AturanPakai::with('obats')->findOrFail($id);
-         return view('aturanpakai.show', compact('aturanpakai'));
+        $aturanpakai = AturanPakai::with('obats')->find($id);
+
+        if (!$aturanpakai) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aturan Pakai tidak ditemukan.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $aturanpakai
+        ], 200);
     }
 
-     /**
-     * Menampilkan form edit untuk data Aturan Pakai tertentu.
-     */
-    public function edit(string $id)
+    // PUT /api/aturanpakai/{id}
+    public function update(Request $request, $id)
     {
-        $aturanpakai = AturanPakai::findOrFail($id); // perbaikan di sini
-    return view('aturanpakai.edit', compact('aturanpakai')); // dan di sini
+        $validated = $request->validate([
+            'frekuensi_pemakaian' => 'required|string',
+            'waktu_pemakaian'     => 'required|string',
+            'deskripsi'           => 'nullable|string',
+        ]);
+
+        $aturanpakai = AturanPakai::find($id);
+
+        if (!$aturanpakai) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aturan Pakai tidak ditemukan.'
+            ], 404);
+        }
+
+        $aturanpakai->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Aturan Pakai berhasil diupdate.',
+            'data'    => $aturanpakai
+        ], 200);
     }
 
-     /**
-     * Memperbarui data Aturan Pakai berdasarkan ID.
-     * Validasi input, lalu update hanya field yang diperlukan.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-        'frekuensi_pemakaian' => 'required|string',
-        'waktu_pemakaian'     => 'required|string',
-        'deskripsi'           => 'nullable|string',
-    ]);
-
-        $aturanpakai = AturanPakai::findOrFail($id);
-        $aturanpakai->update($request->only(['frekuensi_pemakaian', 'waktu_pemakaian', 'deskripsi',]));;
-
-        return redirect()->route('aturanpakai.index')->with('success', 'Data berhasil diupdate.');
-
-    }
-
-     /**
-     * Menghapus data Aturan Pakai berdasarkan ID.
-     */
+    // DELETE /api/aturanpakai/{id}
     public function destroy($id)
-{
-    try {
-        $aturanpakai = AturanPakai::findOrFail($id);
+    {
+        $aturanpakai = AturanPakai::find($id);
 
-        // Cek apakah aturanpakai masih punya relasi obat
+        if (!$aturanpakai) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Aturan Pakai tidak ditemukan.'
+            ], 404);
+        }
+
         if ($aturanpakai->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data aturanpakai tidak dapat dihapus karena masih digunakan oleh data obat.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Aturan Pakai tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409); 
         }
 
         $aturanpakai->delete();
-        return redirect()->back()->with('success', 'Data aturanpakai berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data aturanpakai.');
-    }
-}
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Aturan Pakai berhasil dihapus.'
+        ], 200);
+    }
 }

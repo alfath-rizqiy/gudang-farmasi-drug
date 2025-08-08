@@ -2,106 +2,111 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kemasan;
 
 class KemasanController extends Controller
 {
-     /**
-     * Menampilkan semua data kemasan.
-     * Mengambil semua record dari tabel kemasan dan mengirimkannya ke view index.
-     */
+    // GET /api/kemasan
     public function index()
     {
         $kemasan = Kemasan::all();
-        return view('kemasan.index', compact('kemasan')); 
+        return response()->json([
+            'success' => true,
+            'data' => $kemasan
+        ], 200);
     }
 
-   
-    /**
-     * Menampilkan form untuk membuat data kemasan baru.
-     */
-    public function create()
-    {
-        return view('kemasan.create');
-    }
-
-     /**
-     * Menyimpan data kemasan baru ke database.
-     * Validasi input, lalu simpan menggunakan mass assignment.
-     */
+    // POST /api/kemasan
     public function store(Request $request)
     {
         $validated = $request->validate([
-        'nama_kemasan' => 'required|string',
-        'tanggal_produksi' => 'required|date',
-        'tanggal_kadaluarsa' => 'required|date',
-        'petunjuk_penyimpanan' => 'required|string', 
-    ]);
+            'nama_kemasan'         => 'required|string',
+            'tanggal_produksi'     => 'required|date',
+            'tanggal_kadaluarsa'   => 'required|date',
+            'petunjuk_penyimpanan' => 'required|string',
+        ]);
 
-    Kemasan::create($validated);
+        $kemasan = Kemasan::create($validated);
 
-    return redirect()->route('kemasan.index')->with('success', 'kemasan berhasil ditambahkan.');
-
+        return response()->json([
+            'success' => true,
+            'message' => 'Kemasan berhasil ditambahkan.',
+            'data'    => $kemasan
+        ], 201);
     }
 
-     /**
-     * Menampilkan detail dari satu data kemasan berdasarkan ID.
-     * Mengambil relasi dengan tabel obats jika ada.
-     */
-    public function show(string $id)
+    // GET /api/kemasan/{id}
+    public function show($id)
     {
-        $kemasan = Kemasan::with('obats')->findOrFail($id);
-         return view('kemasan.show', compact('kemasan'));
+        $kemasan = Kemasan::with('obats')->find($id);
+
+        if (!$kemasan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kemasan tidak ditemukan.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $kemasan
+        ], 200);
     }
 
-   /**
-     * Menampilkan form edit untuk data kemasan tertentu.
-     */
-    public function edit(string $id)
+    // PUT /api/kemasan/{id}
+    public function update(Request $request, $id)
     {
-        $kemasan = Kemasan::findOrFail($id); // perbaikan di sini
-    return view('kemasan.edit', compact('kemasan')); // dan di sini
+        $validated = $request->validate([
+            'nama_kemasan'         => 'required|string',
+            'tanggal_produksi'     => 'required|date',
+            'tanggal_kadaluarsa'   => 'required|date',
+            'petunjuk_penyimpanan' => 'required|string',
+        ]);
+
+        $kemasan = Kemasan::find($id);
+
+        if (!$kemasan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kemasan tidak ditemukan.'
+            ], 404);
+        }
+
+        $kemasan->update($validated);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Kemasan berhasil diupdate.',
+            'data'    => $kemasan
+        ], 200);
     }
 
-     /**
-     * Memperbarui data kemasan berdasarkan ID.
-     * Validasi input, lalu update hanya field yang diperlukan.
-     */
-    public function update(Request $request, string $id)
-    {
-        $request->validate([
-        'nama_kemasan' => 'required|string',
-        'tanggal_produksi' => 'required|date',
-        'tanggal_kadaluarsa' => 'required|date',
-        'petunjuk_penyimpanan' => 'required|string', 
-    ]);
-
-        $kemasan = Kemasan::findOrFail($id);
-        $kemasan->update($request->only(['nama_kemasan', 'tanggal_produksi', 'tanggal_kadaluarsa', 'petunjuk_penyimpanan']));;
-
-        return redirect()->route('kemasan.index')->with('success', 'Data berhasil diupdate.');
-
-    }
-
-     /**
-     * Menghapus data kemasan berdasarkan ID.
-     */
+    // DELETE /api/kemasan/{id}
     public function destroy($id)
-{
-    try {
-        $kemasan = Kemasan::findOrFail($id);
+    {
+        $kemasan = Kemasan::find($id);
 
-        // Cek apakah kemasan masih punya relasi obat
+        if (!$kemasan) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Kemasan tidak ditemukan.'
+            ], 404);
+        }
+
         if ($kemasan->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data kemasan tidak dapat dihapus karena masih digunakan oleh data obat.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Data kemasan tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409); 
         }
 
         $kemasan->delete();
-        return redirect()->back()->with('success', 'Data kemasan berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data kemasan.');
-    }
-}
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Data kemasan berhasil dihapus.'
+        ], 200);
+    }
 }

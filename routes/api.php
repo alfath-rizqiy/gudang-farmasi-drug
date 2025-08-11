@@ -15,11 +15,11 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::apiResource('obats', ObatController::class);
-Route::apiResource('suppliers', SupplierController::class);
-Route::apiResource('kemasans', KemasanController::class);
-Route::apiResource('aturan-pakai', AturanPakaiController::class);
-Route::apiResource('satuan-kecil', SatuanKecilController::class);
-Route::apiResource('satuan-besar', SatuanBesarController::class);
-Route::apiResource('kategori', KategoriController::class);
-Route::apiResource('metode-pembayaran', MetodePembayaranController::class);
+Route::resource('/obat', ObatController::class);
+Route::resource('/supplier', SupplierController::class);
+Route::resource('/kemasans', KemasanController::class);
+Route::resource('/aturanpakai', AturanPakaiController::class);
+Route::resource('/satuankecil', SatuanKecilController::class);
+Route::resource('/satuanbesar', SatuanBesarController::class);
+Route::resource('/kategori', KategoriController::class);
+Route::resource('/metodepembayaran', MetodePembayaranController::class);

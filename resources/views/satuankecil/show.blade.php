@@ -11,7 +11,7 @@
         <div class="card-body">
 
             <h5 class="font-weight-bold mb-3">Informasi Satuan Kecil</h5>
-            <p><strong>Nama:</strong> {{ $satuankecil->nama_satuankecil }}</p>
+            <p><strong>Nama Satuan Kecil:</strong> {{ $satuankecil->nama_satuankecil }}</p>
             <p><strong>Deskripsi:</strong> {{ $satuankecil->deskripsi }}</p>
 
             <hr>

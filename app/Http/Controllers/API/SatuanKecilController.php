@@ -32,7 +32,7 @@ class SatuanKecilController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Supplier berhasil ditambahkan.',
+            'message' => 'Satuan Kecil berhasil ditambahkan.',
             'data'    => $satuankecil
         ], 201);
     }

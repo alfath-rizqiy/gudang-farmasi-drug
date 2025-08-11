@@ -39,7 +39,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($obats as $obat)
+                                         @forelse($obat as $obat)
                                         <tr>
                                             <td>{{ $obat->nama_obat }}</td>
                                             <td>{{ $obat->supplier->nama_supplier ?? '-' }}</td>

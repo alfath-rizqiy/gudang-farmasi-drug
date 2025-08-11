@@ -18,9 +18,9 @@ class ObatController extends Controller
     // Menampilkan View
     public function index()
     {
-       $obats = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
+       $obat = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
 
-        return view('obat.index', compact('obats')); 
+        return view('obat.index', compact('obat')); 
     }
 
     // Membuat Data

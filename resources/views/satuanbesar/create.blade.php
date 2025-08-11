@@ -21,7 +21,7 @@
 
                 <div class="form-group">
                     <label for="nama">Deskripsi</label>
-                    <textarea name="deskripsi" id="deskripsi" class="form-control" placeholder="Masukkan Deskripsi" rows="4" required>{{ old('deskripsi') }}</textarea>
+                    <textarea name="deskripsi" id="deskripsi" class="form-control" placeholder="Masukkan Deskripsi" rows="4" required></textarea>
                 </div>
 
                 <div class="form-group">

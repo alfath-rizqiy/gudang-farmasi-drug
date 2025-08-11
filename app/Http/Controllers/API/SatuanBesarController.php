@@ -2,31 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SatuanBesar;
 
 class SatuanBesarController extends Controller
 {
-    /**
-     * Menampilkan semua data satuan besar.
-     */
+    // GET /api/suppliers
     public function index()
     {
         $satuanbesar = SatuanBesar::all();
-        return view('satuanbesar.index', compact('satuanbesar')); 
+        return response()->json([
+            'success' => true,
+            'data' => $satuanbesar
+        ], 200); 
     }
 
-    /**
-     * Menampilkan form untuk menambahkan satuan besar baru.
-     */
-    public function create()
-    {
-        return view('satuanbesar.create');
-    }
-
-    /**
-     * Menyimpan data satuan besar ke database.
-     */
+    // POST /api/suppliers
     public function store(Request $request)
     {
         // Validasi input
@@ -37,33 +29,35 @@ class SatuanBesarController extends Controller
         ]);
 
         // Simpan data
-        SatuanBesar::create($validated);
+        $satuanbesar = SatuanBesar::create($validated);
 
-        return redirect()->route('satuanbesar.index')->with('success', 'Satuan Besar berhasil ditambahkan.');
+        return response()->json([
+            'success' => true,
+            'message' => 'Satuan Besar berhasil ditambahkan.',
+            'data'    => $satuanbesar
+        ], 201);
     }
 
-    /**
-     * Menampilkan detail satuan besar berdasarkan ID.
-     */
-    public function show(string $id)
+    // GET /api/suppliers/{id}
+    public function show($id)
     {
-        $satuanbesar = SatuanBesar::with('obats')->findOrFail($id);
-        return view('satuanbesar.show', compact('satuanbesar'));
+        $satuanbesar = SatuanBesar::with('obats')->find($id);
+
+        if (!$satuanbesar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Satuan Besar tidak ditemukan.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $satuanbesar
+        ], 200);
     }
 
-    /**
-     * Menampilkan form edit untuk satuan besar tertentu.
-     */
-    public function edit(string $id)
-    {
-        $satuanbesar = SatuanBesar::findOrFail($id);
-        return view('satuanbesar.edit', compact('satuanbesar'));
-    }
-
-    /**
-     * Memperbarui data satuan besar berdasarkan ID.
-     */
-    public function update(Request $request, string $id)
+    // PUT /api/suppliers/{id}
+    public function update(Request $request, $id)
     {
         // Validasi input
         $request->validate([
@@ -73,30 +67,49 @@ class SatuanBesarController extends Controller
         ]);
 
         // Update data
-        $satuanbesar = SatuanBesar::findOrFail($id);
-        $satuanbesar->update($request->only(['nama_satuanbesar', 'deskripsi', 'jumlah_satuankecil']));
+        $satuanbesar = SatuanBesar::find($id);
 
-        return redirect()->route('satuanbesar.index')->with('success', 'Data berhasil diupdate.');
-    }
-
-    /**
-     * Menghapus data satuan besar berdasarkan ID.
-     */
-   public function destroy($id)
-{
-    try {
-        $satuanbesar = SatuanBesar::findOrFail($id);
-
-        // Cek apakah supplier masih punya relasi obat
-        if ($satuanbesar->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data satuanbesar tidak dapat dihapus karena masih digunakan oleh data obat.');
+        if (!$satuanbesar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Satuan Besar tidak ditemukan.'
+            ], 404);
         }
 
-        $satuanbesar->delete();
-        return redirect()->back()->with('success', 'Data satuanbesar berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data satuanbesar.');
-    }
-}
+        $satuanbesar->update($validated);
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Satuan Besar berhasil diupdate.',
+            'data'    => $satuanbesar
+        ], 200);
+    }
+
+    // DELETE /api/suppliers/{id}
+     public function destroy($id)
+    {
+        $satuanbesar = SatuanBesar::find($id);
+
+        if (!$satuanbesar) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Satuan Besar tidak ditemukan.'
+            ], 404);
+        }
+
+        if ($satuanbesar->obats()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data Satuan Besar tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409); // 409 Conflict
+        }
+
+        $satuanbesar>delete();
+
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data Satuan Besar berhasil dihapus.'
+        ], 200);
+    }
 }

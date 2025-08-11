@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
@@ -21,15 +22,23 @@ class SupplierController extends Controller
     // POST /api/suppliers
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(),[
             'nama_supplier' => 'required|string',
-            'telepon'       => 'required|string',
-            'email'         => 'required|email',
-            'alamat'        => 'required|string',
+            'telepon' => 'required|string',
+            'email' => 'required|email',
+            'alamat' => 'required|string',
         ]);
 
-        $supplier = Supplier::create($validated);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=> false,
+                'message'=> 'validasi error',
+                'errors'=> $validator->errors()
+            ], 422);
+        }
+        
+        $supplier = Supplier::create($request->all());
         return response()->json([
             'success' => true,
             'message' => 'Supplier berhasil ditambahkan.',

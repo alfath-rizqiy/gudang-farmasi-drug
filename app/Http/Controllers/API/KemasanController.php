@@ -11,7 +11,7 @@ class KemasanController extends Controller
     // GET /api/kemasan
     public function index()
     {
-        $kemasan = Kemasan::all();
+        $kemasan = Kemasan::with('obats')->get();
         return response()->json([
             'success' => true,
             'data' => $kemasan

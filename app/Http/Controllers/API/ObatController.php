@@ -11,7 +11,7 @@ class ObatController extends Controller
     // Ambil semua data obat
     public function index()
     {
-        $obats = Obat::with([
+        $obat = Obat::with([
             'supplier',
             'kemasan',
             'aturanpakai',
@@ -38,7 +38,7 @@ class ObatController extends Controller
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
-        $obat = Obat::create($validated);
+        $obat= Obat::create($validated);
 
         return response()->json([
             'message' => 'Obat berhasil ditambahkan',

@@ -16,7 +16,7 @@
             @method('PUT')
 
                 <div class="form-group">
-                    <label for="nama_satuankecil">Nama </label>
+                    <label for="nama_satuankecil">Nama Satuan Kecil </label>
                     <input type="text" name="nama_satuankecil" id="nama_satuankecil" class="form-control" placeholder="Masukkan Satuan Besar" 
                     value="{{ old('nama_satuankecil', $satuankecil->nama_satuankecil) }}" required>
                 </div>

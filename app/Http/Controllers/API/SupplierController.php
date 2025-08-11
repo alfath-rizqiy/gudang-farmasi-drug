@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
-    // GET /api/suppliers
+    // Tampilkan Supplier
     public function index()
     {
         $suppliers = Supplier::all();
@@ -19,7 +19,7 @@ class SupplierController extends Controller
         ], 200);
     }
 
-    // POST /api/suppliers
+    // Input Supplier
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
@@ -30,6 +30,7 @@ class SupplierController extends Controller
         ]);
 
 
+        // Supplier tidak valid
         if ($validator->fails()) {
             return response()->json([
                 'status'=> false,
@@ -37,7 +38,8 @@ class SupplierController extends Controller
                 'errors'=> $validator->errors()
             ], 422);
         }
-        
+
+        // Supplier valid
         $supplier = Supplier::create($request->all());
         return response()->json([
             'success' => true,
@@ -46,7 +48,8 @@ class SupplierController extends Controller
         ], 201);
     }
 
-    // GET /api/suppliers/{id}
+
+    // Tampilkan detail
     public function show($id)
     {
         $supplier = Supplier::with('obats')->find($id);
@@ -64,16 +67,24 @@ class SupplierController extends Controller
         ], 200);
     }
 
-    // PUT /api/suppliers/{id}
+    // Update Supplier
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_supplier' => 'required|string',
             'telepon'       => 'required|string',
             'email'         => 'required|email',
             'alamat'        => 'required|string',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        
         $supplier = Supplier::find($id);
 
         if (!$supplier) {
@@ -83,16 +94,17 @@ class SupplierController extends Controller
             ], 404);
         }
 
-        $supplier->update($validated);
+        $supplier->update($validator->validated());
 
         return response()->json([
             'success' => true,
             'message' => 'Supplier berhasil diupdate.',
             'data'    => $supplier
         ], 200);
+
     }
 
-    // DELETE /api/suppliers/{id}
+    // Hapus Supplier
     public function destroy($id)
     {
         $supplier = Supplier::find($id);

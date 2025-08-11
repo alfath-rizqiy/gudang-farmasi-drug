@@ -5,29 +5,24 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Obat;
+use Illuminate\Support\Facades\Validator;
 
 class ObatController extends Controller
 {
-    // Ambil semua data obat
+    // Tampilkan Obat
     public function index()
     {
-        $obat = Obat::with([
-            'supplier',
-            'kemasan',
-            'aturanpakai',
-            'satuankecil',
-            'satuanbesar',
-            'kategori',
-            'metodepembayaran'
-        ])->get();
-
-        return response()->json($obats);
+        return response()->json([
+            'status' => true,
+            'code' => 200,
+            'data' => 'test'
+        ]);
     }
 
-    // Tambah data obat baru
+    // Input Obat
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(),[
             'nama_obat' => 'required|string|max:255',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
@@ -38,15 +33,24 @@ class ObatController extends Controller
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
-        $obat= Obat::create($validated);
+        // Supplier tidak valid
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=> false,
+                'message'=> 'validasi error',
+                'errors'=> $validator->errors()
+            ], 422);
+        }
 
+        $obat= Obat::create($request->all());
         return response()->json([
+            'succes' => true,
             'message' => 'Obat berhasil ditambahkan',
             'data' => $obat
         ], 201);
     }
 
-    // Detail 1 data obat
+    // Tampilkan detail
     public function show($id)
     {
         $obat = Obat::with([
@@ -62,10 +66,10 @@ class ObatController extends Controller
         return response()->json($obat);
     }
 
-    // Update data obat
+    // Update Obat
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_obat' => 'required|string|max:255',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
@@ -76,16 +80,33 @@ class ObatController extends Controller
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
         $obat = Obat::findOrFail($id);
+
+        if (!$supplier) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Supplier tidak ditemukan.'
+            ], 404);
+        }
+
         $obat->update($validated);
 
         return response()->json([
-            'message' => 'Obat berhasil diperbarui',
-            'data' => $obat
-        ]);
+            'success' => true,
+            'message' => 'Supplier berhasil diupdate.',
+            'data'    => $supplier
+        ], 200);
     }
 
-    // Hapus data obat
+    // Hapus Obat
     public function destroy($id)
     {
         $obat = Obat::findOrFail($id);

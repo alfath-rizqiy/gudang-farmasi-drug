@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Supplier;
+use Illuminate\Support\Facades\Validator;
 
 class SupplierController extends Controller
 {
@@ -29,12 +30,23 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-        'nama_supplier' => 'required|string',
+        $validator = Validator::make($request->all(), [
+        'nama_supplier' => 'required|string|unique:suppliers,nama_supplier',
         'telepon' => 'required|string',
-        'email' => 'required|string',
+        'email' => 'required|string|unique:suppliers,email',
         'alamat' => 'required|string',
+    ], [
+        'nama_supplier.required' => 'Nama obat wajib diisi',
+        'nama_supplier.unique' => 'Nama obat sudah terdaftar',
+        'email.unique' => 'Email supplier sudah digunakan.'
     ]);
+
+     if ($validator->fails()) {
+        return redirect()
+            ->route('supplier.index') // balik ke index
+            ->withErrors($validator) // kirim errors ke view index
+            ->withInput(); // kirim input sebelumnya
+    }
 
     Supplier::create($validated);
 
@@ -66,9 +78,9 @@ class SupplierController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-        'nama_supplier' => 'required',
+        'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
         'telepon' => 'required|string',
-        'email' => 'required|string',
+        'email' => 'required|email|unique:suppliers,email,' . $id,
         'alamat' => 'required', 
     ]);
 

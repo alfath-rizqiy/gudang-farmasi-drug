@@ -23,7 +23,7 @@ class ObatController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'nama_obat' => 'required|string|max:255',
+            'nama_obat' => 'required|string||unique:obats,nama_obat',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -31,6 +31,9 @@ class ObatController extends Controller
             'satuan_besar_id' => 'required|exists:satuan_besars,id',
             'kategori_id' => 'required|exists:kategoris,id',
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+        ], [
+            'nama_supplier.required' => 'Nama obat wajib diisi',
+            'nama_supplier.unique' => 'Nama obat sudah terdaftar',
         ]);
 
         // Supplier tidak valid
@@ -41,6 +44,8 @@ class ObatController extends Controller
                 'errors'=> $validator->errors()
             ], 422);
         }
+
+        $obat = Obat::create($validator->validated());
 
         $obat= Obat::create($request->all());
         return response()->json([
@@ -70,7 +75,7 @@ class ObatController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_obat' => 'required|string|max:255',
+            'nama_obat' => 'required|string|max:255|unique:obats,nama_obat,' . $id,
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -97,7 +102,7 @@ class ObatController extends Controller
             ], 404);
         }
 
-        $obat->update($validated);
+        $obat->update($validator->validated());
 
         return response()->json([
             'success' => true,

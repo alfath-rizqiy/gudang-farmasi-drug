@@ -23,10 +23,14 @@ class SupplierController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'nama_supplier' => 'required|string',
+            'nama_supplier' => 'required|string|unique:suppliers,nama_supplier',
             'telepon' => 'required|string',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:suppliers,email',
             'alamat' => 'required|string',
+        ], [
+            'nama_supplier.required' => 'Nama obat wajib diisi',
+            'nama_supplier.unique' => 'Nama obat sudah terdaftar',
+            'email.unique' => 'Email supplier sudah digunakan.'
         ]);
 
 
@@ -38,6 +42,8 @@ class SupplierController extends Controller
                 'errors'=> $validator->errors()
             ], 422);
         }
+
+         $supplier = Supplier::create($validator->validated());
 
         // Supplier valid
         $supplier = Supplier::create($request->all());
@@ -71,9 +77,9 @@ class SupplierController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_supplier' => 'required|string',
+            'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
             'telepon'       => 'required|string',
-            'email'         => 'required|email',
+            'email'         => 'required|email|unique:suppliers,email,' . $id,
             'alamat'        => 'required|string',
         ]);
 

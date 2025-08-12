@@ -16,7 +16,7 @@
 
                 <div class="form-group">
                     <label for="nama">Nama Obat</label>
-                    <input type="text" name="nama_obat" id="nama_obat" class="form-control" placeholder="Masukkan Supplier" required>
+                    <input type="text" name="nama_obat" id="nama_obat" class="form-control" placeholder="Masukkan Obat" required>
                 </div>
 
                 <!-- Pemanggilan ID supplier-->

@@ -21,30 +21,31 @@ class KemasanController extends Controller
 
     // POST /api/kemasans
     public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nama_kemasan'         => 'required|string',
-            'tanggal_produksi'     => 'required|date',
-            'tanggal_kadaluarsa'   => 'required|date',
-            'petunjuk_penyimpanan' => 'required|string',
-        ]);
+{
+    $validator = Validator::make($request->all(), [
+        'nama_kemasan'         => 'required|string',
+        'tanggal_produksi'     => 'required|date',
+        'tanggal_kadaluarsa'   => 'required|date',
+        'petunjuk_penyimpanan' => 'required|string',
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'success'=> false,
-                'message'=> 'Validasi error',
-                'errors'=> $validator->errors()
-            ], 422);
-        }
-
-        $kemasan = Kemasan::create($validator->validated());
-
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Kemasan berhasil ditambahkan.',
-            'data'    => $kemasan
-        ], 201);
+            'success'=> false,
+            'message'=> 'Validasi error',
+            'errors'=> $validator->errors()
+        ], 422);
     }
+
+    $kemasan = Kemasan::create($validator->validated());
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Kemasan berhasil ditambahkan.',
+        'data'    => $kemasan
+    ], 201);
+}
+
 
     // GET /api/kemasans/{id}
     public function show($id)

@@ -17,7 +17,7 @@ Route::get('/obat', function (Request $request) {
 
 Route::resource('/obat', ObatController::class);
 Route::resource('/supplier', SupplierController::class);
-Route::resource('/kemasans', KemasanController::class);
+Route::resource('/kemasan', KemasanController::class);
 Route::resource('/aturanpakai', AturanPakaiController::class);
 Route::resource('/satuankecil', SatuanKecilController::class);
 Route::resource('/satuanbesar', SatuanBesarController::class);

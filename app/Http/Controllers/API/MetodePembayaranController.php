@@ -5,105 +5,115 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\MetodePembayaran;
+use Illuminate\Support\Facades\Validator;
 
 class MetodePembayaranController extends Controller
 {
-    // GET /api/metodepembayaran
+    // Tampilkan semua metode pembayaran
     public function index()
     {
-        $metodepembayaran = MetodePembayaran::with('obats')->get();
+        $metodes = MetodePembayaran::all();
 
         return response()->json([
             'success' => true,
-            'data' => $metodepembayaran
+            'data' => $metodes
         ], 200);
     }
 
-    // POST /api/metodepembayaran
+    // Tambah metode pembayaran baru
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'nama_metodepembayaran' => 'required|string',
-            'deskripsi'     => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'nama_metode' => 'required|string|max:100',
+            'deskripsi'   => 'nullable|string',
         ]);
 
-        $metodepembayaran = MetodePembayaran::create($validated);
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        $metode = MetodePembayaran::create($validator->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Metode Pembayaran berhasil ditambahkan.',
-            'data'    => $metodepembayaran
+            'message' => 'Metode pembayaran berhasil ditambahkan.',
+            'data'    => $metode
         ], 201);
     }
 
-    // GET /api/metodepembayaran/{id}
+    // Detail metode pembayaran
     public function show($id)
     {
-        $metodepembayaran = MetodePembayaran::with('obats')->find($id);
+        $metode = MetodePembayaran::find($id);
 
-        if (!$metodepembayaran) {
+        if (!$metode) {
             return response()->json([
                 'success' => false,
-                'message' => 'Metode Pembayaran tidak ditemukan.'
+                'message' => 'Metode pembayaran tidak ditemukan.'
             ], 404);
         }
 
         return response()->json([
             'success' => true,
-            'data' => $metodepembayaran
+            'data' => $metode
         ], 200);
     }
 
-    // PUT /api/metodepembayaran/{id}
+    // Update metode pembayaran
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
-            'nama_metodepembayaran' => 'required|string',
-            'deskripsi'     => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+            'nama_metode' => 'required|string|max:100',
+            'deskripsi'   => 'nullable|string',
         ]);
 
-        $metodepembayaran = MetodePembayaran::find($id);
-
-        if (!$metodepembayaran) {
+        if ($validator->fails()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Metode Pembayaran tidak ditemukan.'
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        $metode = MetodePembayaran::find($id);
+
+        if (!$metode) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Metode pembayaran tidak ditemukan.'
             ], 404);
         }
 
-        $metodepembayaran->update($validated);
+        $metode->update($validator->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Metode Pembayaran berhasil diupdate.',
-            'data'    => $metodepembayaran
+            'message' => 'Metode pembayaran berhasil diupdate.',
+            'data'    => $metode
         ], 200);
     }
 
-    // DELETE /api/metodepembayaran/{id}
+    // Hapus metode pembayaran
     public function destroy($id)
     {
-        $metodepembayaran = MetodePembayaran::find($id);
+        $metode = MetodePembayaran::find($id);
 
-        if (!$metodepembayaran) {
+        if (!$metode) {
             return response()->json([
                 'success' => false,
-                'message' => 'Metode Pembayaran tidak ditemukan.'
+                'message' => 'Data metode pembayaran tidak dapat dihapus karena masih digunakan oleh data obat.'
             ], 404);
         }
 
-        if ($metodepembayaran->obats()->count() > 0) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Metode Pembayaran tidak bisa dihapus karena masih digunakan oleh data obat.'
-            ], 409);
-        }
-
-        $metodepembayaran->delete();
+        $metode->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Metode Pembayaran berhasil dihapus.'
+            'message' => 'Metode pembayaran berhasil dihapus.'
         ], 200);
     }
 }

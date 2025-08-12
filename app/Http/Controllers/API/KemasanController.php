@@ -5,30 +5,39 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Kemasan;
+use Illuminate\Support\Facades\Validator;
 
 class KemasanController extends Controller
 {
-    // GET /api/kemasan
+    // GET /api/kemasans
     public function index()
     {
-        $kemasan = Kemasan::with('obats')->get();
+        $kemasans = Kemasan::all();
         return response()->json([
             'success' => true,
-            'data' => $kemasan
+            'data' => $kemasans
         ], 200);
     }
 
-    // POST /api/kemasan
+    // POST /api/kemasans
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_kemasan'         => 'required|string',
             'tanggal_produksi'     => 'required|date',
             'tanggal_kadaluarsa'   => 'required|date',
             'petunjuk_penyimpanan' => 'required|string',
         ]);
 
-        $kemasan = Kemasan::create($validated);
+        if ($validator->fails()) {
+            return response()->json([
+                'success'=> false,
+                'message'=> 'Validasi error',
+                'errors'=> $validator->errors()
+            ], 422);
+        }
+
+        $kemasan = Kemasan::create($validator->validated());
 
         return response()->json([
             'success' => true,
@@ -37,7 +46,7 @@ class KemasanController extends Controller
         ], 201);
     }
 
-    // GET /api/kemasan/{id}
+    // GET /api/kemasans/{id}
     public function show($id)
     {
         $kemasan = Kemasan::with('obats')->find($id);
@@ -55,15 +64,23 @@ class KemasanController extends Controller
         ], 200);
     }
 
-    // PUT /api/kemasan/{id}
+    // PUT /api/kemasans/{id}
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'nama_kemasan'         => 'required|string',
             'tanggal_produksi'     => 'required|date',
             'tanggal_kadaluarsa'   => 'required|date',
             'petunjuk_penyimpanan' => 'required|string',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
         $kemasan = Kemasan::find($id);
 
@@ -74,7 +91,7 @@ class KemasanController extends Controller
             ], 404);
         }
 
-        $kemasan->update($validated);
+        $kemasan->update($validator->validated());
 
         return response()->json([
             'success' => true,
@@ -83,7 +100,7 @@ class KemasanController extends Controller
         ], 200);
     }
 
-    // DELETE /api/kemasan/{id}
+    // DELETE /api/kemasans/{id}
     public function destroy($id)
     {
         $kemasan = Kemasan::find($id);
@@ -99,7 +116,7 @@ class KemasanController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Data kemasan tidak dapat dihapus karena masih digunakan oleh data obat.'
-            ], 409); 
+            ], 409);
         }
 
         $kemasan->delete();

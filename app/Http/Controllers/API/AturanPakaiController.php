@@ -5,10 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AturanPakai;
+use Illuminate\Support\Facades\Validator;
 
 class AturanPakaiController extends Controller
 {
-    // GET /api/aturanpakai
+    // Tampilkan semua aturan pakai
     public function index()
     {
         $aturanpakai = AturanPakai::all();
@@ -18,25 +19,33 @@ class AturanPakaiController extends Controller
         ], 200);
     }
 
-    // POST /api/aturanpakai
+    // Tambah aturan pakai baru
     public function store(Request $request)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'frekuensi_pemakaian' => 'required|string',
             'waktu_pemakaian'     => 'required|string',
             'deskripsi'           => 'nullable|string',
         ]);
 
-        $aturanpakai = AturanPakai::create($validated);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+
+        $aturanpakai = AturanPakai::create($validator->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Aturan Pakai berhasil ditambahkan.',
+            'message' => 'Aturan pakai berhasil ditambahkan.',
             'data'    => $aturanpakai
         ], 201);
     }
 
-    // GET /api/aturanpakai/{id}
+    // Tampilkan detail aturan pakai
     public function show($id)
     {
         $aturanpakai = AturanPakai::with('obats')->find($id);
@@ -44,7 +53,7 @@ class AturanPakaiController extends Controller
         if (!$aturanpakai) {
             return response()->json([
                 'success' => false,
-                'message' => 'Aturan Pakai tidak ditemukan.'
+                'message' => 'Aturan pakai tidak ditemukan.'
             ], 404);
         }
 
@@ -54,34 +63,42 @@ class AturanPakaiController extends Controller
         ], 200);
     }
 
-    // PUT /api/aturanpakai/{id}
+    // Update aturan pakai
     public function update(Request $request, $id)
     {
-        $validated = $request->validate([
+        $validator = Validator::make($request->all(), [
             'frekuensi_pemakaian' => 'required|string',
             'waktu_pemakaian'     => 'required|string',
             'deskripsi'           => 'nullable|string',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
 
         $aturanpakai = AturanPakai::find($id);
 
         if (!$aturanpakai) {
             return response()->json([
                 'success' => false,
-                'message' => 'Aturan Pakai tidak ditemukan.'
+                'message' => 'Aturan pakai tidak ditemukan.'
             ], 404);
         }
 
-        $aturanpakai->update($validated);
+        $aturanpakai->update($validator->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Aturan Pakai berhasil diupdate.',
+            'message' => 'Aturan pakai berhasil diupdate.',
             'data'    => $aturanpakai
         ], 200);
     }
 
-    // DELETE /api/aturanpakai/{id}
+    // Hapus aturan pakai
     public function destroy($id)
     {
         $aturanpakai = AturanPakai::find($id);
@@ -89,22 +106,22 @@ class AturanPakaiController extends Controller
         if (!$aturanpakai) {
             return response()->json([
                 'success' => false,
-                'message' => 'Aturan Pakai tidak ditemukan.'
+                'message' => 'Aturan pakai tidak ditemukan.'
             ], 404);
         }
 
         if ($aturanpakai->obats()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Aturan Pakai tidak dapat dihapus karena masih digunakan oleh data obat.'
-            ], 409); 
+                'message' => 'Data aturan pakai tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409);
         }
 
         $aturanpakai->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Aturan Pakai berhasil dihapus.'
+            'message' => 'Data aturan pakai berhasil dihapus.'
         ], 200);
     }
 }

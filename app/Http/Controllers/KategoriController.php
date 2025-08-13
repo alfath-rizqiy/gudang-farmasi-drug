@@ -49,7 +49,7 @@ class kategoriController extends Controller
     }
 
         // Simpan data ke tabel kategori
-        Kategori::create($validated);
+         $kategori = Kategori::create($validator->validated());
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('kategori.index')->with('success', 'kategori berhasil ditambahkan.');

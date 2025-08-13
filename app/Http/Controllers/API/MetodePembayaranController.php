@@ -24,11 +24,11 @@ class MetodePembayaranController extends Controller
     public function store(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'nama_metodepembayaran' => 'required|string|unique:metodepembayarans,nama_metodepembayaran',
+        'nama_metode' => 'required|string|unique:metodepembayarans,nama_metode',
         'deskripsi' => 'required|string',
     ], [
-        'nama_metodepembayaran.required' => 'Nama metode wajib diisi',
-        'nama_metodepembayaran.unique' => 'Nama metode sudah terdaftar',
+        'nama_metode.required' => 'Nama metode wajib diisi',
+        'nama_metode.unique' => 'Nama metode sudah terdaftar',
         'deskripsi.required' => 'Deskripsi metodepembayaran wajib diisi'
     ]);
 

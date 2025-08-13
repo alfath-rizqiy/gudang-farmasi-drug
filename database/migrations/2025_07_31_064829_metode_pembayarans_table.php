@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('metode_pembayarans', function (Blueprint $table) {
             $table->id();
             $table->string('nama_metode');
-            $table->text('deskripsi')->nullable();
+            $table->text('deskripsi')->required();
             $table->timestamps();
         });
     }

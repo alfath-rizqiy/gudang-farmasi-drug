@@ -8,7 +8,7 @@ use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\AturanPakaiController;
 use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
-use App\Http\Controllers\kategoriController;
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
 use Illuminate\Support\Facades\Auth;
 

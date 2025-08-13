@@ -32,14 +32,13 @@ class KategoriController extends Controller
         'deskripsi.required' => 'Deskripsi kategori wajib diisi'
     ]);
 
-
-        if ($validator->fails()) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Validasi error',
-                'errors'  => $validator->errors()
-            ], 422);
-        }
+    if ($validator->fails()) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Validasi error',
+            'errors'  => $validator->errors()
+        ], 422);
+}
 
         $kategori = Kategori::create($validator->validated());
 
@@ -72,7 +71,7 @@ class KategoriController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kategori' => 'required|string',
+            'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
             'deskripsi'     => 'required|string',
         ]);
 

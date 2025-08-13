@@ -33,11 +33,11 @@ class MetodePembayaranController extends Controller
     {
         // Validasi input dari form
          $validator = Validator::make($request->all(), [
-            'nama_metode' => 'required|string|unique:kategoris,nama_metode',
+            'nama_metode' => 'required|string|unique:metodepembayarans,nama_metode',
             'deskripsi' => 'required|string', 
         ], [
-        'nama_metodepembayaran.required' => 'Nama metode wajib diisi',
-        'nama_metodepembayaran.unique' => 'Nama metode sudah terdaftar',
+        'nama_metode.required' => 'Nama metode wajib diisi',
+        'nama_metode.unique' => 'Nama metode sudah terdaftar',
         'deskripsi.required' => 'Deskripsi metodepembayaran wajib diisi'
     ]);
 
@@ -49,7 +49,7 @@ class MetodePembayaranController extends Controller
     }
 
         // Simpan data ke tabel metode_pembayaran
-        MetodePembayaran::create($validated);
+        $metode = MetodePembayaran::create($validator->validated());
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('metodepembayaran.index')->with('success', 'metodepembayaran berhasil ditambahkan.');

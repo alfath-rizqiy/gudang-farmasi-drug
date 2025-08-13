@@ -24,7 +24,7 @@ class MetodePembayaranController extends Controller
     public function store(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'nama_metode' => 'required|string|unique:metodepembayarans,nama_metode',
+        'nama_metode' => 'required|string|unique:metode_pembayarans,nama_metode',
         'deskripsi' => 'required|string',
     ], [
         'nama_metode.required' => 'Nama metode wajib diisi',

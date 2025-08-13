@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\MetodePembayaran;
+use Illuminate\Support\Facades\Validator;
+
 
 class MetodePembayaranController extends Controller
 {
@@ -30,10 +32,21 @@ class MetodePembayaranController extends Controller
     public function store(Request $request)
     {
         // Validasi input dari form
-        $validated = $request->validate([
-            'nama_metode' => 'required|string',
-            'deskripsi' => 'nullable|string', 
-        ]);
+         $validator = Validator::make($request->all(), [
+            'nama_metode' => 'required|string|unique:kategoris,nama_metode',
+            'deskripsi' => 'required|string', 
+        ], [
+        'nama_metodepembayaran.required' => 'Nama metode wajib diisi',
+        'nama_metodepembayaran.unique' => 'Nama metode sudah terdaftar',
+        'deskripsi.required' => 'Deskripsi metodepembayaran wajib diisi'
+    ]);
+
+     if ($validator->fails()) {
+        return redirect()
+            ->route('metodepembayaran.index') // balik ke index
+            ->withErrors($validator) // kirim errors ke view index
+            ->withInput(); // kirim input sebelumnya
+    }
 
         // Simpan data ke tabel metode_pembayaran
         MetodePembayaran::create($validated);
@@ -71,7 +84,7 @@ class MetodePembayaranController extends Controller
         // Validasi input dari form
         $request->validate([
             'nama_metode' => 'required|string',
-            'deskripsi' => 'nullable|string', 
+            'deskripsi' => 'required|string', 
         ]);
 
         // Ambil data dan update dengan input baru

@@ -21,12 +21,17 @@ class KategoriController extends Controller
     }
 
     // Tambah kategori baru
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'nama_kategori' => 'required|string',
-            'deskripsi'     => 'nullable|string',
-        ]);
+   public function store(Request $request)
+{
+    $validator = Validator::make($request->all(), [
+        'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
+        'deskripsi' => 'required|string',
+    ], [
+        'nama_kategori.required' => 'Nama kategori wajib diisi',
+        'nama_kategori.unique' => 'Nama kategori sudah terdaftar',
+        'deskripsi.required' => 'Deskripsi kategori wajib diisi'
+    ]);
+
 
         if ($validator->fails()) {
             return response()->json([
@@ -68,7 +73,7 @@ class KategoriController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'nama_kategori' => 'required|string',
-            'deskripsi'     => 'nullable|string',
+            'deskripsi'     => 'required|string',
         ]);
 
         if ($validator->fails()) {

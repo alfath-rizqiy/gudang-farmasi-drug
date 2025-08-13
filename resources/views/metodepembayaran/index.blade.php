@@ -58,7 +58,7 @@
                                                     <form action="{{ route('metodepembayaran.destroy', $metodepembayaran->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $metodepembayaran->nama_metodepembayaran }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $metodepembayaran->nama_metode }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -85,6 +85,8 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -96,6 +98,7 @@
             </script>
             @endif
 
+            <!-- Gagal -->
             @if (session('error'))
             <script>
             Swal.fire({
@@ -107,7 +110,7 @@
             </script>
             @endif
 
-
+            <!-- Konfirmasi Tindakan -->
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -121,7 +124,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
+                            text: Data "${nama}" akan dihapus secara permanen!,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -137,5 +140,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_metode'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_metode') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

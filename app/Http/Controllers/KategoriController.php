@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Kategori;
+use Illuminate\Support\Facades\Validator;
+
 
 class kategoriController extends Controller
 {
@@ -30,10 +32,21 @@ class kategoriController extends Controller
     public function store(Request $request)
     {
         // Validasi input dari form
-        $validated = $request->validate([
-            'nama_kategori' => 'required|string',
-            'deskripsi' => 'nullable|string', 
-        ]);
+         $validator = Validator::make($request->all(), [
+            'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
+            'deskripsi' => 'required|string', 
+        ], [
+        'nama_kategori.required' => 'Nama kategori wajib diisi',
+        'nama_kategori.unique' => 'Nama kategori sudah terdaftar',
+        'deskripsi.required' => 'Deskripsi kategori wajib diisi'
+    ]);
+
+     if ($validator->fails()) {
+        return redirect()
+            ->route('kategori.index') // balik ke index
+            ->withErrors($validator) // kirim errors ke view index
+            ->withInput(); // kirim input sebelumnya
+    }
 
         // Simpan data ke tabel kategori
         Kategori::create($validated);
@@ -52,7 +65,7 @@ class kategoriController extends Controller
 
         // Tampilkan ke view show
         return view('kategori.show', compact('kategori'));
-    }
+    } 
 
     /**
      * Menampilkan form edit untuk kategori tertentu.
@@ -71,7 +84,7 @@ class kategoriController extends Controller
         // Validasi input dari form
         $request->validate([
             'nama_kategori' => 'required|string',
-            'deskripsi' => 'nullable|string', 
+            'deskripsi' => 'required|string', 
         ]);
 
         // Ambil data kategori dan update dengan input baru

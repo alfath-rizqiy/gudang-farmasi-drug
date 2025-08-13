@@ -28,8 +28,7 @@ class AturanPakaiController extends Controller
         'deskripsi'           => 'required|string',
     ], [
         'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
-        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
-        'deskripsi.required'     => 'Waktu pemakaian wajib diisi.',
+        'frekuensi_pemakaian.unique'   => 'Frekuensi pemakaian sudah digunakan.',
     ]);
 
         if ($validator->fails()) {

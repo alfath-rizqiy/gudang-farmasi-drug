@@ -11,7 +11,9 @@
     {{-- Tombol Tambah --}}
     @role('admin')
     <div class="mb-4">
-        <a href="{{ route('kemasan.create') }}" class="btn-sm btn btn-primary">+ Tambah Kemasan</a>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalKemasan">
+            + Tambah Kemasan
+        </button>
     </div>
     @endrole
 
@@ -44,17 +46,14 @@
                             @role('admin')
                             <td>
                                 <div class="d-flex justify-content-center">
-                                    <!-- Detail -->
                                     <a href="{{ route('kemasan.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                         <span class="icon text-white-50"><i class="fas fa-info"></i></span>
                                         <span class="text">Detail</span>
                                     </a>
-                                    <!-- Edit -->
                                     <a href="{{ route('kemasan.edit', $item->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
                                         <span class="icon text-white-50"><i class="fas fa-edit"></i></span>
                                         <span class="text">Edit</span>
                                     </a>
-                                    <!-- Hapus -->
                                     <form action="{{ route('kemasan.destroy', $item->id) }}" method="POST">
                                         @csrf
                                         @method('DELETE')
@@ -77,6 +76,49 @@
             </div>
         </div>
     </div>
+</div>
+
+<!-- Modal Tambah Kemasan -->
+<div class="modal fade" id="modalKemasan" tabindex="-1" role="dialog" aria-labelledby="modalKemasanLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalKemasanLabel">Tambah Kemasan</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+
+      <form action="{{ route('kemasan.store') }}" method="POST">
+        @csrf
+        <div class="modal-body">
+          <div class="form-group">
+            <label for="nama_kemasan">Nama Kemasan</label>
+            <input type="text" class="form-control" id="nama_kemasan" name="nama_kemasan" required>
+          </div>
+          <div class="form-group">
+            <label for="tanggal_produksi">Tanggal Produksi</label>
+            <input type="date" class="form-control" id="tanggal_produksi" name="tanggal_produksi" required>
+          </div>
+          <div class="form-group">
+            <label for="tanggal_kadaluarsa">Tanggal Kadaluarsa</label>
+            <input type="date" class="form-control" id="tanggal_kadaluarsa" name="tanggal_kadaluarsa" required>
+          </div>
+          <div class="form-group">
+            <label for="petunjuk_penyimpanan">Petunjuk Penyimpanan</label>
+            <textarea class="form-control" id="petunjuk_penyimpanan" name="petunjuk_penyimpanan" required></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+          <button type="submit" class="btn btn-primary">Simpan</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
 </div>
 
 <!-- Sweet Alert -->

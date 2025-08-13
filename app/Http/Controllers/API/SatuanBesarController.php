@@ -25,7 +25,7 @@ class SatuanBesarController extends Controller
         $validator = Validator::make($request->all(),[
             'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar',
             'deskripsi' => 'required|string',
-            'jumlah_satuankecil' => 'required|string,',
+            'jumlah_satuankecil' => 'required|string',
         ], [
             'nama_satuanbesar.required' => 'Nama satuan besar wajib diisi',
             'nama_satuanbesar.unique' => 'Nama satuan besar sudah terdaftar',
@@ -44,9 +44,6 @@ class SatuanBesarController extends Controller
         }
 
          $satuanbesar = SatuanBesar::create($validator->validated());
-
-        // satuanbesar valid
-        $satuanbesar = SatuanBesar::create($request->all());
         return response()->json([
             'success' => true,
             'message' => 'satuanbesar berhasil ditambahkan.',
@@ -79,7 +76,7 @@ class SatuanBesarController extends Controller
         $validator = Validator::make($request->all(), [
             'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar,' . $id,
             'deskripsi'       => 'required|string',
-            'jumlah_satuankecil' => 'required|string,',
+            'jumlah_satuankecil' => 'required|string',
         ]);
 
         if ($validator->fails()) {

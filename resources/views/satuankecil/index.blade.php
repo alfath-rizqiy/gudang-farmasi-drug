@@ -12,8 +12,9 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('satuankecil.create') }}" class="btn-sm btn btn-primary">+ Tambah SatuanKecil</a>
-                     </div>
+                     <button type="button" class="btn-sm btn btn-primary mb-3" data-toggle="modal" data-target="#modalSatuanKecil">
+                     + Tambah satuan kecil
+                    </button>
                  @endrole
 
                     <!-- DataTales Example -->
@@ -80,6 +81,43 @@
                         </div>
                     </div>
                 </table>
+            </div>
+
+            <!-- Modal Tambah Satuan Kecil -->
+            <div class="modal fade" id="modalSatuanKecil" tabindex="-1" role="dialog" aria-labelledby="modalSatuanKecilLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSatuanKecilLabel">Tambah Satuan Kecil</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+                <form action="{{ route('satuankecil.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                    <div class="form-group">
+                        <label for="namaSatuanKecil">Nama Satuan Kecil</label>
+                        <input type="text" class="form-control" id="namaSatuanKecil" name="nama_satuankecil" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="deskripsiSatuanKecil">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsiSatuanKecil" name="deskripsi" rows="3"></textarea>
+                    </div>
+                    </div>
+
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+
+                </div>
+            </div>
             </div>
 
             <!-- Sweet Alert -->

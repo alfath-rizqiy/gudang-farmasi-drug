@@ -87,6 +87,8 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -98,6 +100,7 @@
             </script>
             @endif
 
+            <!-- Gagal -->
             @if (session('error'))
             <script>
             Swal.fire({
@@ -109,7 +112,7 @@
             </script>
             @endif
 
-
+            <!-- Konfirmasi Tindakan -->
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -139,5 +142,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('frekuensi_pemakaian'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Frekuensi Pemakaian',
+                    text: '{{ $errors->first('frekuensi_pemakaian') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

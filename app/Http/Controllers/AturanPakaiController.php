@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\AturanPakai;
+use Illuminate\Support\Facades\Validator;
 
 class AturanPakaiController extends Controller
 {
@@ -31,15 +32,26 @@ class AturanPakaiController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-        'frekuensi_pemakaian' => 'required|string',
-        'waktu_pemakaian'     => 'required|string',
-        'deskripsi'           => 'nullable|string',
+        $validator = Validator::make($request->all(), [
+        'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
+        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
+        'deskripsi'           => 'required|string',
+    ], [
+        'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
+        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
     ]);
 
-    AturanPakai::create($validated);
+    if ($validator->fails()) {
+        return redirect()
+            ->route('Aturanpakai.index') // balik ke index
+            ->withErrors($validator) // kirim errors ke view index
+            ->withInput(); // kirim input sebelumnya
+    }
 
-    return redirect()->route('aturanpakai.index')->with('success', 'Aturan Pakai berhasil ditambahkan.');
+   $Aturanpakai = AturanPakai::create($validator->validated());
+
+
+    return redirect()->route('Aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
 
     }
 

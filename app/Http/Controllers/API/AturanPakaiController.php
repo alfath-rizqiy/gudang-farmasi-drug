@@ -22,11 +22,14 @@ class AturanPakaiController extends Controller
     // Tambah aturan pakai baru
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'frekuensi_pemakaian' => 'required|string',
-            'waktu_pemakaian'     => 'required|string',
-            'deskripsi'           => 'nullable|string',
-        ]);
+       $validator = Validator::make($request->all(), [
+        'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
+        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
+        'deskripsi'           => 'nullable|string',
+    ], [
+        'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
+        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
+    ]);
 
         if ($validator->fails()) {
             return response()->json([
@@ -67,8 +70,8 @@ class AturanPakaiController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'frekuensi_pemakaian' => 'required|string',
-            'waktu_pemakaian'     => 'required|string',
+            'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
+            'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian,' . $id,
             'deskripsi'           => 'nullable|string',
         ]);
 

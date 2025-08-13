@@ -23,9 +23,14 @@ class SatuanBesarController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'nama_satuanbesar' => 'required|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_satuankecil' => 'required|string',
+            'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar',
+            'deskripsi' => 'required|string',
+            'jumlah_satuankecil' => 'required|string,',
+        ], [
+            'nama_satuanbesar.required' => 'Nama satuan besar wajib diisi',
+            'nama_satuanbesar.unique' => 'Nama satuan besar sudah terdaftar',
+            'deskripsi.required' => 'Deskripsi satuan besar wajib diisi',
+            'jumlah_satuankecil.required' => 'Jumlah satuan kecil wajib diisi'
         ]);
 
 
@@ -38,11 +43,13 @@ class SatuanBesarController extends Controller
             ], 422);
         }
 
+         $satuanbesar = SatuanBesar::create($validator->validated());
+
         // satuanbesar valid
         $satuanbesar = SatuanBesar::create($request->all());
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Besar berhasil ditambahkan.',
+            'message' => 'satuanbesar berhasil ditambahkan.',
             'data'    => $satuanbesar
         ], 201);
     }
@@ -56,7 +63,7 @@ class SatuanBesarController extends Controller
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
@@ -70,9 +77,9 @@ class SatuanBesarController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_satuanbesar' => 'required|string',
-            'deskripsi' => 'nullable|string',
-            'jumlah_satuankecil' => 'required|string',
+            'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar,' . $id,
+            'deskripsi'       => 'required|string',
+            'jumlah_satuankecil' => 'required|string,',
         ]);
 
         if ($validator->fails()) {
@@ -88,7 +95,7 @@ class SatuanBesarController extends Controller
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
@@ -96,7 +103,7 @@ class SatuanBesarController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Besar berhasil diupdate.',
+            'message' => 'satuanbesar berhasil diupdate.',
             'data'    => $satuanbesar
         ], 200);
 
@@ -110,14 +117,14 @@ class SatuanBesarController extends Controller
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
         if ($satuanbesar->obats()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Satuan Besar tidak dapat dihapus karena masih digunakan oleh data obat.'
+                'message' => 'Data satuanbesar tidak dapat dihapus karena masih digunakan oleh data obat.'
             ], 409); // 409 Conflict
         }
 
@@ -125,7 +132,7 @@ class SatuanBesarController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Satuan Besar berhasil dihapus.'
+            'message' => 'Data satuanbesar berhasil dihapus.'
         ], 200);
     }
 }

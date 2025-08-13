@@ -23,8 +23,12 @@ class SatuanKecilController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(),[
-            'nama_satuankecil' => 'required|string',
-            'deskripsi' => 'nullable|string',
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
+            'deskripsi' => 'required|string',
+        ], [
+            'nama_satuankecil.required' => 'Nama satuan kecil wajib diisi',
+            'nama_satuankecil.unique' => 'Nama satuan kecil sudah terdaftar',
+            'deskripsi.required' => 'Deskripsi satuan kecil wajib diisi'
         ]);
 
 
@@ -37,11 +41,13 @@ class SatuanKecilController extends Controller
             ], 422);
         }
 
+         $satuankecil = SatuanKecil::create($validator->validated());
+
         // satuankecil valid
         $satuankecil = SatuanKecil::create($request->all());
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Kecil berhasil ditambahkan.',
+            'message' => 'satuankecil berhasil ditambahkan.',
             'data'    => $satuankecil
         ], 201);
     }
@@ -55,7 +61,7 @@ class SatuanKecilController extends Controller
         if (!$satuankecil) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Kecil tidak ditemukan.'
+                'message' => 'satuankecil tidak ditemukan.'
             ], 404);
         }
 
@@ -69,8 +75,8 @@ class SatuanKecilController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_satuankecil' => 'required|string',
-            'deskripsi'       => 'nullable|string',
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
+            'deskripsi'       => 'required|string',
         ]);
 
         if ($validator->fails()) {
@@ -86,7 +92,7 @@ class SatuanKecilController extends Controller
         if (!$satuankecil) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Kecil tidak ditemukan.'
+                'message' => 'satuankecil tidak ditemukan.'
             ], 404);
         }
 
@@ -94,7 +100,7 @@ class SatuanKecilController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Kecil berhasil diupdate.',
+            'message' => 'satuankecil berhasil diupdate.',
             'data'    => $satuankecil
         ], 200);
 
@@ -108,14 +114,14 @@ class SatuanKecilController extends Controller
         if (!$satuankecil) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Kecil tidak ditemukan.'
+                'message' => 'satuankecil tidak ditemukan.'
             ], 404);
         }
 
         if ($satuankecil->obats()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Satuan Kecil tidak dapat dihapus karena masih digunakan oleh data obat.'
+                'message' => 'Data satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.'
             ], 409); // 409 Conflict
         }
 
@@ -123,7 +129,7 @@ class SatuanKecilController extends Controller
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Satuan Kecil berhasil dihapus.'
+            'message' => 'Data satuankecil berhasil dihapus.'
         ], 200);
     }
 }

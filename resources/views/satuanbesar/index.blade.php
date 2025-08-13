@@ -87,6 +87,8 @@
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -98,6 +100,7 @@
             </script>
             @endif
 
+            <!-- Gagal -->
             @if (session('error'))
             <script>
             Swal.fire({
@@ -109,7 +112,7 @@
             </script>
             @endif
 
-
+            <!-- Konfirmasi Tindakan -->
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -123,7 +126,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
+                            text: Data "${nama}" akan dihapus secara permanen!,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -139,5 +142,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_satuanbesar'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_satuanbesar') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

@@ -11,7 +11,7 @@
     <!-- Form Card -->
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('obat.store') }}" method="POST">
+            <form action="{{ route('obat.store') }}" method="POST" >
                 @csrf
 
                 <div class="form-group">
@@ -109,4 +109,20 @@
         </div>
     </div>
 </div>
+
+                <!-- Sweet Alert -->
+                @push('scripts')
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_supplier'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_supplier') }}'
+                });
+                </script>
+                @endif
+                @endpush
 @endsection

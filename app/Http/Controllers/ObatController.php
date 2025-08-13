@@ -27,12 +27,12 @@ class ObatController extends Controller
     public function create()
     {
         return view('obat.create', [
-        'suppliers' => Supplier::all(),
-        'kemasans' => Kemasan::all(),
-        'aturan_pakais' => AturanPakai::all(),
-        'satuan_kecils' => SatuanKecil::all(),
-        'satuan_besars' => SatuanBesar::all(),
-        'kategoris' => Kategori::all(),
+        'suppliers'          => Supplier::all(),
+        'kemasans'           => Kemasan::all(),
+        'aturan_pakais'      => AturanPakai::all(),
+        'satuan_kecils'      => SatuanKecil::all(),
+        'satuan_besars'      => SatuanBesar::all(),
+        'kategoris'          => Kategori::all(),
         'metode_pembayarans' => MetodePembayaran::all(),
         ]);
     }
@@ -43,26 +43,30 @@ class ObatController extends Controller
     {
         // Validasi input
         $validated = $request->validate([
-        'nama_obat' => 'required|string|max:255',
-        'supplier_id' => 'required|exists:suppliers,id',
-        'kemasan_id' => 'required|exists:kemasans,id',
-        'aturanpakai_id' => 'required|exists:aturan_pakais,id',
-        'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
-        'satuan_besar_id' => 'required|exists:satuan_besars,id',
-        'kategori_id' => 'required|exists:kategoris,id',
+        'nama_obat'           => 'required|string|max:255',
+        'supplier_id'         => 'required|exists:suppliers,id',
+        'kemasan_id'          => 'required|exists:kemasans,id',
+        'aturanpakai_id'      => 'required|exists:aturan_pakais,id',
+        'satuan_kecil_id'     => 'required|exists:satuan_kecils,id',
+        'satuan_besar_id'     => 'required|exists:satuan_besars,id',
+        'kategori_id'         => 'required|exists:kategoris,id',
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('obat', 'public');
+        }
 
         // Menyimpan data obat ke database
         Obat::create([
-            'nama_obat' => $request->nama_obat,
-            'supplier_id' => $request->supplier_id,
-            'kemasan_id' => $request->kemasan_id,
-            'aturanpakai_id' => $request->aturanpakai_id,
-            'satuan_kecil_id' => $request->satuan_kecil_id,
-            'satuan_besar_id' => $request->satuan_besar_id,
-            'kategori_id' => $request->kategori_id,
+            'nama_obat'           => $request->nama_obat,
+            'supplier_id'         => $request->supplier_id,
+            'kemasan_id'          => $request->kemasan_id,
+            'aturanpakai_id'      => $request->aturanpakai_id,
+            'satuan_kecil_id'     => $request->satuan_kecil_id,
+            'satuan_besar_id'     => $request->satuan_besar_id,
+            'kategori_id'         => $request->kategori_id,
             'metodepembayaran_id' => $request->metodepembayaran_id,
         ]);
 

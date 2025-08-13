@@ -144,17 +144,5 @@
                 });
                 });
                 </script>
-
-                <!-- Validasi nama serupa -->
-                @if($errors->has('nama_supplier'))
-                <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Input Nama',
-                    text: '{{ $errors->first('nama_supplier') }}'
-                });
-                </script>
-                @endif
-
                 @endpush
     @endsection

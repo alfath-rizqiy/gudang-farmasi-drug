@@ -43,12 +43,12 @@ class SupplierController extends Controller
 
      if ($validator->fails()) {
         return redirect()
-            ->route('supplier.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->route('supplier.create') // balik ke create
+            ->withErrors($validator) 
+            ->withInput(); 
     }
 
-    Supplier::create($validated);
+    $supplier = Supplier::create($validator->validated());
 
     return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan.');
 

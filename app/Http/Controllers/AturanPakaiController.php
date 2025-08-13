@@ -34,16 +34,16 @@ class AturanPakaiController extends Controller
     {
         $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
-        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
+        'waktu_pemakaian'     => 'required|string',
         'deskripsi'           => 'required|string',
     ], [
         'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
-        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
+        'frekuensi_pemakaian.unique'   => 'Frekuensi pemakaian sudah digunakan.',
     ]);
 
     if ($validator->fails()) {
         return redirect()
-            ->route('Aturanpakai.index') // balik ke index
+            ->route('aturanpakai.index') // balik ke index
             ->withErrors($validator) // kirim errors ke view index
             ->withInput(); // kirim input sebelumnya
     }
@@ -81,7 +81,7 @@ class AturanPakaiController extends Controller
     public function update(Request $request, string $id)
     {
         $request->validate([
-        'frekuensi_pemakaian' => 'required|string',
+        'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
         'waktu_pemakaian'     => 'required|string',
         'deskripsi'           => 'nullable|string',
     ]);

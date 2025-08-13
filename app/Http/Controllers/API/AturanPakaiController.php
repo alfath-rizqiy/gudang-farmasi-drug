@@ -24,11 +24,12 @@ class AturanPakaiController extends Controller
     {
        $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
-        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
-        'deskripsi'           => 'nullable|string',
+        'waktu_pemakaian'     => 'required|string',
+        'deskripsi'           => 'required|string',
     ], [
         'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
         'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
+        'deskripsi.required'     => 'Waktu pemakaian wajib diisi.',
     ]);
 
         if ($validator->fails()) {
@@ -71,8 +72,8 @@ class AturanPakaiController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
-            'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian,' . $id,
-            'deskripsi'           => 'nullable|string',
+            'waktu_pemakaian'     => 'required|string',
+            'deskripsi'           => 'required|string',
         ]);
 
         if ($validator->fails()) {

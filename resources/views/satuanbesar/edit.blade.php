@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="jumlah_satuankecil">Jumlah Satuan Besar </label>
+                    <label for="jumlah_satuankecil">Jumlah Satuan Kecil </label>
                     <input type="text" name="jumlah_satuankecil" id="jumlah_satuankecil" class="form-control" placeholder="Masukkan Jumlah Satuan Besar" 
                     value="{{ old('jumlah_satuankecil', $satuanbesar->jumlah_satuankecil) }}" required>
                 </div>

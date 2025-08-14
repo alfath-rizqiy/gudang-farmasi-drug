@@ -22,6 +22,11 @@ class SatuanBesarController extends Controller
     // Input satuanbesar
     public function store(Request $request)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuanbesar' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuanbesar)))
+        ]);
+
         $validator = Validator::make($request->all(),[
             'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar',
             'deskripsi' => 'required|string',
@@ -73,6 +78,11 @@ class SatuanBesarController extends Controller
     // Update satuanbesar
     public function update(Request $request, $id)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuanbesar' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuanbesar)))
+        ]);
+
         $validator = Validator::make($request->all(), [
             'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar,' . $id,
             'deskripsi'       => 'required|string',

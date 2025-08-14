@@ -30,6 +30,11 @@ class SatuanKecilController extends Controller
      */
     public function store(Request $request)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+        ]);
+
         $validator = Validator::make($request->all(), [
         'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
         'deskripsi' => 'required|string',
@@ -46,7 +51,7 @@ class SatuanKecilController extends Controller
             ->withInput(); // kirim input sebelumnya
     }
 
-    SatuanKecil::create($validated);
+    $satuankecil = SatuanKecil::create($validator->validated());
 
     return redirect()->route('satuankecil.index')->with('success', 'satuankecil berhasil ditambahkan.');
 
@@ -75,6 +80,11 @@ class SatuanKecilController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+        ]);
+
         $request->validate([
         'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
         'deskripsi' => 'required|string',

@@ -110,6 +110,11 @@
                         <label for="deskripsiSatuanBesar">Deskripsi</label>
                         <textarea class="form-control" id="deskripsiSatuanBesar" name="deskripsi" rows="3"></textarea>
                     </div>
+
+                    <div class="form-group mt-3">
+                    <label for="jumlahSatuanKecil">Jumlah Satuan Kecil</label>
+                    <input type="text" class="form-control" id="jumlahSatuanKecil" name="jumlah_satuankecil" required>
+                     </div>
                     </div>
 
                     <div class="modal-footer">

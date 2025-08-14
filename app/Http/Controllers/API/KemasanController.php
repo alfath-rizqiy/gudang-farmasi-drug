@@ -22,6 +22,12 @@ class KemasanController extends Controller
     // POST /api/kemasans
     public function store(Request $request)
 {
+
+    // 🔧 Normalisasi nama_kemasan sebelum validasi
+        $request->merge([
+            'nama_kemasan' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_kemasan)))
+        ]);
+
     $validator = Validator::make($request->all(), [
         'nama_kemasan'         => 'required|string|unique:kemasans,nama_kemasan',
         'tanggal_produksi'     => 'required|date',
@@ -71,6 +77,12 @@ class KemasanController extends Controller
     // PUT /api/kemasans/{id}
     public function update(Request $request, $id)
     {
+
+        // 🔧 Normalisasi nama_kemasan sebelum validasi
+        $request->merge([
+            'nama_kemasan' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_kemasan)))
+        ]);
+        
         $validator = Validator::make($request->all(), [
             'nama_kemasan'         => 'required|string||unique:kemasans,nama_kemasan,' . $id,
             'tanggal_produksi'     => 'required|date',

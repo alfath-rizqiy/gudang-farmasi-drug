@@ -30,9 +30,15 @@ class AturanPakaiController extends Controller
      * Menyimpan data Aturan Pakai baru ke database.
      * Validasi input, lalu simpan menggunakan mass assignment.
      */
-    public function store(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
+   public function store(Request $request)
+{
+    // Bersihin input dari spasi berlebih
+    // 🔧 Normalisasi frekuensi_pemakaian sebelum validasi
+        $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+
+    $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
         'waktu_pemakaian'     => 'required|string',
         'deskripsi'           => 'required|string',
@@ -43,17 +49,15 @@ class AturanPakaiController extends Controller
 
     if ($validator->fails()) {
         return redirect()
-            ->route('aturanpakai.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->route('aturanpakai.index')
+            ->withErrors($validator)
+            ->withInput();
     }
 
-   $Aturanpakai = AturanPakai::create($validator->validated());
+    $Aturanpakai = AturanPakai::create($validator->validated());
 
-
-    return redirect()->route('Aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
-
-    }
+    return redirect()->route('aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
+}
 
     /**
      * Menampilkan detail dari satu data Aturan Pakai berdasarkan ID.
@@ -79,19 +83,25 @@ class AturanPakaiController extends Controller
      * Validasi input, lalu update hanya field yang diperlukan.
      */
     public function update(Request $request, string $id)
-    {
-        $request->validate([
+{
+    // Bersihin input dari spasi berlebih
+    // 🔧 Normalisasi frekuensi_pemakaian sebelum validasi
+        $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+
+    $request->validate([
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
         'waktu_pemakaian'     => 'required|string',
         'deskripsi'           => 'nullable|string',
     ]);
 
-        $aturanpakai = AturanPakai::findOrFail($id);
-        $aturanpakai->update($request->only(['frekuensi_pemakaian', 'waktu_pemakaian', 'deskripsi',]));;
+    $aturanpakai = AturanPakai::findOrFail($id);
+    $aturanpakai->update($request->only(['frekuensi_pemakaian', 'waktu_pemakaian', 'deskripsi']));
 
-        return redirect()->route('aturanpakai.index')->with('success', 'Data berhasil diupdate.');
+    return redirect()->route('aturanpakai.index')->with('success', 'Data berhasil diupdate.');
+}
 
-    }
 
      /**
      * Menghapus data Aturan Pakai berdasarkan ID.

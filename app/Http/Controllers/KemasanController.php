@@ -33,6 +33,10 @@ class KemasanController extends Controller
      */
     public function store(Request $request)
     {
+          $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+
         $validator = Validator::make($request->all(), [
          'nama_kemasan'         => 'required|string|unique:kemasans,nama_kemasan',
         'tanggal_produksi'     => 'required|date',
@@ -82,6 +86,11 @@ class KemasanController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
+          $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+        
         $request->validate([
         'nama_kemasan'         => 'required|string||unique:kemasans,nama_kemasan,' . $id,
         'tanggal_produksi' => 'required|date',

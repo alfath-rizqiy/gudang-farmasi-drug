@@ -48,7 +48,7 @@ class SupplierController extends Controller
             ->withInput(); // kirim input sebelumnya
     }
 
-    Supplier::create($validated);
+   $supplier = Supplier::create($validator->validated());
 
     return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan.');
 

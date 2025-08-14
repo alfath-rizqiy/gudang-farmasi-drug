@@ -23,6 +23,12 @@ class KategoriController extends Controller
     // Tambah kategori baru
    public function store(Request $request)
 {
+
+    // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_kategori' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_kategori)))
+        ]);
+
     $validator = Validator::make($request->all(), [
         'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
         'deskripsi' => 'required|string',
@@ -52,7 +58,7 @@ class KategoriController extends Controller
     // Detail kategori
     public function show($id)
     {
-        $kategori = Kategori::all();
+        $kategori = Kategori::find($id);
 
         if (!$kategori) {
             return response()->json([
@@ -70,6 +76,12 @@ class KategoriController extends Controller
     // Update kategori
     public function update(Request $request, $id)
     {
+
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_kategori' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_kategori)))
+        ]);
+
         $validator = Validator::make($request->all(), [
             'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
             'deskripsi'     => 'required|string',

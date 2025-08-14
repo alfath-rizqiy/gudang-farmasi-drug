@@ -15,7 +15,6 @@
                      <button type="button" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalKategori">
                      + Tambah kategori
                      </button>
-
                      </div>
                  @endrole
 

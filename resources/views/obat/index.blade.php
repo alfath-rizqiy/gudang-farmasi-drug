@@ -33,37 +33,42 @@
                                         <th>Aturan Pakai</th>
                                         <th>Kategori</th>
                                         <th>Metode Pembayaran</th>
+                                        <th>Foto Obat</th>
                                          @role('admin')
                                         <th>Aksi</th>
                                          @endrole
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($obat as $obat)
+                                         @forelse($obat as $item)
                                         <tr>
-                                            <td>{{ $obat->nama_obat }}</td>
-                                            <td>{{ $obat->supplier->nama_supplier ?? '-' }}</td>
-                                            <td>{{ $obat->kemasan->nama_kemasan ?? '-' }}</td>
-                                            <td>{{ $obat->satuankecil->nama_satuankecil ?? '-' }}</td>
-                                            <td>{{ $obat->satuanbesar->nama_satuanbesar ?? '-' }}</td>
-                                            <td>{{ $obat->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
-                                            <td>{{ $obat->kategori->nama_kategori ?? '-' }}</td>
-                                            <td>{{ $obat->metodepembayaran->nama_metode ?? '-' }}</td>
+                                            <td>{{ $item->nama_obat }}</td>
+                                            <td>{{ $item->supplier->nama_supplier ?? '-' }}</td>
+                                            <td>{{ $item->kemasan->nama_kemasan ?? '-' }}</td>
+                                            <td>{{ $item->satuankecil->nama_satuankecil ?? '-' }}</td>
+                                            <td>{{ $item->satuanbesar->nama_satuanbesar ?? '-' }}</td>
+                                            <td>{{ $item->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
+                                            <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
+                                            <td>{{ $item->metodepembayaran->nama_metode ?? '-' }}</td>
+                                            <td><!-- Button trigger modal -->
+                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoto{{ $item->id }}">
+                                                    Lihat Foto
+                                                </button></td>
                                          @role('admin')
                                             <td>
                                                 <div class="d-flex justify-content-center">
                                                     <!-- Edit -->
-                                                    <a href="{{ route('obat.edit', $obat->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                    <a href="{{ route('obat.edit', $item->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('obat.destroy', $obat->id) }}" method="POST">
+                                                    <form action="{{ route('obat.destroy', $item->id) }}" method="POST">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $obat->nama_obat }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $item->nama_obat }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -135,4 +140,22 @@
                 @endif
                 </script>
                 @endpush
+
+                @foreach ($obat as $item)
+                <!-- Modal Foto -->
+                 <div class="modal fade" id="modalFoto{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Foto Obat</h1>
+                                <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
+                            </div>
+                            <div class="modal-body">
+                                <img src="{{ asset('storage/foto_obat/'.$item->foto) }}" alt="{{ $item->foto}}" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @endforeach
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     @endsection

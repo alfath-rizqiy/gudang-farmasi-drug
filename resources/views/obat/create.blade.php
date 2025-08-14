@@ -11,7 +11,7 @@
     <!-- Form Card -->
     <div class="card shadow mb-4">
         <div class="card-body">
-            <form action="{{ route('obat.store') }}" method="POST" >
+            <form action="{{ route('obat.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
 
                 <div class="form-group">
@@ -103,12 +103,23 @@
                  </select>
                 </div>
 
+                <!-- Gambar Obat -->
+                 <div class="mb-4">
+                  <label for="foto"> Foto Obat </label>
+                  <input type="file" name="foto" id="foto" class="form-control @error('foto')
+                  is-invalid
+                  @enderror">
+                  @error('foto')
+                  <small class="text-denger">{{ $message }}</small>
+                  @enderror
+                 </div>
+
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="{{ route('obat.index') }}" class="btn btn-secondary">Kembali</a>
-            </form>
-        </div>
-    </div>
-</div>
+              </form>
+          </div>
+      </div>
+  </div>
 
                 <!-- Sweet Alert -->
                 @push('scripts')

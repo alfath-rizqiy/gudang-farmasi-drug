@@ -23,6 +23,7 @@ class Obat extends Model
      */
     protected $fillable = [
         'nama_obat', 
+        'foto',
         'supplier_id',
         'kemasan_id',
         'aturanpakai_id',

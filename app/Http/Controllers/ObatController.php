@@ -11,6 +11,8 @@ use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
 use App\Models\Kategori;
 use App\Models\MetodePembayaran;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ObatController extends Controller
 {
@@ -44,6 +46,7 @@ class ObatController extends Controller
         // Validasi input
         $validated = $request->validate([
         'nama_obat'           => 'required|string|max:255',
+        'foto'                => 'required|image|mimes:jpeg,png,jpg|max:2048',
         'supplier_id'         => 'required|exists:suppliers,id',
         'kemasan_id'          => 'required|exists:kemasans,id',
         'aturanpakai_id'      => 'required|exists:aturan_pakais,id',
@@ -53,22 +56,16 @@ class ObatController extends Controller
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
 
-        $fotoPath = null;
-        if ($request->hasFile('foto')) {
-            $fotoPath = $request->file('foto')->store('obat', 'public');
-        }
+        $foto = $request->file('foto');
+        $fileName = Str::uuid() . '.' . $foto->getClientOriginalExtension();
 
+        Storage::disk('public')->putFileAs('foto_obat', $foto, $fileName);
+
+        $newRequest = $request->all();
+        $newRequest['foto'] = $fileName;
+        
         // Menyimpan data obat ke database
-        Obat::create([
-            'nama_obat'           => $request->nama_obat,
-            'supplier_id'         => $request->supplier_id,
-            'kemasan_id'          => $request->kemasan_id,
-            'aturanpakai_id'      => $request->aturanpakai_id,
-            'satuan_kecil_id'     => $request->satuan_kecil_id,
-            'satuan_besar_id'     => $request->satuan_besar_id,
-            'kategori_id'         => $request->kategori_id,
-            'metodepembayaran_id' => $request->metodepembayaran_id,
-        ]);
+        Obat::create($newRequest);
 
         // Redirect ke halaman index dengan pesan sukses
         return redirect()->route('obat.index')->with('success', 'obat berhasil ditambahkan.');

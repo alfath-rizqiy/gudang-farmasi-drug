@@ -23,10 +23,16 @@ class KemasanController extends Controller
     public function store(Request $request)
 {
     $validator = Validator::make($request->all(), [
-        'nama_kemasan'         => 'required|string',
+        'nama_kemasan'         => 'required|string|unique:kemasans,nama_kemasan',
         'tanggal_produksi'     => 'required|date',
-        'tanggal_kadaluarsa'   => 'required|date',
-        'petunjuk_penyimpanan' => 'required|string',
+        'tanggal_kadaluarsa'   => 'required|date|after:tanggal_produksi',
+        'petunjuk_penyimpanan' => 'required|string|unique:kemasans,petunjuk_penyimpanan',
+    ], [
+        'nama_kemasan.required'         => 'Nama kemasan wajib diisi.',
+        'tanggal_produksi.required'     => 'Tanggal produksi wajib diisi.',
+        'tanggal_kadaluarsa.required'   => 'Tanggal kadaluarsa wajib diisi.',
+        'tanggal_kadaluarsa.after'      => 'Tanggal kadaluarsa harus setelah tanggal produksi.',
+        'petunjuk_penyimpanan.required' => 'Petunjuk penyimpanan wajib diisi.',
     ]);
 
     if ($validator->fails()) {
@@ -69,8 +75,8 @@ class KemasanController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'nama_kemasan'         => 'required|string',
-            'tanggal_produksi'     => 'required|date',
+            'nama_kemasan'         => 'required|string||unique:kemasans,nama_kemasan,' . $id,
+            'tanggal_produksi'     => 'required|date|unique:kemasans,nama_kemasan,' . $id,
             'tanggal_kadaluarsa'   => 'required|date',
             'petunjuk_penyimpanan' => 'required|string',
         ]);

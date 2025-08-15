@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Kemasan;
+use Illuminate\Support\Facades\Validator;
 
 class KemasanController extends Controller
 {
@@ -32,14 +33,28 @@ class KemasanController extends Controller
      */
     public function store(Request $request)
     {
-        $validated = $request->validate([
-        'nama_kemasan' => 'required|string',
-        'tanggal_produksi' => 'required|date',
-        'tanggal_kadaluarsa' => 'required|date',
-        'petunjuk_penyimpanan' => 'required|string', 
+        $validator = Validator::make($request->all(), [
+         'nama_kemasan'         => 'required|string|unique:kemasans,nama_kemasan',
+        'tanggal_produksi'     => 'required|date',
+        'tanggal_kadaluarsa'   => 'required|date|after:tanggal_produksi',
+        'petunjuk_penyimpanan' => 'required|string|unique:kemasans,petunjuk_penyimpanan',
+    ], [
+        'nama_kemasan.required'         => 'Nama kemasan wajib diisi.',
+        'tanggal_produksi.required'     => 'Tanggal produksi wajib diisi.',
+        'tanggal_kadaluarsa.required'   => 'Tanggal kadaluarsa wajib diisi.',
+        'tanggal_kadaluarsa.after'      => 'Tanggal kadaluarsa harus setelah tanggal produksi.',
+        'petunjuk_penyimpanan.required' => 'Petunjuk penyimpanan wajib diisi.',
     ]);
 
-    Kemasan::create($validated);
+     if ($validator->fails()) {
+        return redirect()
+            ->route('kemasan.index') // balik ke index
+            ->withErrors($validator) // kirim errors ke view index
+            ->withInput(); // kirim input sebelumnya
+    }
+
+   $kemasan = Kemasan::create($validator->validated());
+
 
     return redirect()->route('kemasan.index')->with('success', 'kemasan berhasil ditambahkan.');
 

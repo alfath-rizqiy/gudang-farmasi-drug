@@ -86,9 +86,11 @@
                 </table>
             </div>
 
-            <!-- Sweet Alert -->
+           <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -100,6 +102,7 @@
             </script>
             @endif
 
+            <!-- Gagal -->
             @if (session('error'))
             <script>
             Swal.fire({
@@ -111,7 +114,7 @@
             </script>
             @endif
 
-
+            <!-- Konfirmasi Tindakan -->
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -141,5 +144,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi data serupa -->
+                @if($errors->has('nama_kemasan'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_kemasan') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

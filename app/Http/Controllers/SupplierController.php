@@ -96,7 +96,7 @@ class SupplierController extends Controller
      * Remove the specified resource from storage.
      */
     public function destroy($id)
-{
+    {
     try {
         $supplier = Supplier::findOrFail($id);
 
@@ -110,6 +110,6 @@ class SupplierController extends Controller
     } catch (\Exception $e) {
         return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data supplier.');
     }
-}
+    }
 
 }

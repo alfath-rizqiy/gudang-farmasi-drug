@@ -5,40 +5,59 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SatuanBesar;
+use Illuminate\Support\Facades\Validator;
 
 class SatuanBesarController extends Controller
 {
-    // GET /api/suppliers
+    // Tampilkan satuanbesar
     public function index()
     {
-        $satuanbesar = SatuanBesar::all();
+        $satuanbesars = SatuanBesar::all();
         return response()->json([
             'success' => true,
-            'data' => $satuanbesar
-        ], 200); 
+            'data' => $satuanbesars
+        ], 200);
     }
 
-    // POST /api/suppliers
+    // Input satuanbesar
     public function store(Request $request)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'nama_satuanbesar' => 'required|string',
-            'deskripsi' => 'nullable|string', 
-            'jumlah_satuankecil' => 'required|string',
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuanbesar' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuanbesar)))
         ]);
 
-        // Simpan data
-        $satuanbesar = SatuanBesar::create($validated);
+        $validator = Validator::make($request->all(),[
+            'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar',
+            'deskripsi' => 'required|string',
+            'jumlah_satuankecil' => 'required|string',
+        ], [
+            'nama_satuanbesar.required' => 'Nama satuan besar wajib diisi',
+            'nama_satuanbesar.unique' => 'Nama satuan besar sudah terdaftar',
+            'deskripsi.required' => 'Deskripsi satuan besar wajib diisi',
+            'jumlah_satuankecil.required' => 'Jumlah satuan kecil wajib diisi'
+        ]);
 
+
+        // satuanbesar tidak valid
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=> false,
+                'message'=> 'validasi error',
+                'errors'=> $validator->errors()
+            ], 422);
+        }
+
+         $satuanbesar = SatuanBesar::create($validator->validated());
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Besar berhasil ditambahkan.',
+            'message' => 'satuanbesar berhasil ditambahkan.',
             'data'    => $satuanbesar
         ], 201);
     }
 
-    // GET /api/suppliers/{id}
+
+    // Tampilkan detail
     public function show($id)
     {
         $satuanbesar = SatuanBesar::with('obats')->find($id);
@@ -46,7 +65,7 @@ class SatuanBesarController extends Controller
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
@@ -56,60 +75,71 @@ class SatuanBesarController extends Controller
         ], 200);
     }
 
-    // PUT /api/suppliers/{id}
+    // Update satuanbesar
     public function update(Request $request, $id)
     {
-        // Validasi input
-        $request->validate([
-            'nama_satuanbesar' => 'required|string',
-            'deskripsi' => 'nullable|string', 
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuanbesar' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuanbesar)))
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            'nama_satuanbesar' => 'required|string|unique:satuan_besars,nama_satuanbesar,' . $id,
+            'deskripsi'       => 'required|string',
             'jumlah_satuankecil' => 'required|string',
         ]);
 
-        // Update data
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        
         $satuanbesar = SatuanBesar::find($id);
 
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
-        $satuanbesar->update($validated);
+        $satuanbesar->update($validator->validated());
 
         return response()->json([
             'success' => true,
-            'message' => 'Satuan Besar berhasil diupdate.',
+            'message' => 'satuanbesar berhasil diupdate.',
             'data'    => $satuanbesar
         ], 200);
+
     }
 
-    // DELETE /api/suppliers/{id}
-     public function destroy($id)
+    // Hapus satuanbesar
+    public function destroy($id)
     {
         $satuanbesar = SatuanBesar::find($id);
 
         if (!$satuanbesar) {
             return response()->json([
                 'success' => false,
-                'message' => 'Satuan Besar tidak ditemukan.'
+                'message' => 'satuanbesar tidak ditemukan.'
             ], 404);
         }
 
         if ($satuanbesar->obats()->count() > 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Data Satuan Besar tidak dapat dihapus karena masih digunakan oleh data obat.'
+                'message' => 'Data satuanbesar tidak dapat dihapus karena masih digunakan oleh data obat.'
             ], 409); // 409 Conflict
         }
 
-        $satuanbesar>delete();
-
+        $satuanbesar->delete();
 
         return response()->json([
             'success' => true,
-            'message' => 'Data Satuan Besar berhasil dihapus.'
+            'message' => 'Data satuanbesar berhasil dihapus.'
         ], 200);
     }
 }

@@ -12,8 +12,9 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('satuanbesar.create') }}" class="btn-sm btn btn-primary">+ Tambah SatuanBesar</a>
-                     </div>
+                     <button type="button" class="btn-sm btn btn-primary mb-3" data-toggle="modal" data-target="#modalSatuanBesar">
+                     + Tambah Satuan Besar
+                     </button>
                  @endrole
 
                     <!-- DataTales Example -->
@@ -84,9 +85,53 @@
                 </table>
             </div>
 
+            <!-- Modal Tambah Satuan Besar -->
+            <div class="modal fade" id="modalSatuanBesar" tabindex="-1" role="dialog" aria-labelledby="modalSatuanBesarLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalSatuanBesarLabel">Tambah Satuan Besar</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+
+                <form action="{{ route('satuanbesar.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                    <div class="form-group">
+                        <label for="namaSatuanBesar">Nama Satuan Besar</label>
+                        <input type="text" class="form-control" id="namaSatuanBesar" name="nama_satuanbesar" required>
+                    </div>
+
+                    <div class="form-group mt-3">
+                        <label for="deskripsiSatuanBesar">Deskripsi</label>
+                        <textarea class="form-control" id="deskripsiSatuanBesar" name="deskripsi" rows="3"></textarea>
+                    </div>
+
+                    <div class="form-group mt-3">
+                    <label for="jumlahSatuanKecil">Jumlah Satuan Kecil</label>
+                    <input type="text" class="form-control" id="jumlahSatuanKecil" name="jumlah_satuankecil" required>
+                     </div>
+                    </div>
+
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    </div>
+                </form>
+
+                </div>
+            </div>
+            </div>
+
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+            <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -98,6 +143,7 @@
             </script>
             @endif
 
+            <!-- Gagal -->
             @if (session('error'))
             <script>
             Swal.fire({
@@ -109,7 +155,7 @@
             </script>
             @endif
 
-
+            <!-- Konfirmasi Tindakan -->
             <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
@@ -123,7 +169,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
+                            text: Data "${nama}" akan dihapus secara permanen!,
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -139,5 +185,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_satuanbesar'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_satuanbesar') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

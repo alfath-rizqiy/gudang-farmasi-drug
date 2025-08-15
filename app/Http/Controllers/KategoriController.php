@@ -23,7 +23,7 @@ class kategoriController extends Controller
      */
     public function create()
     {
-        return view('kategori.create'); // Tampilkan view form create
+        return view('kategori.index'); // Tampilkan view form create
     }
 
     /**
@@ -43,9 +43,10 @@ class kategoriController extends Controller
 
      if ($validator->fails()) {
         return redirect()
-            ->route('kategori.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->route('kategori.index')
+            ->withErrors($validator)
+            ->with('open_modal', true)
+            ->withInput();
     }
 
         // Simpan data ke tabel kategori

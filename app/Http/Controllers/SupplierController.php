@@ -22,7 +22,7 @@ class SupplierController extends Controller
      */
     public function create()
     {
-        return view('supplier.create');
+        return view('supplier.index');
     }
 
     /**
@@ -43,8 +43,9 @@ class SupplierController extends Controller
 
      if ($validator->fails()) {
         return redirect()
-            ->route('supplier.create') // balik ke create
+            ->route('supplier.index') // balik keForm
             ->withErrors($validator) 
+            ->with('open_modal', true)
             ->withInput(); 
     }
 

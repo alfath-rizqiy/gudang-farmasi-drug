@@ -97,29 +97,43 @@
 
                 </div>
 
+            <div class="card shadow mb-4">
+            <div class="card-body">
                 <form action="{{ route('metodepembayaran.store') }}" method="POST">
                     @csrf
-                    <div class="modal-body">
+
                     <div class="form-group">
                         <label for="namaMetode">Nama Metode</label>
                         <input type="text" class="form-control" id="namaMetode" name="nama_metode" required>
                     </div>
 
-                    <div class="form-group mt-3">
+                    <div class="form-group">
                         <label for="deskripsiMetode">Deskripsi</label>
                         <textarea class="form-control" id="deskripsiMetode" name="deskripsi" rows="3"></textarea>
                     </div>
-                    </div>
 
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
                     <button type="submit" class="btn btn-primary">Simpan</button>
+                    <a href="{{ route('metodepembayaran.index') }}" class="btn btn-secondary">Kembali</a>
                     </div>
                 </form>
+            </div>
+        </div>
+    </div>
 
-                </div>
-            </div>
-            </div>
+    <!-- Membuka kembali modal setelah validasi error -->
+            @if(session('open_modal'))
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.bootstrap) {
+                // Bootstrap 5
+                new bootstrap.Modal(document.getElementById('modalMetode')).show();
+            } else if (window.$) {
+                // Bootstrap 4
+                $('#modalMetode').modal('show');
+            }
+        });
+         </script>
+         @endif
 
 
             <!-- Sweet Alert -->

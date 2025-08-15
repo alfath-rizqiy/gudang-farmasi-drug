@@ -12,7 +12,8 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('supplier.create') }}" class="btn-sm btn btn-primary">+ Tambah Supplier</a>
+                     <a href="{{ route('supplier.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalSupplier">
+                        + Tambah Supplier</a>
                      </div>
                  @endrole
 
@@ -86,11 +87,72 @@
                 </table>
             </div>
 
-            <!-- Sweet Alert -->
-            @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <!-- Modal Tambah Kategori -->
+             <div class="modal fade" id="modalSupplier" tabindex="-1" aria-labelledby="modalSupplierLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalSupplierLabel">Tambah Kategori</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
-            <!-- Sukses -->
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('supplier.store') }}" method="POST">
+                                    @csrf
+                                    
+                                    <div class="form-group">
+                                        <label for="nama">Nama Supplier</label>
+                                        <input type="text" name="nama_supplier" id="nama_supplier" class="form-control" placeholder="Masukkan Supplier" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="nama">Telepon</label>
+                                        <input type="number" name="telepon" id="telepon" class="form-control" placeholder="Masukkan Telepon" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Email</label>
+                                        <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Alamat</label>
+                                        <input type="text" name="alamat" id="alamat" class="form-control" placeholder="Masukkan Alamat" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <a href="{{ route('supplier.index') }}" class="btn btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membuka kembali modal setelah validasi error -->
+            @if(session('open_modal'))
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.bootstrap) {
+                // Bootstrap 5
+                new bootstrap.Modal(document.getElementById('modalSupplier')).show();
+            } else if (window.$) {
+                // Bootstrap 4
+                $('#modalSupplier').modal('show');
+            }
+        });
+         </script>
+         @endif
+
+
+         <!-- Sweet Alert -->
+          @push('scripts')
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+          <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -144,5 +206,17 @@
                 });
                 });
                 </script>
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_supplier'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_supplier') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
     @endsection

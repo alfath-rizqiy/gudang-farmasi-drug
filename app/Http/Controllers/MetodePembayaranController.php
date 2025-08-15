@@ -23,7 +23,7 @@ class MetodePembayaranController extends Controller
      */
     public function create()
     {
-        return view('metodepembayaran.create'); // Tampilkan view form create
+        return view('metodepembayaran.index'); // Tampilkan view form create
     }
 
     /**
@@ -44,8 +44,9 @@ class MetodePembayaranController extends Controller
      if ($validator->fails()) {
         return redirect()
             ->route('metodepembayaran.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->withErrors($validator) 
+            ->with('open_modal', true)
+            ->withInput(); 
     }
 
         // Simpan data ke tabel metode_pembayaran

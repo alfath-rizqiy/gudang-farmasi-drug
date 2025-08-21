@@ -106,9 +106,9 @@
                 <!-- Gambar Obat -->
                  <div class="mb-4">
                   <label for="foto"> Foto Obat </label>
-                  <input type="file" name="foto" id="foto" class="form-control @error('foto')
-                  is-invalid
-                  @enderror">
+                  <input type="file" name="foto" id="foto" 
+                  class="form-control @error('foto') is-invalid @enderror">
+                  
                   @error('foto')
                   <small class="text-denger">{{ $message }}</small>
                   @enderror

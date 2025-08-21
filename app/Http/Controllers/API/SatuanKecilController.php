@@ -25,7 +25,7 @@ class SatuanKecilController extends Controller
     
         // 🔧 Normalisasi nama_kategori sebelum validasi
         $request->merge([
-            'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+            'nama_satuankecil' => (preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
         ]);
 
     $validator = Validator::make($request->all(), [

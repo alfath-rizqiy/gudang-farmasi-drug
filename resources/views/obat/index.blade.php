@@ -12,7 +12,8 @@
         <!-- Tombol Tambah -->
                  @role('admin|petugas')
                      <div class="mb-4">
-                     <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">+ Tambah Obat</a>
+                     <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">
+                        + Tambah Obat</a>
                      </div>
                  @endrole
 
@@ -25,6 +26,7 @@
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
+                                        <th>No</th>
                                         <th>Obat</th>
                                         <th>Supllier</th>
                                         <th>Kemasan</th>
@@ -42,6 +44,7 @@
                                     <tbody class="text-start">
                                          @forelse($obat as $item)
                                         <tr>
+                                            <td>{{ $loop->iteration }}</td>
                                             <td>{{ $item->nama_obat }}</td>
                                             <td>{{ $item->supplier->nama_supplier ?? '-' }}</td>
                                             <td>{{ $item->kemasan->nama_kemasan ?? '-' }}</td>
@@ -92,6 +95,7 @@
                 </table>
             </div>
 
+
             <!-- Sweet Alert -->
             @push('scripts')
             <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -124,10 +128,8 @@
                 });
                 });
                 </script>
-                @endpush
 
-                @push('scripts')
-                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                <!-- Succes -->
                 <script>
                 @if(session('success'))
                 Swal.fire({
@@ -139,6 +141,31 @@
                 });
                 @endif
                 </script>
+       
+
+                <!-- Gagal -->
+            @if (session('error'))
+            <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal!',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#d33'
+            });
+            </script>
+            @endif
+
+                <!-- Validasi nama serupa -->
+                @if($errors->has('nama_obat'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('nama_obat') }}'
+                });
+                </script>
+                @endif
+
                 @endpush
 
                 @foreach ($obat as $item)

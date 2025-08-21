@@ -49,11 +49,11 @@ class Obat extends Model
     }
 
     public function satuankecil() {
-        return $this->belongsTo(SatuanKecil::class);
+        return $this->belongsTo(SatuanKecil::class, 'satuan_kecil_id');
     }
 
     public function satuanbesar() {
-        return $this->belongsTo(SatuanBesar::class);
+        return $this->belongsTo(SatuanBesar::class, 'satuan_besar_id');
     }
     
     public function kategori() {

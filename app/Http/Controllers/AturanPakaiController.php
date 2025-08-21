@@ -23,7 +23,7 @@ class AturanPakaiController extends Controller
      */
     public function create()
     {
-        return view('aturanpakai.create');
+        return view('aturanpakai.index');
     }
 
      /**
@@ -32,6 +32,11 @@ class AturanPakaiController extends Controller
      */
     public function store(Request $request)
     {
+        //Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'frekuensi_pemakaian' => (preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+
         $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
         'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
@@ -43,15 +48,16 @@ class AturanPakaiController extends Controller
 
     if ($validator->fails()) {
         return redirect()
-            ->route('Aturanpakai.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->route('aturanpakai.index') // balik ke index
+            ->withErrors($validator) 
+            ->with('open_modal', true)
+            ->withInput(); 
     }
 
    $Aturanpakai = AturanPakai::create($validator->validated());
 
 
-    return redirect()->route('Aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
+    return redirect()->route('aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
 
     }
 

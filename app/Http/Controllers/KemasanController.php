@@ -24,7 +24,7 @@ class KemasanController extends Controller
      */
     public function create()
     {
-        return view('kemasan.create');
+        return view('kemasan.index');
     }
 
      /**
@@ -33,6 +33,10 @@ class KemasanController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'nama_kemasan' => (preg_replace('/\s+/', ' ', trim($request->nama_kemasan)))
+        ]);
+
         $validator = Validator::make($request->all(), [
          'nama_kemasan'         => 'required|string|unique:kemasans,nama_kemasan',
         'tanggal_produksi'     => 'required|date',
@@ -49,8 +53,9 @@ class KemasanController extends Controller
      if ($validator->fails()) {
         return redirect()
             ->route('kemasan.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->withErrors($validator) 
+            ->with('open_modal', true)
+            ->withInput(); 
     }
 
    $kemasan = Kemasan::create($validator->validated());

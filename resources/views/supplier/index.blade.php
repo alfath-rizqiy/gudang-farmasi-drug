@@ -26,6 +26,7 @@
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
+                                        <th>No</th>
                                         <th>Nama Supplier</th>
                                         <th>Telepon</th>
                                         <th>Email</th>
@@ -36,34 +37,37 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($supplier as $supplier)
+                                         @forelse($suppliers as $item)
                                         <tr>
-                                            <td>{{ $supplier->nama_supplier }}</td>
-                                            <td>{{ $supplier->telepon }}</td>
-                                            <td>{{ $supplier->email }}</td>
-                                            <td>{{ $supplier->alamat }}</td>
+                                            <td>{{ $loop->iteration }}</td> 
+                                            <td>{{ $item->nama_supplier }}</td>
+                                            <td>{{ $item->telepon }}</td>
+                                            <td>{{ $item->email }}</td>
+                                            <td>{{ $item->alamat }}</td>
                                          @role('admin')
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('supplier.show', $supplier->id) }}" class="btn-sm btn btn-info btn-icon-split">
+                                                     <a href="{{ route('supplier.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('supplier.edit', $supplier->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                    <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
+                                                       data-toggle="modal" data-target="#modalEditSupplier{{ $item->id }}">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('supplier.destroy', $supplier->id) }}" method="POST">
+                                                    <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" >
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $supplier->nama_supplier }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
+                                                         data-name="{{ $item->nama_supplier }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -87,7 +91,7 @@
                 </table>
             </div>
 
-            <!-- Modal Tambah Kategori -->
+            <!-- Modal Form Tambah Kategori -->
              <div class="modal fade" id="modalSupplier" tabindex="-1" aria-labelledby="modalSupplierLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -98,6 +102,7 @@
                             </button>
                         </div>
 
+                        <!-- Form Card Tambah -->
                         <div class="card shadow mb-4">
                             <div class="card-body">
                                 <form action="{{ route('supplier.store') }}" method="POST">
@@ -123,14 +128,74 @@
                                         <input type="text" name="alamat" id="alamat" class="form-control" placeholder="Masukkan Alamat" required>
                                     </div>
 
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <a href="{{ route('supplier.index') }}" class="btn btn-secondary">Kembali</a>
+                                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
                                 </form>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            @foreach ($suppliers as $item)
+            <!-- Modal Form Edit Supplier -->
+             <div class="modal fade" id="modalEditSupplier{{ $item->id }}" tabindex="-1" aria-labelledby="modalSupplierLabel{{ $item->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalSupplierLabel{{ $item->id }}">Edit Supplier</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <!-- Form Card Edit -->
+                         <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('supplier.update', $item->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="form-group">
+                                        <label for="nama_supplier{{ $item->id }}">Nama Supplier</label>
+                                        <input type="text" name="nama_supplier" id="nama_supplier{{ $item->id }}" class="form-control"
+                                        value="{{ old('nama_supplier', $item->nama_supplier) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="telepon{{ $item->id }}">Telepon</label>
+                                        <input type="number" name="telepon" id="telepon{{ $item->id }}" class="form-control"
+                                        value="{{ old('telepon', $item->telepon) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email{{ $item->id }}">Email</label>
+                                        <input type="email" name="email" id="email{{ $item->id }}" class="form-control"
+                                        value="{{ old('email', $item->email) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="alamat{{ $item->id }}">Alamat</label>
+                                        <input type="text" name="alamat" id="alamat{{ $item->id }}" class="form-control"
+                                        value="{{ old('alamat', $item->alamat) }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_supplier }}">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span class="text">Update</span>
+                                    </button>
+     
+                                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
 
             <!-- Membuka kembali modal setelah validasi error -->
             @if(session('open_modal'))
@@ -207,6 +272,37 @@
                 });
                 </script>
 
+            <!-- Konfirmasi Tindakan Update -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const updateButtons = document.querySelectorAll(".show_update");
+
+                updateButtons.forEach(function (button) {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const form = button.closest("form");
+                        const nama = button.getAttribute("data-name");
+
+                        Swal.fire({
+                            title: 'Konfirmasi Update',
+                            text: `Apakah kamu yakin ingin mengupdate data "${nama}"?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, update!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+                });
+                </script>
+
                 <!-- Validasi nama serupa -->
                 @if($errors->has('nama_supplier'))
                 <script>
@@ -214,6 +310,17 @@
                     icon: 'error',
                     title: 'Gagal Input Nama',
                     text: '{{ $errors->first('nama_supplier') }}'
+                });
+                </script>
+                @endif
+
+                <!-- Validasi email serupa -->
+                @if($errors->has('email'))
+                <script>
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal Input Nama',
+                    text: '{{ $errors->first('email') }}'
                 });
                 </script>
                 @endif

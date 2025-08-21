@@ -31,6 +31,11 @@ class kategoriController extends Controller
      */
     public function store(Request $request)
     {
+        //Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_kategori' => (preg_replace('/\s+/', ' ', trim($request->nama_kategori)))
+        ]);
+
         // Validasi input dari form
          $validator = Validator::make($request->all(), [
             'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',

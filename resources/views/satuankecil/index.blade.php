@@ -83,42 +83,57 @@
                 </table>
             </div>
 
-            <!-- Modal Tambah Satuan Kecil -->
-            <div class="modal fade" id="modalSatuanKecil" tabindex="-1" role="dialog" aria-labelledby="modalSatuanKecilLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-                <div class="modal-content">
+            <!-- Modal Tambah Kategori -->
+             <div class="modal fade" id="modalSatuanKecil" tabindex="-1" aria-labelledby="modalSatuanKecilLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalSatuanKecilLabel">Tambah Satuan Kecil</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalSatuanKecilLabel">Tambah Satuan Kecil</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </button>
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('satuankecil.store') }}" method="POST">
+                                    @csrf
+                                    
+                                    <div class="form-group">
+                                        <label for="namaSatuanKecil">Nama Satuan Kecil</label>
+                                        <input type="text" class="form-control" id="namaSatuanKecil" name="nama_satuankecil" required>
+                                    </div>
 
-                </div>
+                                    <div class="form-group">
+                                        <label for="deskripsiSatuanKecil">Deskripsi</label>
+                                        <textarea class="form-control" id="deskripsiSatuanKecil" name="deskripsi" rows="3"></textarea>
+                                    </div>
 
-                <form action="{{ route('satuankecil.store') }}" method="POST">
-                    @csrf
-                    <div class="modal-body">
-                    <div class="form-group">
-                        <label for="namaSatuanKecil">Nama Satuan Kecil</label>
-                        <input type="text" class="form-control" id="namaSatuanKecil" name="nama_satuankecil" required>
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <a href="{{ route('satuankecil.index') }}" class="btn btn-secondary">Kembali</a>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-
-                    <div class="form-group mt-3">
-                        <label for="deskripsiSatuanKecil">Deskripsi</label>
-                        <textarea class="form-control" id="deskripsiSatuanKecil" name="deskripsi" rows="3"></textarea>
-                    </div>
-                    </div>
-
-                    <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                    </div>
-                </form>
-
                 </div>
             </div>
-            </div>
+        </div>
+            
+
+                <!-- Membuka kembali modal setelah validasi error -->
+            @if(session('open_modal'))
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.bootstrap) {
+                // Bootstrap 5
+                new bootstrap.Modal(document.getElementById('modalSatuanKecil')).show();
+            } else if (window.$) {
+                // Bootstrap 4
+                $('#modalSatuanKecil').modal('show');
+            }
+        });
+         </script>
+         @endif
 
             <!-- Sweet Alert -->
             @push('scripts')

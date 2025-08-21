@@ -13,6 +13,7 @@ use App\Models\Kategori;
 use App\Models\MetodePembayaran;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class ObatController extends Controller
 {
@@ -22,7 +23,7 @@ class ObatController extends Controller
     {
        $obat = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
 
-        return view('obat.index', compact('obat')); 
+       return view('obat.index', compact('obat'));
     }
 
     // Membuat Data
@@ -43,9 +44,15 @@ class ObatController extends Controller
     // Menyimpan data obat baru ke database
     public function store(Request $request)
     {
+
+        //  Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_obat' => (preg_replace('/\s+/', ' ', trim($request->nama_obat)))
+        ]);
+
         // Validasi input
-        $validated = $request->validate([
-        'nama_obat'           => 'required|string|max:255',
+        $validator = Validator::make($request->all(), [
+        'nama_obat'           => 'required|string|max:255|unique:obats,nama_obat',
         'foto'                => 'required|image|mimes:jpeg,png,jpg|max:2048',
         'supplier_id'         => 'required|exists:suppliers,id',
         'kemasan_id'          => 'required|exists:kemasans,id',
@@ -54,7 +61,17 @@ class ObatController extends Controller
         'satuan_besar_id'     => 'required|exists:satuan_besars,id',
         'kategori_id'         => 'required|exists:kategoris,id',
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+        ], [
+            'nama_obat.required' => 'Nama obat wajib diisi',
+            'nama_obat.unique' => 'Nama obat sudah terdaftar'
         ]);
+
+         if ($validator->fails()) {
+        return redirect()
+            ->route('obat.index') // balik keForm
+            ->withErrors($validator) 
+            ->withInput(); 
+        }
 
         $foto = $request->file('foto');
         $fileName = Str::uuid() . '.' . $foto->getClientOriginalExtension();
@@ -111,34 +128,53 @@ class ObatController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // Validasi input
-        $request->validate([
-        'nama_obat' => 'required|string|max:255',
-        'supplier_id' => 'required|exists:suppliers,id',
-        'kemasan_id' => 'required|exists:kemasans,id',
-        'aturanpakai_id' => 'required|exists:aturan_pakais,id',
-        'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
-        'satuan_besar_id' => 'required|exists:satuan_besars,id',
-        'kategori_id' => 'required|exists:kategoris,id',
+    // Validasi input
+    $request->validate([
+        'nama_obat'           => 'required|string|max:255',
+        'foto'                => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        'supplier_id'         => 'required|exists:suppliers,id',
+        'kemasan_id'          => 'required|exists:kemasans,id',
+        'aturanpakai_id'      => 'required|exists:aturan_pakais,id',
+        'satuan_kecil_id'     => 'required|exists:satuan_kecils,id',
+        'satuan_besar_id'     => 'required|exists:satuan_besars,id',
+        'kategori_id'         => 'required|exists:kategoris,id',
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
-        ]);
+    ]);
 
-        // Ambil data obat dan update dengan input baru
-        $obat = Obat::findOrFail($id);
-        $obat->update([
-            'nama_obat' => $request->nama_obat,
-            'supplier_id' => $request->supplier_id,
-            'kemasan_id' => $request->kemasan_id,
-            'aturanpakai_id' => $request->aturanpakai_id,
-            'satuan_kecil_id' => $request->satuan_kecil_id,
-            'satuan_besar_id' => $request->satuan_besar_id,
-            'kategori_id' => $request->kategori_id,
-            'metodepembayaran_id' => $request->metodepembayaran_id,
-        ]);
+    // Ambil data obat dulu
+    $obat = Obat::findOrFail($id);
 
-        // Redirect ke halaman index dengan pesan sukses
-        return redirect()->route('obat.index')->with('success', 'Data berhasil diupdate.');
+    // Default foto lama
+    $fotoName = $obat->foto;
+
+    // Kalau ada foto baru
+    if ($request->hasFile('foto')) {
+        // Hapus foto lama
+        if ($obat->foto && Storage::disk('public')->exists('foto_obat/'.$obat->foto)) {
+            Storage::disk('public')->delete('foto_obat/'.$obat->foto);
+        }
+
+        // Simpan foto baru
+        $fotoName = Str::uuid().'.'.$request->foto->extension();
+        $request->foto->storeAs('foto_obat', $fotoName);
     }
+
+    // Update data
+    $obat->update([
+        'nama_obat'           => $request->nama_obat,
+        'foto'                => $fotoName,
+        'supplier_id'         => $request->supplier_id,
+        'kemasan_id'          => $request->kemasan_id,
+        'aturanpakai_id'      => $request->aturanpakai_id,
+        'satuan_kecil_id'     => $request->satuan_kecil_id,
+        'satuan_besar_id'     => $request->satuan_besar_id,
+        'kategori_id'         => $request->kategori_id,
+        'metodepembayaran_id' => $request->metodepembayaran_id,
+    ]);
+
+    return redirect()->route('obat.index')->with('success', 'Data berhasil diupdate.');
+    }
+
 
     /**
      * Menghapus data obat berdasarkan ID.

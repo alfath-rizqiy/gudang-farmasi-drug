@@ -13,8 +13,8 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $supplier = Supplier::all();
-        return view('supplier.index', compact('supplier')); 
+        $suppliers = Supplier::all();
+        return view('supplier.index', compact('suppliers')); 
     }
 
     /**
@@ -30,6 +30,11 @@ class SupplierController extends Controller
      */
     public function store(Request $request)
     {
+        $request->merge([
+            'nama_supplier' => (preg_replace('/\s+/', ' ', trim($request->nama_supplier))),
+            'email' => (preg_replace('/\s+/', ' ', trim($request->email)))
+        ]);
+
         $validator = Validator::make($request->all(), [
         'nama_supplier' => 'required|string|unique:suppliers,nama_supplier',
         'telepon' => 'required|string',
@@ -69,8 +74,8 @@ class SupplierController extends Controller
      */
     public function edit(string $id)
     {
-        $supplier = Supplier::findOrFail($id); // perbaikan di sini
-    return view('supplier.edit', compact('supplier')); // dan di sini
+        $supplier = Supplier::findOrFail($id); 
+        return view('supplier.edit', compact('supplier'));
     }
 
     /**
@@ -78,19 +83,28 @@ class SupplierController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $request->validate([
+    // Ambil supplier dulu
+    $supplier = Supplier::findOrFail($id);
+
+    // Cek apakah supplier masih punya relasi obat
+    if ($supplier->obats()->count() > 0) {
+        return redirect()->back()->with('error', 'Data supplier tidak dapat diedit karena masih digunakan oleh data obat.');
+    }
+
+    // Validasi input
+    $request->validate([
         'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
         'telepon' => 'required|string',
         'email' => 'required|email|unique:suppliers,email,' . $id,
         'alamat' => 'required', 
     ]);
 
-        $supplier = Supplier::findOrFail($id);
-        $supplier->update($request->only(['nama_supplier', 'telepon', 'email', 'alamat']));;
+    // Update data supplier
+    $supplier->update($request->only(['nama_supplier', 'telepon', 'email', 'alamat']));
 
-        return redirect()->route('supplier.index')->with('success', 'Data berhasil diupdate.');
-
+    return redirect()->route('supplier.index')->with('success', 'Data berhasil diupdate.');
     }
+
 
     /**
      * Remove the specified resource from storage.

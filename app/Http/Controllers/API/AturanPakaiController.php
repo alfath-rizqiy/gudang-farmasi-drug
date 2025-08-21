@@ -22,6 +22,11 @@ class AturanPakaiController extends Controller
     // Tambah aturan pakai baru
     public function store(Request $request)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'frekuensi_pemakaian' => (preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
+
        $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
         'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',

@@ -12,7 +12,8 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('kemasan.create') }}" class="btn-sm btn btn-primary">+ Tambah kemasan</a>
+                     <a href="{{ route('kemasan.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalKemasan"
+                     >+ Tambah kemasan</a>
                      </div>
                  @endrole
 
@@ -86,33 +87,93 @@
                 </table>
             </div>
 
-           <!-- Sweet Alert -->
-            @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <!-- Modal Tambah Kategori -->
+             <div class="modal fade" id="modalKemasan" tabindex="-1" aria-labelledby="modalKemasanLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalKemasanLabel">Tambah Kemasan</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
 
-            <!-- Sukses -->
-            @if (session('success'))
-            <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#3085d6'
-            });
-            </script>
-            @endif
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('kemasan.store') }}" method="POST">
+                                    @csrf
 
-            <!-- Gagal -->
-            @if (session('error'))
-            <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33'
-            });
-            </script>
-            @endif
+                                    <div class="form-group">
+                                        <label for="nama">Nama Kemasan</label>
+                                        <input type="text" name="nama_kemasan" id="nama_kemasan" class="form-control" placeholder="Masukkan kemasan" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Tanggal Produksi</label>
+                                        <input type="date" name="tanggal_produksi" id="tanggal_produksi" class="form-control" placeholder="Masukkan Tanggal Produksi" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="nama">tanggal Kadaluarsa</label>
+                                        <input type="date" name="tanggal_kadaluarsa" id="tanggal_kadaluarsa" class="form-control" placeholder="Masukkan Tanggal Kadaluarsa" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Petunjuk Penyimpanan</label>
+                                        <input type="text" name="petunjuk_penyimpanan" id="petunjuk_penyimpanan" class="form-control" placeholder="Masukkan petunjuk_penyimpanan" required>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <a href="{{ route('kemasan.index') }}" class="btn btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+                    <!-- Membuka kembali modal setelah validasi error -->
+                     @if(session('open_modal'))
+                     <script>
+                     document.addEventListener('DOMContentLoaded', function() {
+                        if (window.bootstrap) {
+                            // Bootstrap 5
+                            new bootstrap.Modal(document.getElementById('modalKemasan')).show();
+                        } else if (window.$) {
+                            // Bootstrap 4
+                            $('#modalKemasan').modal('show');
+                        }
+                    });
+                    </script>
+                    @endif
+
+                    <!-- Sweet Alert -->
+                     @push('scripts')
+                     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+                     <!-- Sukses -->
+                      @if (session('success'))
+                      <script>
+                      Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: '{{ session('success') }}',
+                        confirmButtonColor: '#3085d6'
+                    });
+                    </script>
+                    @endif
+
+                    <!-- Gagal -->
+                     @if (session('error'))
+                     <script>
+                     Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal!',
+                        text: '{{ session('error') }}',
+                        confirmButtonColor: '#d33'
+                    });
+                    </script>
+                    @endif
 
             <!-- Konfirmasi Tindakan -->
             <script>

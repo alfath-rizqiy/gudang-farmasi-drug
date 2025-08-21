@@ -31,6 +31,11 @@ class MetodePembayaranController extends Controller
      */
     public function store(Request $request)
     {
+        //Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_metode' => (preg_replace('/\s+/', ' ', trim($request->nama_metode)))
+        ]);
+
         // Validasi input dari form
          $validator = Validator::make($request->all(), [
             'nama_metode' => 'required|string|unique:metode_pembayarans,nama_metode',

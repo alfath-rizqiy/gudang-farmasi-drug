@@ -11,7 +11,7 @@
     <!-- Form Card -->
     <div class="card shadow mb-4">
         <div class="card-body">
-        <form action="{{ route('obat.update', $obat->id) }}" method="POST">
+        <form action="{{ route('obat.update', $obat->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
 
@@ -109,7 +109,6 @@
                 <div class="mb-4">
                 <label for="metodepembayaran_id" class="block mb-1 font-semibold">Metode Pembayaran</label>
                  <select name="metodepembayaran_id" id="metodepembayaran_id" class="form-control" required>
-                    required>
                     <option value="">Pilih Metode Pembayaran</option>
                       @foreach($metode_pembayarans as $metodepembayaran)
                       <option value="{{ $metodepembayaran ->id }}"
@@ -118,9 +117,25 @@
                       @endforeach
                  </select>
                 </div>
-                
-    
 
+                <!-- Gambar Obat -->
+                 <div class="mb-4">
+                  <label for="foto"> Foto Obat </label>
+                  <input type="file" name="foto" id="foto" 
+                  class="form-control @error('foto') is-invalid @enderror">
+
+                  <!-- Gambar lama -->
+                   @if($obat->foto)
+                   <div class="mt-2">
+                    <img src="{{ asset('storage/foto_obat/'.$obat->foto) }}" alt="Foto Obat" width="120">
+                   </div>
+                   @endif
+
+                  @error('foto')
+                  <small class="text-danger">{{ $message }}</small>
+                  @enderror
+                 </div>
+                
                 <button type="submit" class="btn btn-primary">Simpan</button>
                 <a href="{{ route('obat.index') }}" class="btn btn-secondary">Kembali</a>
             </form>

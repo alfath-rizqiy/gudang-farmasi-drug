@@ -23,6 +23,11 @@ class KategoriController extends Controller
     // Tambah kategori baru
    public function store(Request $request)
 {
+    // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_kategori' => (preg_replace('/\s+/', ' ', trim($request->nama_kategori)))
+        ]);
+
     $validator = Validator::make($request->all(), [
         'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
         'deskripsi' => 'required|string',

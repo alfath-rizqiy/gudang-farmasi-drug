@@ -12,7 +12,8 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('aturanpakai.create') }}" class="btn-sm btn btn-primary">+ Tambah aturanpakai</a>
+                     <a href="{{ route('aturanpakai.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalAturanPakai">
+                        + Tambah Aturan Pakai</a>
                      </div>
                  @endrole
 
@@ -83,6 +84,61 @@
                     </div>
                 </table>
             </div>
+
+            <!-- Modal Tambah Kategori -->
+             <div class="modal fade" id="modalAturanPakai" tabindex="-1" aria-labelledby="modalAturanPakaiLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAturanPakaiLabel">Tambah Aturan Pakai</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('aturanpakai.store') }}" method="POST">
+                                    @csrf
+
+                                    <div class="form-group">
+                                        <label for="nama">Frekuensi Pemakaian</label>
+                                        <input type="text" name="frekuensi_pemakaian" id="frekuensi_pemakaian" class="form-control" placeholder="Masukkan Frekuensi Pemakaian" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Waktu Pemakaian</label>
+                                        <input type="text" name="waktu_pemakaian" id="waktu_pemakaian" class="form-control" placeholder="Masukkan Waktu Pemakaian" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="nama">Deskripsi</label>
+                                        <textarea name="deskripsi" id="deskripsi" class="form-control" placeholder="Masukkan Deskripsi" rows="4" required></textarea>
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                    <a href="{{ route('aturanpakai.index') }}" class="btn btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Membuka kembali modal setelah validasi error -->
+            @if(session('open_modal'))
+            <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.bootstrap) {
+                // Bootstrap 5
+                new bootstrap.Modal(document.getElementById('modalAturanPakai')).show();
+            } else if (window.$) {
+                // Bootstrap 4
+                $('#modalAturanPakai').modal('show');
+            }
+        });
+         </script>
+         @endif
 
             <!-- Sweet Alert -->
             @push('scripts')

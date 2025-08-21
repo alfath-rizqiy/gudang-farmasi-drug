@@ -22,6 +22,11 @@ class SupplierController extends Controller
     // Input Supplier
     public function store(Request $request)
     {
+        //  Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_supplier' => (preg_replace('/\s+/', ' ', trim($request->nama_supplier)))
+        ]);
+        
         $validator = Validator::make($request->all(),[
             'nama_supplier' => 'required|string|unique:suppliers,nama_supplier',
             'telepon' => 'required|string',

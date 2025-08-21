@@ -22,7 +22,7 @@ class SatuanKecilController extends Controller
      */
     public function create()
     {
-        return view('satuankecil.create');
+        return view('satuankecil.index');
     }
 
     /**
@@ -47,8 +47,9 @@ class SatuanKecilController extends Controller
      if ($validator->fails()) {
         return redirect()
             ->route('satuankecil.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->withErrors($validator)
+            ->with('open_modal', true)
+            ->withInput();
     }
 
     $satuankecil = SatuanKecil::create($validator->validated());

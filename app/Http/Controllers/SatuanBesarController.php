@@ -49,8 +49,9 @@ class SatuanBesarController extends Controller
      if ($validator->fails()) {
         return redirect()
             ->route('satuanbesar.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
+            ->withErrors($validator)
+            ->with('open_modal', true)
+            ->withInput(); 
     }
 
     $satuanbesar = SatuanBesar::create($validator->validated());

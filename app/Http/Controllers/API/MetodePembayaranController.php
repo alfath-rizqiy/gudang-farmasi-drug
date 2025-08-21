@@ -22,7 +22,12 @@ class MetodePembayaranController extends Controller
 
     // Tambah metode pembayaran baru
     public function store(Request $request)
-{
+    {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_metode' => (preg_replace('/\s+/', ' ', trim($request->nama_metode)))
+        ]);
+
     $validator = Validator::make($request->all(), [
         'nama_metode' => 'required|string|unique:metode_pembayarans,nama_metode',
         'deskripsi' => 'required|string',

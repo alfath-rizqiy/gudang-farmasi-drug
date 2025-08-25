@@ -6,14 +6,15 @@
 
         {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data aturanpakai</h1>
+                    <h1 class="h3 mb-2 text-gray-800">Data Aturan Pakai</h1>
                    <div class="p-6">
 
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('aturanpakai.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalAturanPakai">
-                        + Tambah Aturan Pakai</a>
+                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalAturanPakai">
+                        + Tambah Aturan Pakai
+                    </a>
                      </div>
                  @endrole
 
@@ -26,42 +27,44 @@
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
+                                        <th>No</th>
                                         <th>Frekuensi Pemakaian</th>
                                         <th>Waktu Pemakaian</th>
                                         <th>Deskripsi</th>
-                                         @role('admin')
                                         <th>Aksi</th>
-                                         @endrole
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($aturanpakai as $aturanpakai)
+                                         @forelse($aturanpakai as $item)
                                         <tr>
-                                            <td>{{ $aturanpakai->frekuensi_pemakaian }}</td>
-                                            <td>{{ $aturanpakai->waktu_pemakaian }}</td>
-                                            <td>{{ $aturanpakai->deskripsi }}</td>
+                                            <td>{{ $loop->iteration }}</td> 
+                                            <td>{{ $item->frekuensi_pemakaian }}</td>
+                                            <td>{{ $item->waktu_pemakaian }}</td>
+                                            <td>{{ $item->deskripsi }}</td>
                                          @role('admin')
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('aturanpakai.show', $aturanpakai->id) }}" class="btn-sm btn btn-info btn-icon-split">
+                                                     <a href="{{ route('aturanpakai.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('aturanpakai.edit', $aturanpakai->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                        <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
+                                                       data-toggle="modal" data-target="#modalEditAturanPakai{{ $item->id }}">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('aturanpakai.destroy', $aturanpakai->id) }}" method="POST">
+                                                    <form action="{{ route('aturanpakai.destroy', $item->id) }}" method="POST" >
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $aturanpakai->nama_aturanpakai }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
+                                                         data-name="{{ $item->frekuensi_pemakaian }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -85,7 +88,7 @@
                 </table>
             </div>
 
-            <!-- Modal Tambah Kategori -->
+            <!-- Modal Tambah aturanpakai -->
              <div class="modal fade" id="modalAturanPakai" tabindex="-1" aria-labelledby="modalAturanPakaiLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -96,23 +99,24 @@
                             </button>
                         </div>
 
+                           <!-- Form Card Tambah -->
                         <div class="card shadow mb-4">
                             <div class="card-body">
                                 <form action="{{ route('aturanpakai.store') }}" method="POST">
                                     @csrf
 
                                     <div class="form-group">
-                                        <label for="nama">Frekuensi Pemakaian</label>
+                                        <label for="frekuensi_pemakaian">Frekuensi Pemakaian</label>
                                         <input type="text" name="frekuensi_pemakaian" id="frekuensi_pemakaian" class="form-control" placeholder="Masukkan Frekuensi Pemakaian" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="nama">Waktu Pemakaian</label>
+                                        <label for="Waktu_pemakaian">Waktu Pemakaian</label>
                                         <input type="text" name="waktu_pemakaian" id="waktu_pemakaian" class="form-control" placeholder="Masukkan Waktu Pemakaian" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="nama">Deskripsi</label>
+                                        <label for="deskripsi">Deskripsi</label>
                                         <textarea name="deskripsi" id="deskripsi" class="form-control" placeholder="Masukkan Deskripsi" rows="4" required></textarea>
                                     </div>
 
@@ -124,6 +128,63 @@
                     </div>
                 </div>
             </div>
+
+                @foreach ($aturanpakai as $item)
+            <!-- Modal Form Edit aturanpakai -->
+             <div class="modal fade" id="modalEditAturanPakai{{ $item->id }}" tabindex="-1" aria-labelledby="modalAturanPakaiLabel{{ $item->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalAturanPakaiLabel{{ $item->id }}">Edit Aturan Pakai</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <!-- Form Card Edit -->
+                        <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('aturanpakai.update', $item->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="form-group mb-3">
+                                        <label for="frekuensi_pemakaian{{ $item->id }}">Frekuensi Pemakaian</label>
+                                        <input type="text" name="frekuensi_pemakaian" id="frekuensi_pemakaian{{ $item->id }}" 
+                                            class="form-control"
+                                            value="{{ old('frekuensi_pemakaian', $item->frekuensi_pemakaian) }}" required>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="waktu_pemakaian{{ $item->id }}">Waktu Pemakaian</label>
+                                        <input type="text" name="waktu_pemakaian" id="waktu_pemakaian{{ $item->id }}" 
+                                            class="form-control"
+                                            value="{{ old('waktu_pemakaian', $item->waktu_pemakaian) }}" required>
+                                    </div>
+
+                                    <div class="form-group mb-3">
+                                        <label for="deskripsi{{ $item->id }}">Deskripsi</label>
+                                        <input type="text" name="deskripsi" id="deskripsi{{ $item->id }}" 
+                                            class="form-control"
+                                            value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" 
+                                        data-name="{{ $item->frekuensi_pemakaian }}">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span class="text">Update</span>
+                                    </button>
+
+                                    <a href="{{ route('aturanpakai.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
 
             <!-- Membuka kembali modal setelah validasi error -->
             @if(session('open_modal'))

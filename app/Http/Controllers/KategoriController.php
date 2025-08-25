@@ -60,27 +60,24 @@ class kategoriController extends Controller
 
     public function update(Request $request, string $id)
     {
-        // 🔧 Normalisasi nama_kategori sebelum validasi
-        $request->merge([
-            'nama_kategori' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_kategori)))
-        ]);
+         // Ambil kategori dulu
+    $kategori = Kategori::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
+    // Cek apakah kategori masih punya relasi obat
+    if ($kategori->obats()->count() > 0) {
+        return redirect()->back()->with('error', 'Data kategori tidak dapat diedit karena masih digunakan oleh data obat.');
+    }
+
+    // Validasi input
+    $request->validate([
             'nama_kategori' => 'required|string|unique:kategoris,nama_kategori,' . $id,
             'deskripsi'     => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()
-                ->route('kategori.edit', $id)
-                ->withErrors($validator)
-                ->withInput();
-        }
+        // Update data kategori
+    $kategori->update($request->only(['nama_kategori', 'deskripsi']));
 
-        $kategori = Kategori::findOrFail($id);
-        $kategori->update($validator->validated());
-
-        return redirect()->route('kategori.index')->with('success', 'Data berhasil diupdate.');
+    return redirect()->route('kategori.index')->with('success', 'Data berhasil diupdate.');
     }
 
     public function destroy(string $id)

@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -8,114 +7,92 @@ use Illuminate\Support\Facades\Validator;
 
 class SatuanKecilController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $satuankecil = SatuanKecil::all();
-        return view('satuankecil.index', compact('satuankecil')); 
+        return view('satuankecil.index', compact('satuankecil'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('satuankecil.index');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        // 🔧 Normalisasi nama_kategori sebelum validasi
+        // 🔧 Normalisasi nama_satuankecil sebelum validasi
         $request->merge([
             'nama_satuankecil' => (preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
         ]);
 
         $validator = Validator::make($request->all(), [
-        'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
-        'deskripsi' => 'required|string',
-    ], [
-        'nama_satuankecil.required' => 'Nama satuan kecil wajib diisi',
-        'nama_satuankecil.unique' => 'Nama satuan kecil sudah terdaftar',
-        'deskripsi.required' => 'Deskripsi satuan kecil wajib diisi.'
-    ]);
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
+            'deskripsi'     => 'required|string',
+        ], [
+            'nama_satuankecil.required' => 'Nama satuankecil wajib diisi',
+            'nama_satuankecil.unique'   => 'Nama satuankecil sudah terdaftar',
+            'deskripsi.required'     => 'Deskripsi satuankecil wajib diisi'
+        ]);
 
-     if ($validator->fails()) {
-        return redirect()
-            ->route('satuankecil.index') // balik ke index
-            ->withErrors($validator)
-            ->with('open_modal', true)
-            ->withInput();
+        if ($validator->fails()) {
+            return redirect()
+                ->route('satuankecil.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $satuankecil = SatuanKecil::create($validator->validated());
+
+        return redirect()->route('satuankecil.index')->with('success', 'satuankecil berhasil ditambahkan.');
     }
 
-    $satuankecil = SatuanKecil::create($validator->validated());
-
-    return redirect()->route('satuankecil.index')->with('success', 'satuankecil berhasil ditambahkan.');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $satuankecil = SatuanKecil::with('obats')->findOrFail($id);
-         return view('satuankecil.show', compact('satuankecil'));
+        return view('satuankecil.show', compact('satuankecil'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $satuankecil = SatuanKecil::findOrFail($id); // perbaikan di sini
-    return view('satuankecil.edit', compact('satuankecil')); // dan di sini
+        $satuankecil = SatuanKecil::findOrFail($id);
+        return view('satuankecil.edit', compact('satuankecil'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        // 🔧 Normalisasi nama_kategori sebelum validasi
-        $request->merge([
-            'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+         // Ambil satuankecil dulu
+    $satuankecil = SatuanKecil::findOrFail($id);
+
+    // Cek apakah satuankecil masih punya relasi obat
+    if ($satuankecil->obats()->count() > 0) {
+        return redirect()->back()->with('error', 'Data satuankecil tidak dapat diedit karena masih digunakan oleh data obat.');
+    }
+
+    // Validasi input
+    $request->validate([
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
+            'deskripsi'     => 'required|string',
         ]);
 
-        $request->validate([
-        'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
-        'deskripsi' => 'required|string',
-    ]);
+        // Update data satuankecil
+    $satuankecil->update($request->only(['nama_satuankecil', 'deskripsi']));
 
-        $satuankecil = SatuanKecil::findOrFail($id);
-        $satuankecil->update($request->only(['nama_satuankecil', 'deskripsi']));;
-
-        return redirect()->route('satuankecil.index')->with('success', 'Data berhasil diupdate.');
-
+    return redirect()->route('satuankecil.index')->with('success', 'Data berhasil diupdate.');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy($id)
-{
-    try {
-        $satuankecil = SatuanKecil::findOrFail($id);
+    public function destroy(string $id)
+    {
+        try {
+            $satuankecil = SatuanKecil::findOrFail($id);
 
-        // Cek apakah satuankecil masih punya relasi obat
-        if ($satuankecil->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.');
+            if ($satuankecil->obats()->count() > 0) {
+                return redirect()->back()->with('error', 'satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.');
+            }
+
+            $satuankecil->delete();
+            return redirect()->back()->with('success', 'satuankecil berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus satuankecil.');
         }
-
-        $satuankecil->delete();
-        return redirect()->back()->with('success', 'Data satuankecil berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data satuankecil.');
     }
-}
-
 }

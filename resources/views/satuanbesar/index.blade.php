@@ -125,36 +125,49 @@
             </div>
 
             @foreach ($satuanbesar as $item)
-            <!-- Modal Form Edit satuanbesar -->
+            <!-- Modal Form Edit satuankecil -->
              <div class="modal fade" id="modalEditSatuanbesar{{ $item->id }}" tabindex="-1" aria-labelledby="modalSatuanbesarLabel{{ $item->id }}" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalSatuanbesarLabel{{ $item->id }}">Edit Satuan Besar</h5>
+                            <h5 class="modal-title" id="modalSatuanbesarLabel{{ $item->id }}">Edit satuanbesar</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
 
-                        <!-- Form Card Edit -->
+                         <!-- Form Card Edit -->
                          <div class="card shadow mb-4">
                             <div class="card-body">
                                 <form action="{{ route('satuanbesar.update', $item->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 
-                                        <input type="text" name="nama_satuanbesar" id="namaSatuanbesar{{ $item->id }}" class="form-control"
+                                    <div class="form-group">
+                                        <label for="nama_satuanbesar{{ $item->id }}">Nama satuan besar</label>
+                                        <input type="text" name="nama_satuanbesar" id="nama_satuanbesar{{ $item->id }}" class="form-control"
                                         value="{{ old('nama_satuanbesar', $item->nama_satuanbesar) }}" required>
-                                    <input type="text" name="deskripsi" id="deskripsi" class="form-control"
-                                    value="{{ old('deskripsi', $item->deskripsi) }}" required>
-                                        <input type="text" class="form-control" id="jumlahSatuankecil" name="jumlah_satuankecil" required>
+                                    </div>
 
-                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuanbesar }}">
+                                    <div class="form-group">
+                                        <label for="deskripsi{{ $item->id }}">Deskripsi</label>
+                                        <input type="text" name="deskripsi" id="deskripsi" class="form-control"
+                                    value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="jumlah_satuankecil{{ $item->id }}">Jumlah satuan kecil</label>
+                                        <input type="text" name="jumlah_satuankecil" id="jumlah_satuankecil{{ $item->id }}" class="form-control"
+                                        value="{{ old('jumlah_satuankecil', $item->jumlah_satuankecil) }}" required>
+                                    </div>
+
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuankecil }}">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-edit"></i>
                                         </span>
                                         <span class="text">Update</span>
                                     </button>
+     
      
                                     <a href="{{ route('satuanbesar.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
                                 </form>

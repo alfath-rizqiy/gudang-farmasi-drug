@@ -125,23 +125,30 @@
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalSatuankecilLabel{{ $item->id }}">Edit Satuan Kecil</h5>
+                            <h5 class="modal-title" id="modalSatuankecilLabel{{ $item->id }}">Edit satuankecil</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
 
-                        <!-- Form Card Edit -->
+                         <!-- Form Card Edit -->
                          <div class="card shadow mb-4">
                             <div class="card-body">
                                 <form action="{{ route('satuankecil.update', $item->id) }}" method="POST">
                                     @csrf
                                     @method('PUT')
 
-                                    <input type="text" name="nama_satuankecil" id="namaSatuanKecil{{ $item->id }}" class="form-control"
-                                    value="{{ old('nama_satuankecil', $item->nama_satuankecil) }}" required>
-                                    <input type="text" name="deskripsi" id="deskripsi" class="form-control"
+                                    <div class="form-group">
+                                        <label for="nama_satuankecil{{ $item->id }}">Nama satuankecil</label>
+                                        <input type="text" name="nama_satuankecil" id="nama_satuankecil{{ $item->id }}" class="form-control"
+                                        value="{{ old('nama_satuankecil', $item->nama_satuankecil) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deskripsi{{ $item->id }}">Deskripsi</label>
+                                        <input type="text" name="deskripsi" id="deskripsi" class="form-control"
                                     value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                    </div>
 
                                     <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuankecil }}">
                                         <span class="icon text-white-50">

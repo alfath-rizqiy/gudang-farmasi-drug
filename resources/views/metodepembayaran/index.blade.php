@@ -139,6 +139,7 @@
                                     @csrf
                                     @method('PUT')
 
+                                    <!--sama-->
                                     <input type="text" name="nama_metode" id="nama_metode" class="form-control"
                                     value="{{ old('nama_metode', $item->nama_metode) }}" required>
                                     <input type="text" name="deskripsi" id="deskripsi" class="form-control"

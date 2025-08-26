@@ -139,6 +139,7 @@
                                     @csrf
                                     @method('PUT')
 
+                                    <!-- liat lagi di supplier, ini gada groupnya -->
                                     <input type="text" name="nama_kategori" id="nama_kategori" class="form-control"
                                     value="{{ old('nama_kategori', $item->nama_kategori) }}" required>
                                     <input type="text" name="deskripsi" id="deskripsi" class="form-control"

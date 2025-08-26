@@ -29,6 +29,7 @@
                                         <th>No</th>
                                         <th>Nama kategori</th>
                                         <th>Deskripsi</th>
+                                        <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
@@ -139,10 +140,17 @@
                                     @csrf
                                     @method('PUT')
 
+                                    <div class="form-group">
+                                        <label for="nama_kategori{{ $item->id }}">Nama kategori</label>
                                     <input type="text" name="nama_kategori" id="nama_kategori" class="form-control"
                                     value="{{ old('nama_kategori', $item->nama_kategori) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deskripsi{{ $item->id }}">Deskripsi</label>
                                     <input type="text" name="deskripsi" id="deskripsi" class="form-control"
                                     value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                    </div>
 
 
 
@@ -251,7 +259,7 @@
 
                         Swal.fire({
                             title: 'Konfirmasi Update',
-                            text: Apakah kamu yakin ingin mengupdate data "${nama}"?,
+                            text: 'Apakah kamu yakin ingin mengupdate data?',
                             icon: 'question',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',

@@ -274,6 +274,37 @@
                 });
                 </script>
 
+                <!-- Konfirmasi Tindakan Update -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const updateButtons = document.querySelectorAll(".show_update");
+
+                updateButtons.forEach(function (button) {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const form = button.closest("form");
+                        const nama = button.getAttribute("data-name");
+
+                        Swal.fire({
+                            title: 'Konfirmasi Update',
+                            text: `Apakah kamu yakin ingin mengupdate data "${nama}"?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, update!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+                });
+                </script>
+
                 <!-- Validasi nama serupa -->
                 @if($errors->has('nama_kemasan'))
                 <script>

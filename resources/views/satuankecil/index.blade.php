@@ -29,6 +29,7 @@
                                         <th>No</th>
                                         <th>Nama satuankecil</th>
                                         <th>Deskripsi</th>
+                                        <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
@@ -138,6 +139,7 @@
                                     @csrf
                                     @method('PUT')
 
+                                    <!--Samain kaya satuan besar pake group -->
                                     <input type="text" name="nama_satuankecil" id="namaSatuanKecil{{ $item->id }}" class="form-control"
                                     value="{{ old('nama_satuankecil', $item->nama_satuankecil) }}" required>
                                     <input type="text" name="deskripsi" id="deskripsi" class="form-control"

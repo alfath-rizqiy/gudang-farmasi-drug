@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\View\View;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ProfileController extends Controller
 {
@@ -26,15 +28,38 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
-        $request->user()->fill($request->validated());
+         $user = $request->user();
 
-        if ($request->user()->isDirty('email')) {
-            $request->user()->email_verified_at = null;
+        // Validasi tambahan untuk foto
+        $request->validate([
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        $user->fill($request->validated());
+
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
         }
 
-        $request->user()->save();
+        // Cek apakah ada upload foto baru
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama kalau ada
+            if ($user->foto && Storage::disk('public')->exists('foto_profile/'.$user->foto)) {
+                Storage::disk('public')->delete('foto_profile/'.$user->foto);
+            }
 
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+            // Simpan foto baru
+            $file = $request->file('foto');
+            $fileName = Str::uuid().'.'.$file->getClientOriginalExtension();
+            $file->storeAs('public/foto_profile', $fileName);
+
+            $user->foto = $fileName;
+        }
+
+        $user->save();
+
+        return Redirect::route('profile.edit')->with('success', 'Profil berhasil diupdate');
+
     }
 
     /**

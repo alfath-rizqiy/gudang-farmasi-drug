@@ -136,8 +136,8 @@
                   @enderror
                  </div>
                 
-                <button type="submit" class="btn btn-primary">Simpan</button>
-                <a href="{{ route('obat.index') }}" class="btn btn-secondary">Kembali</a>
+                <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                <a href="{{ route('obat.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
             </form>
         </div>
     </div>

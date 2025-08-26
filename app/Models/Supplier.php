@@ -12,8 +12,8 @@ class Supplier extends Model
     protected $fillable = [
         'nama_supplier',
         'telepon',
-        'alamat',
         'email',
+        'alamat'
     ];
 
     public function obats()

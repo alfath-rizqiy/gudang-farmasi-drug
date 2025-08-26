@@ -30,6 +30,7 @@
                                         <th>Nama satuanbesar</th>
                                         <th>Deskripsi</th>
                                         <th>Jumlah Satuan Kecil</th>
+                                        <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
@@ -144,24 +145,25 @@
                                     @method('PUT')
 
                                     <div class="form-group">
-                                        <label for="nama_satuanbesar{{ $item->id }}">Nama satuan besar</label>
-                                        <input type="text" name="nama_satuanbesar" id="nama_satuanbesar{{ $item->id }}" class="form-control"
+                                        <label for="nama_satuanbesar{{ $item->id }}">Satuan Besar</label>
+                                        <input type="text" name="nama_satuanbesar" id="namaSatuanbesar{{ $item->id }}" class="form-control"
                                         value="{{ old('nama_satuanbesar', $item->nama_satuanbesar) }}" required>
                                     </div>
-
+                                        
                                     <div class="form-group">
                                         <label for="deskripsi{{ $item->id }}">Deskripsi</label>
                                         <input type="text" name="deskripsi" id="deskripsi" class="form-control"
-                                    value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                        value="{{ old('deskripsi', $item->deskripsi) }}" required>
                                     </div>
-
+                                    
+                                    <!--Error -->
                                     <div class="form-group">
-                                        <label for="jumlah_satuankecil{{ $item->id }}">Jumlah satuan kecil</label>
-                                        <input type="text" name="jumlah_satuankecil" id="jumlah_satuankecil{{ $item->id }}" class="form-control"
-                                        value="{{ old('jumlah_satuankecil', $item->jumlah_satuankecil) }}" required>
+                                        <label for="jumlah_satuankecil{{ $item->id }}">Jumlah Satuan Kecil</label>
+                                        <input type="text" class="form-control" id="jumlah_satuankecil" name="jumlah_satuankecil" 
+                                        value="{ old('jumlah_satuankecil', $item->jumlah_satuankecil}" required>
                                     </div>
-
-                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuankecil }}">
+                                        
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuanbesar }}">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-edit"></i>
                                         </span>

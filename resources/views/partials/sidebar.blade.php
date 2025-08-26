@@ -40,7 +40,7 @@
             <a class="collapse-item {{ request()->is('kemasan') ? 'active' : '' }}" href="{{ route('kemasan.index') }}">Kemasan</a>
             <a class="collapse-item {{ request()->is('satuankecil') ? 'active' : '' }}" href="{{ route('satuankecil.index') }}">Satuan Kecil</a>
             <a class="collapse-item {{ request()->is('satuanbesar') ? 'active' : '' }}" href="{{ route('satuanbesar.index') }}">Satuan Besar</a>
-            <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Tabel Aturan Pakai</a>
+            <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Aturan Pakai</a>
             <a class="collapse-item {{ request()->is('kategori') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
             <a class="collapse-item {{ request()->is('metodepembayaran') ? 'active' : '' }}" href="{{ route('metodepembayaran.index') }}">Metode Pembayaran</a>
         </div>

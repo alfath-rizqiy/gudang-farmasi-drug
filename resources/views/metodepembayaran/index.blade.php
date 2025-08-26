@@ -1,66 +1,66 @@
 @extends('layouts.admin')
 
-@section('title', 'metode pembayaran')
+@section('title', 'Data metodepembayaran')
 
 @section('content')
 
         {{-- Tabel Data --}}
        <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800"> Data Metode Pembayaran</h1>
-                    <div class="p-6">
+                    <h1 class="h3 mb-2 text-gray-800">Data metodepembayaran</h1>
+                  <div class="p-6">
 
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <button type="button" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalMetode">
-                    + Tambah Metode Pembayaran
-                     </button>
+                     <a href="#" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalMetodepembayaran">
+                        + Tambah metodepembayaran</a>
                      </div>
                  @endrole
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Tables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                     <thead>
-                                        <th>Nama Metode</th>
+                                        <th>No</th>
+                                        <th>Nama Metode Pembayaran</th>
                                         <th>Deskripsi</th>
-                                         @role('admin')
-                                        <th>Aksi</th>
-                                         @endrole
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($metodepembayaran as $metodepembayaran)
+                                         @forelse($metodepembayaran as $item)
                                         <tr>
-                                            <td>{{ $metodepembayaran->nama_metode }}</td>
-                                            <td>{{ $metodepembayaran->deskripsi }}</td>
+                                            <td>{{ $loop->iteration }}</td> 
+                                            <td>{{ $item->nama_metode }}</td>
+                                            <td>{{ $item->deskripsi }}</td>
                                          @role('admin')
                                             <td>
                                                  <div class="d-flex justify-content-center">
                                                     <!-- Detail -->
-                                                     <a href="{{ route('metodepembayaran.show', $metodepembayaran->id) }}" class="btn-sm btn btn-info btn-icon-split">
+                                                     <a href="{{ route('metodepembayaran.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-info"></i>
                                                         </span>
                                                         <span class="text">Detail</span>
                                                     </a>
                                                     <!-- Edit -->
-                                                    <a href="{{ route('metodepembayaran.edit', $metodepembayaran->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
+                                                    <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
+                                                       data-toggle="modal" data-target="#modalEditMetodepembayaran{{ $item->id }}">
                                                         <span class="icon text-white-50">
                                                             <i class="fas fa-edit"></i>
                                                         </span>
                                                         <span class="text">Edit</span>
                                                     </a>
                                                     <!-- Hapus -->
-                                                    <form action="{{ route('metodepembayaran.destroy', $metodepembayaran->id) }}" method="POST">
+                                                    <form action="{{ route('metodepembayaran.destroy', $item->id) }}" method="POST" >
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $metodepembayaran->nama_metode }}">
+                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
+                                                         data-name="{{ $item->nama_metode }}">
                                                             <span class="icon text-white-50">
                                                                 <i class="fas fa-trash"></i>
                                                             </span>
@@ -84,34 +84,35 @@
                 </table>
             </div>
 
-            <!-- Modal Tambah Kategori -->
-             <div class="modal fade" id="modalMetode" tabindex="-1" aria-labelledby="modalMetodeLabel" aria-hidden="true">
+            <!-- Modal Form Tambah metodepembayaran -->
+             <div class="modal fade" id="modalMetodepembayaran" tabindex="-1" aria-labelledby="modalMetodepembayaranLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalMetodeLabel">Tambah Aturan Pakai</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <div class="modal-header">
+                            <h5 class="modal-title" id="modalMetodepembayaranLabel">Tambah metodepembayaran</h5>
+                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
 
+                        <!-- Form Card Tambah -->
                         <div class="card shadow mb-4">
                             <div class="card-body">
                                 <form action="{{ route('metodepembayaran.store') }}" method="POST">
-                                    @csrf
+                                     @csrf
+                                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="nama_metode" class="form-label">Nama Metode</label>
+                            <input type="text" class="form-control" id="nama_metode" name="nama_metode" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="deskripsi" class="form-label">Deskripsi</label>
+                            <textarea class="form-control" id="deskripsi" name="deskripsi" rows="3"></textarea>
+                        </div>
+                    </div>
 
-                                    <div class="form-group">
-                                        <label for="namaMetode">Nama Metode</label>
-                                        <input type="text" class="form-control" id="namaMetode" name="nama_metode" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="deskripsiMetode">Deskripsi</label>
-                                        <textarea class="form-control" id="deskripsiMetode" name="deskripsi" rows="3"></textarea>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <a href="{{ route('metodepembayaran.index') }}" class="btn btn-secondary">Kembali</a>
+                                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
+                                    <a href="{{ route('metodepembayaran.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
                                 </form>
                             </div>
                         </div>
@@ -119,27 +120,70 @@
                 </div>
             </div>
 
-    <!-- Membuka kembali modal setelah validasi error -->
+            @foreach ($metodepembayaran as $item)
+            <!-- Modal Form Edit metodepembayaran -->
+             <div class="modal fade" id="modalEditMetodepembayaran{{ $item->id }}" tabindex="-1" aria-labelledby="modalMetodepembayaranLabel{{ $item->id }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="modalMetodepembayaranLabel{{ $item->id }}">Edit metodepembayaran</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+
+                        <!-- Form Card Edit -->
+                         <div class="card shadow mb-4">
+                            <div class="card-body">
+                                <form action="{{ route('metodepembayaran.update', $item->id) }}" method="POST">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <!--sama-->
+                                    <input type="text" name="nama_metode" id="nama_metode" class="form-control"
+                                    value="{{ old('nama_metode', $item->nama_metode) }}" required>
+                                    <input type="text" name="deskripsi" id="deskripsi" class="form-control"
+                                    value="{{ old('deskripsi', $item->deskripsi) }}" required>
+
+
+
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_metode }}">
+                                        <span class="icon text-white-50">
+                                            <i class="fas fa-edit"></i>
+                                        </span>
+                                        <span class="text">Update</span>
+                                    </button>
+     
+                                    <a href="{{ route('metodepembayaran.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+
+            <!-- Membuka kembali modal setelah validasi error -->
             @if(session('open_modal'))
             <script>
             document.addEventListener('DOMContentLoaded', function() {
                 if (window.bootstrap) {
                 // Bootstrap 5
-                new bootstrap.Modal(document.getElementById('modalMetode')).show();
+                new bootstrap.Modal(document.getElementById('modalMetodepembayaran')).show();
             } else if (window.$) {
                 // Bootstrap 4
-                $('#modalMetode').modal('show');
+                $('#modalMetodepembayaran').modal('show');
             }
         });
          </script>
          @endif
 
+         <!-- Sweet Alert -->
+          @push('scripts')
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-            <!-- Sweet Alert -->
-            @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-            <!-- Sukses -->
+          <!-- Sukses -->
             @if (session('success'))
             <script>
             Swal.fire({
@@ -194,9 +238,40 @@
                 });
                 </script>
 
+            <!-- Konfirmasi Tindakan Update -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const updateButtons = document.querySelectorAll(".show_update");
+
+                updateButtons.forEach(function (button) {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const form = button.closest("form");
+                        const nama = button.getAttribute("data-name");
+
+                        Swal.fire({
+                            title: 'Konfirmasi Update',
+                            text: Apakah kamu yakin ingin mengupdate data "${nama}"?,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, update!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+                });
+                </script>
+
                 <!-- Validasi nama serupa -->
                 @if($errors->has('nama_metode'))
-                <script>
+                 <script>
                 Swal.fire({
                     icon: 'error',
                     title: 'Gagal Input Nama',

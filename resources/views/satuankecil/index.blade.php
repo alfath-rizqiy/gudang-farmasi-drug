@@ -29,6 +29,7 @@
                                         <th>No</th>
                                         <th>Nama satuankecil</th>
                                         <th>Deskripsi</th>
+                                        <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
@@ -147,7 +148,7 @@
                                     <div class="form-group">
                                         <label for="deskripsi{{ $item->id }}">Deskripsi</label>
                                         <input type="text" name="deskripsi" id="deskripsi" class="form-control"
-                                    value="{{ old('deskripsi', $item->deskripsi) }}" required>
+                                        value="{{ old('deskripsi', $item->deskripsi) }}" required>
                                     </div>
 
                                     <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_satuankecil }}">

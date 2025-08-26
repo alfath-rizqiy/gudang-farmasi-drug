@@ -1,5 +1,4 @@
-<?php
-
+<?php 
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -8,115 +7,100 @@ use Illuminate\Support\Facades\Validator;
 
 class AturanPakaiController extends Controller
 {
-    /**
-     * Menampilkan semua data Aturan Pakai.
-     * Mengambil semua record dari tabel aturan_pakai dan mengirimkannya ke view index.
-     */
     public function index()
     {
         $aturanpakai = AturanPakai::all();
-        return view('aturanpakai.index', compact('aturanpakai')); 
+        return view('aturanpakai.index', compact('aturanpakai'));
     }
 
-    /**
-     * Menampilkan form untuk membuat data Aturan Pakai baru.
-     */
     public function create()
     {
-        return view('aturanpakai.index');
+        return view('aturanpakai.create');
     }
 
-     /**
-     * Menyimpan data Aturan Pakai baru ke database.
-     * Validasi input, lalu simpan menggunakan mass assignment.
-     */
     public function store(Request $request)
     {
-        //Normalisasi nama_kategori sebelum validasi
+        //normalisasi input sebelum validasi
         $request->merge([
-            'frekuensi_pemakaian' => (preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
         ]);
 
         $validator = Validator::make($request->all(), [
-        'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
-        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
-        'deskripsi'           => 'required|string',
-    ], [
-        'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
-        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
-    ]);
+            'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
+            'waktu_pemakaian'     => 'required|string',
+            'deskripsi'           => 'required|string'
+        ], [
+            'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi',
+            'frekuensi_pemakaian.unique'   => 'Frekuensi pemakaian sudah terdaftar'
+        ]);
 
-    if ($validator->fails()) {
-        return redirect()
-            ->route('aturanpakai.index') // balik ke index
-            ->withErrors($validator) 
-            ->with('open_modal', true)
-            ->withInput(); 
+       if ($validator->fails()) {
+            return redirect()
+                ->route('aturanpakai.index')
+                ->withErrors($validator)
+                ->with('open_modal', true)
+                ->withInput();
+        }
+
+        AturanPakai::create($validator->validated());
+
+        return redirect()->route('aturanpakai.index')->with('success', 'Aturan pakai berhasil ditambahkan.');
     }
 
-   $Aturanpakai = AturanPakai::create($validator->validated());
-
-
-    return redirect()->route('aturanpakai.index')->with('success', 'Aturanpakai berhasil ditambahkan.');
-
-    }
-
-    /**
-     * Menampilkan detail dari satu data Aturan Pakai berdasarkan ID.
-     * Mengambil relasi dengan tabel obats jika ada.
-     */
     public function show(string $id)
     {
         $aturanpakai = AturanPakai::with('obats')->findOrFail($id);
-         return view('aturanpakai.show', compact('aturanpakai'));
+        return view('aturanpakai.show', compact('aturanpakai'));
     }
 
-     /**
-     * Menampilkan form edit untuk data Aturan Pakai tertentu.
-     */
     public function edit(string $id)
     {
-        $aturanpakai = AturanPakai::findOrFail($id); // perbaikan di sini
-    return view('aturanpakai.edit', compact('aturanpakai')); // dan di sini
+        $aturanpakai = AturanPakai::findOrFail($id);
+        return view('aturanpakai.edit', compact('aturanpakai'));
     }
 
-     /**
-     * Memperbarui data Aturan Pakai berdasarkan ID.
-     * Validasi input, lalu update hanya field yang diperlukan.
-     */
     public function update(Request $request, string $id)
     {
-        $request->validate([
-        'frekuensi_pemakaian' => 'required|string',
-        'waktu_pemakaian'     => 'required|string',
-        'deskripsi'           => 'nullable|string',
-    ]);
-
-        $aturanpakai = AturanPakai::findOrFail($id);
-        $aturanpakai->update($request->only(['frekuensi_pemakaian', 'waktu_pemakaian', 'deskripsi',]));;
-
-        return redirect()->route('aturanpakai.index')->with('success', 'Data berhasil diupdate.');
-
-    }
-
-     /**
-     * Menghapus data Aturan Pakai berdasarkan ID.
-     */
-    public function destroy($id)
-{
-    try {
         $aturanpakai = AturanPakai::findOrFail($id);
 
-        // Cek apakah aturanpakai masih punya relasi obat
+        // Cek relasi dulu
         if ($aturanpakai->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data aturanpakai tidak dapat dihapus karena masih digunakan oleh data obat.');
+            return redirect()->back()->with('error', 'Aturan pakai tidak dapat diedit karena masih digunakan oleh data obat.');
         }
 
-        $aturanpakai->delete();
-        return redirect()->back()->with('success', 'Data aturanpakai berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data aturanpakai.');
-    }
-}
+        // 🔧 Normalisasi input
+        $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+        ]);
 
+        $validator = Validator::make($request->all(), [
+            'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
+            'waktu_pemakaian'     => 'required|string',
+            'deskripsi'           => 'required|string',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        $aturanpakai->update($validator->validated());
+
+        return redirect()->route('aturanpakai.index')->with('success', 'Aturan pakai berhasil diupdate.');
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $aturanpakai = AturanPakai::findOrFail($id);
+
+            if ($aturanpakai->obats()->count() > 0) {
+                return redirect()->back()->with('error', 'Aturan pakai tidak dapat dihapus karena masih digunakan oleh data obat.');
+            }
+
+            $aturanpakai->delete();
+            return redirect()->back()->with('success', 'Aturan pakai berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus aturan pakai.');
+        }
+    }
 }

@@ -11,18 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('obats', function (Blueprint $table) {
-            $table->string('foto')->after('metodepembayaran_id');
-        });
+    Schema::table('obats', function (Blueprint $table) {
+        $table->string('foto')->nullable()->after('metodepembayaran_id');
+    });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('obats', function (Blueprint $table) {
-            $table->dropColumn('foto');
+        $table->dropColumn('foto');
         });
     }
 };

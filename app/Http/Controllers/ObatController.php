@@ -189,3 +189,4 @@ class ObatController extends Controller
         return redirect()->route('obat.index')->with('success', 'Data berhasil dihapus.');
     }
 }
+ 

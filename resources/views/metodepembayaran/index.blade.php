@@ -142,6 +142,7 @@
 
                                     <div class="form-group">
                                         <label for="nama_metode{{ $item->id }}">Nama Metode</label>
+                                    <!--sama-->
                                     <input type="text" name="nama_metode" id="nama_metode" class="form-control"
                                     value="{{ old('nama_metode', $item->nama_metode) }}" required>
                                     </div>

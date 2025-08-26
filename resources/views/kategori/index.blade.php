@@ -142,6 +142,7 @@
 
                                     <div class="form-group">
                                         <label for="nama_kategori{{ $item->id }}">Nama kategori</label>
+                                    <!-- liat lagi di supplier, ini gada groupnya -->
                                     <input type="text" name="nama_kategori" id="nama_kategori" class="form-control"
                                     value="{{ old('nama_kategori', $item->nama_kategori) }}" required>
                                     </div>

@@ -9,13 +9,40 @@
                     <h1 class="h3 mb-2 text-gray-800">Data Obat</h1>
                     <div class="p-6">
 
+                    <div class="d-flex gap-3 space-x-3">
         <!-- Tombol Tambah -->
                  @role('admin|petugas')
-                     <div class="mb-4">
+                     <div class="m-2 mb-4">
                      <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">
-                        + Tambah Obat</a>
+                        <span class="icon text-white-10">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Obat</a>
                      </div>
                  @endrole
+
+        <!-- Tombol Download -->
+                 @role('admin|petugas')
+                     <div class="m-2 mb-4">
+                     <a href="{{ route('obat.export.pdf') }}" class="btn-sm btn btn-danger">
+                        <span class="icon text-white-10">
+                            <i class="fas fa-download"></i>
+                        </span>
+                         Download PDF</a>
+                     </div>
+                 @endrole
+
+        <!-- Tombol Download -->
+                 @role('admin|petugas')
+                     <div class="m-2 mb-4">
+                     <a href="{{ route('obat.export.excel') }}" class="btn-sm btn btn-success">
+                        <span class="icon text-white-10">
+                            <i class="fas fa-download"></i>
+                        </span>
+                        Download Excel</a>
+                     </div>
+                 @endrole
+                 </div>
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
@@ -35,6 +62,7 @@
                                         <th>Aturan Pakai</th>
                                         <th>Kategori</th>
                                         <th>Metode Pembayaran</th>
+                                        <th>Tanggal Input</th>
                                         <th>Foto Obat</th>
                                          @role('admin')
                                         <th>Aksi</th>
@@ -53,6 +81,7 @@
                                             <td>{{ $item->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
                                             <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
                                             <td>{{ $item->metodepembayaran->nama_metode ?? '-' }}</td>
+                                            <td>{{ $item->created_at->format('d F Y') }}</td>
                                             <td><!-- Button trigger modal -->
                                                 <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoto{{ $item->id }}">
                                                     Lihat Foto

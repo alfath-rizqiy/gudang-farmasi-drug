@@ -11,11 +11,27 @@ use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ObatExport;
+use App\Models\Obat;
+
+// Pdf Download
+Route::get('/obat/export-pdf', function () {
+    $obats = Obat::all();
+    $pdf = Pdf::loadView('obat.pdf', compact('obats'));
+    return $pdf->download('data-obat.pdf');
+})->name('obat.export.pdf');
+
+// Excel Download
+Route::get('/obat/export-excel', function () {
+    return Excel::download(new ObatExport, 'data-obat.xlsx');
+})->name('obat.export.excel');
 
 
 Route::get('/', function () {
     return view('welcome');
-});
+}); 
 
 Route::get('/dashboard', function () {
     return view('dashboard');

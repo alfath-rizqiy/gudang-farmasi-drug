@@ -29,6 +29,7 @@
                                         <th>No</th>
                                         <th>Nama Metode Pembayaran</th>
                                         <th>Deskripsi</th>
+                                        <th>Aksi</th>
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
@@ -139,13 +140,17 @@
                                     @csrf
                                     @method('PUT')
 
-                                    <!--sama-->
+                                    <div class="form-group">
+                                        <label for="nama_metode{{ $item->id }}">Nama Metode</label>
                                     <input type="text" name="nama_metode" id="nama_metode" class="form-control"
                                     value="{{ old('nama_metode', $item->nama_metode) }}" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deskripsi{{ $item->id }}">Deskripsi</label>
                                     <input type="text" name="deskripsi" id="deskripsi" class="form-control"
                                     value="{{ old('deskripsi', $item->deskripsi) }}" required>
-
-
+                                    </div>
 
                                     <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_metode }}">
                                         <span class="icon text-white-50">
@@ -221,7 +226,7 @@
 
                         Swal.fire({
                             title: 'Apakah kamu yakin?',
-                            text: Data "${nama}" akan dihapus secara permanen!,
+                            text: 'Data "${nama}" akan dihapus secara permanen!',
                             icon: 'warning',
                             showCancelButton: true,
                             confirmButtonColor: '#d33',
@@ -252,7 +257,7 @@
 
                         Swal.fire({
                             title: 'Konfirmasi Update',
-                            text: Apakah kamu yakin ingin mengupdate data "${nama}"?,
+                            text: 'Apakah kamu yakin ingin mengupdate data?',
                             icon: 'question',
                             showCancelButton: true,
                             confirmButtonColor: '#3085d6',

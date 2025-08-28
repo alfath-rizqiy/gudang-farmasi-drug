@@ -15,8 +15,8 @@
                     <label for="foto">Foto Profil</label>
                     @if ($user->foto)
                         <div class="mb-2">
-                            <img src="{{ asset('storage/public/foto_profile/'.$user->foto) }}" 
-                                 alt="Foto Profil" class="rounded-circle border shadow" width="80" height="80">
+                            <img src="{{ $user->foto ? asset('storage/public/foto_profile/'.$user->foto) : asset('storage/public/foto_profile/default.jpg') }}" 
+                            alt="Foto Profil" class="rounded-circle border shadow" width="80" height="80">
                         </div>
                     @endif
                     <input type="file" class="form-control @error('foto') is-invalid @enderror" name="foto" id="foto">

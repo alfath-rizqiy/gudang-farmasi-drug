@@ -13,14 +13,17 @@
                  @role('admin')
                      <div class="mb-4">
                      <a href="{{ route('satuanbesar.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalSatuanbesar">
-                        + Tambah Satuan Besar</a>
+                        <span class="icon text-white-10">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Satuan Besar</a>
                      </div>
                  @endrole
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">

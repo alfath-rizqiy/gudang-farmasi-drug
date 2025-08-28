@@ -13,14 +13,17 @@
                  @role('admin')
                      <div class="mb-4">
                      <a href="{{ route('supplier.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalSupplier">
-                        + Tambah Supplier</a>
+                        <span class="icon text-white-10">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Supplier</a>
                      </div>
                  @endrole
 
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -46,34 +49,27 @@
                                             <td>{{ $item->alamat }}</td>
                                          @role('admin')
                                             <td>
-                                                 <div class="d-flex justify-content-center">
-                                                    <!-- Detail -->
-                                                     <a href="{{ route('supplier.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-info"></i>
-                                                        </span>
-                                                        <span class="text">Detail</span>
-                                                    </a>
-                                                    <!-- Edit -->
-                                                    <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
-                                                       data-toggle="modal" data-target="#modalEditSupplier{{ $item->id }}">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-edit"></i>
-                                                        </span>
-                                                        <span class="text">Edit</span>
-                                                    </a>
-                                                    <!-- Hapus -->
-                                                    <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" >
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
-                                                         data-name="{{ $item->nama_supplier }}">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Hapus</span>
-                                                        </button>
-                                                    </form>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Aksi
+                                                    </button>
+                                                    <ul class="dropdown-menu">
+                                                        <li><a class="dropdown-item text-info" href="{{ route('supplier.show', $item->id) }}">
+                                                            <i class="fas fa-info me-2"></i>
+                                                            Detail</a></li>
+                                                        <li><a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#modalEditSupplier{{ $item->id }}">
+                                                            <i class="fas fa-edit me-2"></i>
+                                                             Edit</a></li>
+                                                        <li><form action="{{ route('supplier.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin hapus supplier {{ $item->nama_supplier }}?')" style="display:inline;">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="dropdown-item text-danger show_confirm"
+                                                            data-name="{{ $item->nama_supplier }}">
+                                                                <i class="fas fa-trash me-2"></i> Delete
+                                                            </button>
+                                                        </form>
+                                                        </li>
+                                                    </ul>
                                                 </div>
                                             </td>
                                         @endrole
@@ -324,6 +320,8 @@
                 });
                 </script>
                 @endif
-
                 @endpush
+
+                <!-- Bottsrap -->
+                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     @endsection

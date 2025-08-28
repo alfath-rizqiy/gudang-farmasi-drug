@@ -20,7 +20,9 @@ class DatabaseSeeder extends Seeder
         SatuanKecilSeeder::class,
         SatuanBesarSeeder::class,
         KategoriSeeder::class,
-        MetodePembayaranSeeder::class
+        MetodePembayaranSeeder::class,
+        KemasanSeeder::class,
+        AturanPakaiSeeder::class
         ]);
     }
 }

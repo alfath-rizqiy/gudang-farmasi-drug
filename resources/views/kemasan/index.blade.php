@@ -12,8 +12,11 @@
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                    <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalKemasan">
-                        + Tambah Kemasan
+                    <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalKemasan">
+                        <span class="icon text-white-10">
+                            <i class="fa fa-plus"></i>
+                        </span>
+                        Tambah Kemasan
                     </a>
                      </div>
                  @endrole
@@ -21,7 +24,7 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
@@ -263,6 +266,37 @@
                             confirmButtonColor: '#d33',
                             cancelButtonColor: '#3085d6',
                             confirmButtonText: 'Ya, hapus!',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                form.submit();
+                            }
+                        });
+                    });
+                });
+                });
+                </script>
+
+                <!-- Konfirmasi Tindakan Update -->
+            <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const updateButtons = document.querySelectorAll(".show_update");
+
+                updateButtons.forEach(function (button) {
+                    button.addEventListener("click", function (event) {
+                        event.preventDefault();
+
+                        const form = button.closest("form");
+                        const nama = button.getAttribute("data-name");
+
+                        Swal.fire({
+                            title: 'Konfirmasi Update',
+                            text: `Apakah kamu yakin ingin mengupdate data "${nama}"?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonColor: '#3085d6',
+                            cancelButtonColor: '#d33',
+                            confirmButtonText: 'Ya, update!',
                             cancelButtonText: 'Batal'
                         }).then((result) => {
                             if (result.isConfirmed) {

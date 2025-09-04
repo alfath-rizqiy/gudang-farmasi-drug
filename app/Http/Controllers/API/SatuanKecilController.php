@@ -1,120 +1,142 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\SatuanKecil;
 use Illuminate\Support\Facades\Validator;
 
 class SatuanKecilController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    // Tampilkan satuankecil
     public function index()
     {
-        $satuankecil = SatuanKecil::all();
-        return view('satuankecil.index', compact('satuankecil')); 
+        $satuankecils = SatuanKecil::all();
+        return response()->json([
+            'success' => true,
+            'data' => $satuankecils
+        ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view('satuankecil.create');
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
+    // Input satuankecil
     public function store(Request $request)
     {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
+            'nama_satuankecil' => (preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+        ]);
 
-         $request->merge([
+        $validator = Validator::make($request->all(),[
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
+            'deskripsi' => 'required|string',
+        ], [
+            'nama_satuankecil.required' => 'Nama satuan kecil wajib diisi',
+            'nama_satuankecil.unique' => 'Nama satuan kecil sudah terdaftar',
+            'deskripsi.required' => 'Deskripsi satuan kecil wajib diisi',
+        ]);
+
+
+        // satuankecil tidak valid
+        if ($validator->fails()) {
+            return response()->json([
+                'status'=> false,
+                'message'=> 'validasi error',
+                'errors'=> $validator->errors()
+            ], 422);
+        }
+
+         $satuankecil = SatuanKecil::create($validator->validated());
+        return response()->json([
+            'success' => true,
+            'message' => 'satuankecil berhasil ditambahkan.',
+            'data'    => $satuankecil
+        ], 201);
+    }
+
+
+    // Tampilkan detail
+    public function show($id)
+    {
+        $satuankecil = SatuanKecil::with('obats')->find($id);
+
+        if (!$satuankecil) {
+            return response()->json([
+                'success' => false,
+                'message' => 'satuankecil tidak ditemukan.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $satuankecil
+        ], 200);
+    }
+
+    // Update satuankecil
+    public function update(Request $request, $id)
+    {
+        // 🔧 Normalisasi nama_kategori sebelum validasi
+        $request->merge([
             'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
         ]);
 
         $validator = Validator::make($request->all(), [
-        'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil',
-        'deskripsi' => 'required|string',
-    ], [
-        'nama_satuankecil.required' => 'Nama satuan kecil wajib diisi',
-        'nama_satuankecil.unique' => 'Nama satuan kecil sudah terdaftar',
-        'deskripsi.required' => 'Deskripsi satuan kecil wajib diisi.'
-    ]);
-
-     if ($validator->fails()) {
-        return redirect()
-            ->route('satuankecil.index') // balik ke index
-            ->withErrors($validator) // kirim errors ke view index
-            ->withInput(); // kirim input sebelumnya
-    }
-
-    SatuanKecil::create($validated);
-
-    return redirect()->route('satuankecil.index')->with('success', 'satuankecil berhasil ditambahkan.');
-
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $satuankecil = SatuanKecil::with('obats')->findOrFail($id);
-         return view('satuankecil.show', compact('satuankecil'));
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        $satuankecil = SatuanKecil::findOrFail($id); // perbaikan di sini
-    return view('satuankecil.edit', compact('satuankecil')); // dan di sini
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-
-         $request->merge([
-            'nama_satuankecil' => strtolower(preg_replace('/\s+/', ' ', trim($request->nama_satuankecil)))
+            'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
+            'deskripsi'       => 'required|string',
         ]);
 
-        $request->validate([
-        'nama_satuankecil' => 'required|string|unique:satuan_kecils,nama_satuankecil,' . $id,
-        'deskripsi' => 'required|string',
-    ]);
+        if ($validator->fails()) {
+            return response()->json([
+                'status'  => false,
+                'message' => 'Validasi error',
+                'errors'  => $validator->errors()
+            ], 422);
+        }
+        
+        $satuankecil = SatuanKecil::find($id);
 
-        $satuankecil = SatuanKecil::findOrFail($id);
-        $satuankecil->update($request->only(['nama_satuankecil', 'deskripsi']));;
+        if (!$satuankecil) {
+            return response()->json([
+                'success' => false,
+                'message' => 'satuankecil tidak ditemukan.'
+            ], 404);
+        }
 
-        return redirect()->route('satuankecil.index')->with('success', 'Data berhasil diupdate.');
+        $satuankecil->update($validator->validated());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'satuankecil berhasil diupdate.',
+            'data'    => $satuankecil
+        ], 200);
 
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+    // Hapus satuankecil
     public function destroy($id)
-{
-    try {
-        $satuankecil = SatuanKecil::findOrFail($id);
+    {
+        $satuankecil = SatuanKecil::find($id);
 
-        // Cek apakah satuankecil masih punya relasi obat
+        if (!$satuankecil) {
+            return response()->json([
+                'success' => false,
+                'message' => 'satuankecil tidak ditemukan.'
+            ], 404);
+        }
+
         if ($satuankecil->obats()->count() > 0) {
-            return redirect()->back()->with('error', 'Data satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.');
+            return response()->json([
+                'success' => false,
+                'message' => 'Data satuankecil tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409); // 409 Conflict
         }
 
         $satuankecil->delete();
-        return redirect()->back()->with('success', 'Data satuankecil berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data satuankecil.');
-    }
-}
 
+        return response()->json([
+            'success' => true,
+            'message' => 'Data satuankecil berhasil dihapus.'
+        ], 200);
+    }
 }

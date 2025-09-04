@@ -68,66 +68,36 @@ Route::middleware('auth')->group(function () {
     // Kemasan Route
     Route::prefix('kemasan')->name('kemasan.')->group(function () {
         Route::get('/', [KemasanController::class, 'index'])->name('index');
-        Route::get('/create', [KemasanController::class, 'create'])->name('create');
-        Route::post('/', [KemasanController::class, 'store'])->name('store');
         Route::get('/{kemasan}', [KemasanController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [KemasanController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [KemasanController::class, 'update'])->name('update');
-        Route::delete('/{id}', [KemasanController::class, 'destroy'])->name('destroy');
     });
 
      Route::prefix('aturanpakai')->name('aturanpakai.')->group(function () {
     Route::get('/', [AturanPakaiController::class, 'index'])->name('index');
-    Route::get('/create', [AturanPakaiController::class, 'create'])->name('create');
-    Route::post('/', [AturanPakaiController::class, 'store'])->name('store');
     Route::get('/{aturanpakai}', [AturanPakaiController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [AturanPakaiController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AturanPakaiController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AturanPakaiController::class, 'destroy'])->name('destroy');
      });
     
      // Satuan Kecil Route
     Route::prefix('satuankecil')->name('satuankecil.')->group(function () {
         Route::get('/', [SatuanKecilController::class, 'index'])->name('index');
-        Route::get('/create', [SatuanKecilController::class, 'create'])->name('create');
-        Route::post('/', [SatuanKecilController::class, 'store'])->name('store');
         Route::get('/{satuankecil}', [SatuanKecilController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [SatuanKecilController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [SatuanKecilController::class, 'update'])->name('update');
-        Route::delete('/{id}', [SatuanKecilController::class, 'destroy'])->name('destroy');
     });
 
     // Satuan Besar Route
     Route::prefix('satuanbesar')->name('satuanbesar.')->group(function () {
         Route::get('/', [SatuanBesarController::class, 'index'])->name('index');
-        Route::get('/create', [SatuanBesarController::class, 'create'])->name('create');
-        Route::post('/', [SatuanBesarController::class, 'store'])->name('store');
         Route::get('/{satuanbesar}', [SatuanBesarController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [SatuanBesarController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [SatuanBesarController::class, 'update'])->name('update');
-        Route::delete('/{id}', [SatuanBesarController::class, 'destroy'])->name('destroy');
     });
     
     // Kategori Route
     Route::prefix('kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::get('/create', [KategoriController::class, 'create'])->name('create');
-        Route::post('/', [KategoriController::class, 'store'])->name('store');
         Route::get('/{kategori}', [KategoriController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [KategoriController::class, 'update'])->name('update');
-        Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('destroy');
     });
 
     // Metode Pembayaran Route
     Route::prefix('metodepembayaran')->name('metodepembayaran.')->group(function () {
         Route::get('/', [MetodePembayaranController::class, 'index'])->name('index');
-        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('create');
-        Route::post('/', [MetodePembayaranController::class, 'store'])->name('store');
         Route::get('/{metodepembayaran}', [MetodePembayaranController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [MetodePembayaranController::class, 'update'])->name('update');
-        Route::delete('/{id}', [MetodePembayaranController::class, 'destroy'])->name('destroy');
     });
 });
 });

@@ -9,8 +9,7 @@ class AturanPakaiController extends Controller
 {
     public function index()
     {
-        $aturanpakai = AturanPakai::all();
-        return view('aturanpakai.index', compact('aturanpakai'));
+        return view('aturanpakai.index');
     }
 
     public function create()

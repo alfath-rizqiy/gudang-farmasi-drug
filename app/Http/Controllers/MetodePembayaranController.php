@@ -9,8 +9,7 @@ class MetodePembayaranController extends Controller
 {
     public function index()
     {
-        $metodepembayaran = MetodePembayaran::all();
-        return view('metodepembayaran.index', compact('metodepembayaran'));
+        return view('metodepembayaran.index');
     }
 
     public function create()

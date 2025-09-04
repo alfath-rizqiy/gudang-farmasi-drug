@@ -35,28 +35,32 @@ class ProfileController extends Controller
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $user->fill($request->validated());
+        $user->fill($request->safe()->except(['foto']));
 
         if ($user->isDirty('email')) {
             $user->email_verified_at = null;
         }
 
+        $oldFoto = $user->foto;
+
         // Cek apakah ada upload foto baru
         if ($request->hasFile('foto')) {
-            // Hapus foto lama kalau ada
-            if ($user->foto && Storage::disk('public')->exists('foto_profile/'.$user->foto)) {
-                Storage::disk('public')->delete('foto_profile/'.$user->foto);
-            }
-
             // Simpan foto baru
             $file = $request->file('foto');
             $fileName = Str::uuid().'.'.$file->getClientOriginalExtension();
             $file->storeAs('public/foto_profile', $fileName);
 
-            $user->foto = $fileName;
-        }
+            $user->foto = $fileName; 
+            }
 
-        $user->save();
+            $user->save();
+
+            // Hapus foto lama kalau ada, tapi jangan hapus default.jpg
+            if ($request->hasFile('foto')
+                && $oldFoto 
+                && $oldFoto !== 'default.jpg' && Storage::disk('public')->exists('public/foto_profile/'.$oldFoto)) {
+                Storage::disk('public')->delete('public/foto_profile/'.$oldFoto);
+            }
 
         return Redirect::route('profile.edit')->with('success', 'Profil berhasil diupdate');
 

@@ -26,6 +26,7 @@
                 <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                     <table class="table table-bordered" id="metodePembayaranTable" width="100%" cellspacing="0">
                         <thead>
+                             <meta name="csrf-token" content="{{ csrf_token() }}">
                             <tr>
                                 <th>No</th>
                                 <th>Nama Metode Pembayaran</th>

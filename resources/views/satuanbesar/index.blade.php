@@ -21,12 +21,14 @@
                     <!-- DataTales Example -->
                     <div class="card shadow mb-4">
                         <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
                                 <table class="table table-bordered" id="satuanbesarTable" width="100%" cellspacing="0">
                                     <thead>
+                                      <meta name="csrf-token" content="{{ csrf_token() }}">
+                                      <tr>
                                         <th>No</th>
                                         <th>Nama Satuan Besar</th>
                                         <th>Deskripsi</th>

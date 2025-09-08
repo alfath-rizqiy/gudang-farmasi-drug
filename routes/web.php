@@ -52,10 +52,13 @@ Route::middleware('auth')->group(function () {
         Route::get('/{id}/edit', [ObatController::class, 'edit'])->name('edit');
         Route::put('/{id}', [ObatController::class, 'update'])->name('update');
         Route::delete('/{id}', [ObatController::class, 'destroy'])->name('destroy');
+        // // Ajx
+        // Route::post('/obat/store', [ObatController::class, 'store'])->name('obat.store');
     });
 
     // Supplier Route
     Route::prefix('supplier')->name('supplier.')->group(function () {
+        Route::get('/data', [SupplierController::class, 'data'])->name('data'); // Ajax dataTables
         Route::get('/', [SupplierController::class, 'index'])->name('index');
         Route::get('/create', [SupplierController::class, 'create'])->name('create');
         Route::post('/', [SupplierController::class, 'store'])->name('store');

@@ -23,3 +23,6 @@ Route::resource('/satuankecil', SatuanKecilController::class);
 Route::resource('/satuanbesar', SatuanBesarController::class);
 Route::resource('/kategori', KategoriController::class);
 Route::resource('/metodepembayaran', MetodePembayaranController::class);
+
+// Ajax 
+Route::get('/supplier', [SupplierController::class, 'index'])->name('api.supplier');

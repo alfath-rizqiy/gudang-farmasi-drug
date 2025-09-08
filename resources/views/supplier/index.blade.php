@@ -4,15 +4,18 @@
 
 @section('content')
 
-        {{-- Tabel Data --}}
-       <!-- Page Heading -->
+{{-- Tabel Data --}}
+<!-- Page Heading -->
                     <h1 class="h3 mb-2 text-gray-800">Data Supplier</h1>
                   <div class="p-6">
+
+                  <!-- Ajax -->
+                  <meta name="csrf-token" content="{{ csrf_token() }}">
 
         {{-- Tombol Tambah --}}
                  @role('admin')
                      <div class="mb-4">
-                     <a href="{{ route('supplier.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalSupplier">
+                     <a href="#" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSupplier">
                         <span class="icon text-white-10">
                             <i class="fa fa-plus"></i>
                         </span>
@@ -27,8 +30,9 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="tabelSupplier" width="100%" cellspacing="0">
                                     <thead>
+                                        <tr>
                                         <th>No</th>
                                         <th>Nama Supplier</th>
                                         <th>Telepon</th>
@@ -40,45 +44,7 @@
                                         </tr>
                                     </thead>
                                     <tbody class="text-start">
-                                         @forelse($suppliers as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td> 
-                                            <td>{{ $item->nama_supplier }}</td>
-                                            <td>{{ $item->telepon }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td>{{ $item->alamat }}</td>
-                                         @role('admin')
-                                            <td>
-                                                <div class="dropdown">
-                                                    <button class="btn btn-sm btn-primary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                        Aksi
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li><a class="dropdown-item text-info" href="{{ route('supplier.show', $item->id) }}">
-                                                            <i class="fas fa-info me-2"></i>
-                                                            Detail</a></li>
-                                                        <li><a class="dropdown-item text-primary" href="#" data-toggle="modal" data-target="#modalEditSupplier{{ $item->id }}">
-                                                            <i class="fas fa-edit me-2"></i>
-                                                             Edit</a></li>
-                                                        <li><form action="{{ route('supplier.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin hapus supplier {{ $item->nama_supplier }}?')" style="display:inline;">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item text-danger show_confirm"
-                                                            data-name="{{ $item->nama_supplier }}">
-                                                                <i class="fas fa-trash me-2"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                        @endrole
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7">Data tidak ditemukan.</td>
-                                    </tr>
-                                    @endforelse
+                                       
                                 </tbody>
                                 </table>
                             </div>
@@ -93,53 +59,207 @@
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="modalSupplierLabel">Tambah Supplier</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
                         </div>
+                        <div class="modal-body">
 
                         <!-- Form Card Tambah -->
                         <div class="card shadow mb-4">
                             <div class="card-body">
-                                <form action="{{ route('supplier.store') }}" method="POST">
-                                    @csrf
-                                    
-                                    <div class="form-group">
-                                        <label for="nama">Nama Supplier</label>
-                                        <input type="text" name="nama_supplier" id="nama_supplier" class="form-control" placeholder="Masukkan Supplier" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="nama">Telepon</label>
-                                        <input type="number" name="telepon" id="telepon" class="form-control" placeholder="Masukkan Telepon" required>
-                                    </div>
+                                <form id="formSupplier">
+    @csrf
+    <div class="form-group">    
+        <label>Nama Supplier</label>
+        <input type="text" name="nama_supplier" class="form-control">
+        <span class="text-danger error-text nama_supplier_error"></span>
+    </div>
 
-                                    <div class="form-group">
-                                        <label for="nama">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email" required>
-                                    </div>
+    <div class="form-group">
+        <label>Telepon</label>
+        <input type="text" name="telepon" class="form-control">
+        <span class="text-danger error-text telepon_error"></span>
+    </div>
 
-                                    <div class="form-group">
-                                        <label for="nama">Alamat</label>
-                                        <input type="text" name="alamat" id="alamat" class="form-control" placeholder="Masukkan Alamat" required>
-                                    </div>
+    <div class="form-group">
+        <label>Email</label>
+        <input type="text" name="email" class="form-control">
+        <span class="text-danger error-text email_error"></span>
+    </div>
 
-                                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
-                                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
-                                </form>
+    <div class="form-group">
+        <label>Alamat</label>
+        <textarea name="alamat" class="form-control"></textarea>
+        <span class="text-danger error-text alamat_error"></span>
+    </div>
+
+    <button type="submit" id="btnSaveSupplier" class="btn btn-sm btn-primary">Simpan</button>
+    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+</form>
+
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            @foreach ($suppliers as $item)
+            @push('scripts')
+            <script>
+
+            $(document).ready(function () {
+                var table = $('#tabelSupplier').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    ajax: "{{ route('supplier.data') }}",
+                    columns: [
+                        { data: 'DT_RowIndex', name:'DT_RowIndex', orderable: false, searchable: false },
+                        { data: 'nama_supplier', name: 'nama_supplier' },
+                        { data: 'telepon', name: 'telepon' },
+                        { data: 'email', name: 'email' },
+                        { data: 'alamat', name: 'alamat' },
+                        { data: 'aksi', name: 'aksi', orderable: false, searchable: false }
+                    ]
+            });
+
+
+
+                // tambah supplier
+                $('#formSupplier').on('submit', function(e){
+                    e.preventDefault();
+                    $.ajax({
+                        url: "{{ route('supplier.store') }}",
+                        type: "POST",
+                        data: $(this).serialize(),
+                        success: function(response){
+                            if(response.status){
+                                $('#modalSupplier').modal('hide');
+                                table.ajax.reload(null, false); // reload otomatis
+                            }
+                        },
+                        error: function(xhr){
+                            console.log(xhr.responseJSON);
+                        }
+                    });
+                });
+            });
+
+               // hapus data
+               $(document).on('click', '.btn-delete', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+
+                Swal.fire({
+                    title: "Yakin?",
+                    text: "Data ini akan dihapus permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#30852d',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $.ajax({
+                            url: url,
+                            type: "DELETE",
+                            data: { _token: $('meta[name="csrf-token"]').attr('content') },
+                            success: function(res){
+                                $('#tabelSupplier').DataTable().ajax.reload(null, false);
+                                
+                                Swal.fire( 
+                                    'Berhasil!',
+                                    res.message ?? 'Data Berhasil dihapus',
+                                    'success'
+                                )
+                            },
+                            error: function(xhr){
+                                Swal.fire(
+                                    'Gagal',
+                                    'Terjadi kesalahan saat menghapus data.',
+                                    'error'
+                                )
+                            }
+                        });
+                    }
+                })
+            });
+
+              // Edit data
+              $(document).on('click', '.btn-edit', function(e) {
+                e.preventDefault();
+                let url = $(this).attr('href');
+
+                $.get(url, function(res) {
+                    // old data
+                    $('#edit_id').val(res.id);
+                    $('#edit_nama_supplier').val(res.nama_supplier);
+                    $('#edit_telepon').val(res.telepon);
+                    $('#edit_email').val(res.email);
+                    $('#edit_alamat').val(res.alamat);
+
+                    $('#modalEditSupplier').modal('show');
+                });
+              });
+
+              // submit edit
+              $('#formEditSupplier').on('submit', function(e) {
+                e.preventDefault();
+                let id = $('#edit_id').val();
+                let url = "/supplier/" + id;
+
+                $.ajax({
+                    url: url,
+                    type: "PUT",
+                    data: $(this).serialize(),
+                    success: function(res){
+                        $('#modalEditSupplier').modal('hide');
+                        $('#tabelSupplier').DataTable().ajax.reload(null, false);
+
+                        Swal.fire('Berhasil!', 'Data berhasil diupdate.', 'success');
+                    },
+                    error: function (xhr){
+                        Swal.fire('Gagal!', 'Terjadi kesalahan saat update data', 'error');
+                    }
+                });
+                });
+
+                // Detail data
+                $(document).on('click', '.btn-detail', function(e) {
+                    e.preventDefault();
+                    let id = $(this).data('id');
+
+                    $.get("/supplier/" + id, function(res) {
+                        $('#detail_nama_supplier').text(res.nama_supplier);
+                     
+
+                        // daftar obat
+                        let rows = '';
+                        if (res.obats && res.obats.length > 0) {
+                            res.obats.forEach((obat, index) => {
+                                rows += `
+                                    <tr>
+                                        <td>${index+1}</td>
+                                        <td>${obat.nama_obat}</td>
+                                    </tr>
+                                `;
+                            });
+                        } else {
+                            rows = `<tr><td colspan="4" class="text-center">Belum ada obat</td></tr>`;
+                        }
+                        
+                        $('#detail_obat_list').html(rows);
+                        $('#modalDetailSupplier').modal('show');
+                    });
+                });
+                </script>
+            @endpush
+            @endsection
+             
+         
             <!-- Modal Form Edit Supplier -->
-             <div class="modal fade" id="modalEditSupplier{{ $item->id }}" tabindex="-1" aria-labelledby="modalSupplierLabel{{ $item->id }}" aria-hidden="true">
+             <div class="modal fade" id="modalEditSupplier" tabindex="-1" aria-labelledby="modalSupplierLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="modalSupplierLabel{{ $item->id }}">Edit Supplier</h5>
+                            <h5 class="modal-title" id="modalEditSupplierLabel">Edit Supplier</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
@@ -148,35 +268,32 @@
                         <!-- Form Card Edit -->
                          <div class="card shadow mb-4">
                             <div class="card-body">
-                                <form action="{{ route('supplier.update', $item->id) }}" method="POST">
+                                <form id="formEditSupplier">
                                     @csrf
                                     @method('PUT')
+                                    <input type="hidden" name="id" id="edit_id">
 
                                     <div class="form-group">
-                                        <label for="nama_supplier{{ $item->id }}">Nama Supplier</label>
-                                        <input type="text" name="nama_supplier" id="nama_supplier{{ $item->id }}" class="form-control"
-                                        value="{{ old('nama_supplier', $item->nama_supplier) }}" required>
+                                        <label for="edit_nama_supplier">Nama Supplier</label>
+                                        <input type="text" name="nama_supplier" id="edit_nama_supplier" class="form-control" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="telepon{{ $item->id }}">Telepon</label>
-                                        <input type="number" name="telepon" id="telepon{{ $item->id }}" class="form-control"
-                                        value="{{ old('telepon', $item->telepon) }}" required>
+                                        <label for="edit_telepon">Telepon</label>
+                                        <input type="text" name="telepon" id="edit_telepon" class="form-control" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="email{{ $item->id }}">Email</label>
-                                        <input type="email" name="email" id="email{{ $item->id }}" class="form-control"
-                                        value="{{ old('email', $item->email) }}" required>
+                                        <label for="edit_email">Email</label>
+                                        <input type="text" name="email" id="edit_email" class="form-control" required>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="alamat{{ $item->id }}">Alamat</label>
-                                        <input type="text" name="alamat" id="alamat{{ $item->id }}" class="form-control"
-                                        value="{{ old('alamat', $item->alamat) }}" required>
+                                        <label for="edit_alamat">Alamat</label>
+                                        <input type="text" name="alamat" id="edit_alamat" class="form-control" required>
                                     </div>
 
-                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_supplier }}">
+                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split">
                                         <span class="icon text-white-50">
                                             <i class="fas fa-edit"></i>
                                         </span>
@@ -190,31 +307,50 @@
                     </div>
                 </div>
             </div>
-            @endforeach
 
+            <!-- Modal Detail Supplier -->
+<div class="modal fade" id="modalDetailSupplier" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h5 class="modal-title" id="modalDetailLabel">Detail Supplier</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+          </div>
+          <div class="modal-body">
+              <ul class="list-group">
+                  <li class="list-group-item"><strong>Nama:</strong> <span id="detail_nama_supplier"></span></li>
+                  
+              </ul>
 
-            <!-- Membuka kembali modal setelah validasi error -->
-            @if(session('open_modal'))
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.bootstrap) {
-                // Bootstrap 5
-                new bootstrap.Modal(document.getElementById('modalSupplier')).show();
-            } else if (window.$) {
-                // Bootstrap 4
-                $('#modalSupplier').modal('show');
-            }
-        });
-         </script>
-         @endif
+              <h6>Daftar Obat yang disuplai</h6>
+              <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Obat</th>
+                    </tr>
+                </thead>
+                <tbody id="detail_obat_list">
+
+                </tbody>
+              </table>
+          </div>
+      </div>
+  </div>
+</div>
+
+   
+
 
 
          <!-- Sweet Alert -->
-          @push('scripts')
-          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+          <!-- @push('scripts')
+          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> -->
 
           <!-- Sukses -->
-            @if (session('success'))
+            <!-- @if (session('success'))
             <script>
             Swal.fire({
                 icon: 'success',
@@ -223,10 +359,10 @@
                 confirmButtonColor: '#3085d6'
             });
             </script>
-            @endif
+            @endif -->
 
             <!-- Gagal -->
-            @if (session('error'))
+            <!-- @if (session('error'))
             <script>
             Swal.fire({
                 icon: 'error',
@@ -235,10 +371,10 @@
                 confirmButtonColor: '#d33'
             });
             </script>
-            @endif
+            @endif -->
 
             <!-- Konfirmasi Tindakan -->
-            <script>
+            <!-- <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const deleteButtons = document.querySelectorAll(".show_confirm");
 
@@ -266,10 +402,10 @@
                     });
                 });
                 });
-                </script>
+                </script> -->
 
             <!-- Konfirmasi Tindakan Update -->
-            <script>
+            <!-- <script>
             document.addEventListener("DOMContentLoaded", function () {
                 const updateButtons = document.querySelectorAll(".show_update");
 
@@ -297,10 +433,10 @@
                     });
                 });
                 });
-                </script>
+                </script> -->
 
                 <!-- Validasi nama serupa -->
-                @if($errors->has('nama_supplier'))
+                <!-- @if($errors->has('nama_supplier'))
                 <script>
                 Swal.fire({
                     icon: 'error',
@@ -308,10 +444,10 @@
                     text: '{{ $errors->first('nama_supplier') }}'
                 });
                 </script>
-                @endif
+                @endif -->
 
                 <!-- Validasi email serupa -->
-                @if($errors->has('email'))
+                <!-- @if($errors->has('email'))
                 <script>
                 Swal.fire({
                     icon: 'error',
@@ -319,9 +455,9 @@
                     text: '{{ $errors->first('email') }}'
                 });
                 </script>
-                @endif
-                @endpush
+                @endif -->
+                <!-- @endpush -->
 
                 <!-- Bottsrap -->
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    @endsection
+                <!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script> -->
+

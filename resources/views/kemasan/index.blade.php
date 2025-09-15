@@ -1,323 +1,135 @@
 @extends('layouts.admin')
 
-@section('title', 'Data kemasan')
+@section('title', 'Data Kemasan')
 
 @section('content')
+<h1 class="h3 mb-2 text-gray-800">Data Kemasan</h1>
+<div class="p-6">
 
-        {{-- Tabel Data --}}
-       <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data kemasan</h1>
-                   <div class="p-6">
+    @role('admin')
+    <div class="mb-4">
+        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalKemasan">
+            + Tambah Kemasan
+        </a>
+    </div>
+    @endrole
 
-        {{-- Tombol Tambah --}}
-                 @role('admin')
-                     <div class="mb-4">
-                    <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalKemasan">
-                        <span class="icon text-white-10">
-                            <i class="fa fa-plus"></i>
-                        </span>
-                        Tambah Kemasan
-                    </a>
-                     </div>
-                 @endrole
-
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <th>No</th>
-                                        <th>Frekuensi Pemakaian</th>
-                                        <th>Tanggal Produksi</th>
-                                        <th>Tanggal Kadaluarsa</th>
-                                        <th>Petunjuk Penyimpanan</th>
-                                        <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-start">
-                                         @forelse($kemasans as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td> 
-                                            <td>{{ $item->nama_kemasan }}</td>
-                                            <td>{{ $item->tanggal_produksi }}</td>
-                                            <td>{{ $item->tanggal_kadaluarsa }}</td>
-                                            <td>{{ $item->petunjuk_penyimpanan }}</td>
-                                         @role('admin')
-                                            <td>
-                                                 <div class="d-flex justify-content-center">
-                                                    <!-- Detail -->
-                                                     <a href="{{ route('kemasan.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-info"></i>
-                                                        </span>
-                                                        <span class="text">Detail</span>
-                                                    </a>
-                                                    <!-- Edit -->
-                                                        <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
-                                                       data-toggle="modal" data-target="#modalEditkemasan{{ $item->id }}">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-edit"></i>
-                                                        </span>
-                                                        <span class="text">Edit</span>
-                                                    </a>
-                                                    <!-- Hapus -->
-                                                    <form action="{{ route('kemasan.destroy', $item->id) }}" method="POST" >
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
-                                                         data-name="{{ $item->nama_kemasan }}">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Hapus</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        @endrole
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7">Data tidak ditemukan.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive" style="overflow-x:auto; white-space:nowrap;">
+                <table class="table table-bordered" id="kemasanTable" width="100%" cellspacing="0">
+                    <thead>
+                        <meta name="csrf-token" content="{{ csrf_token() }}">
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Kemasan</th>
+                            <th>Tanggal Produksi</th>
+                            <th>Tanggal Kadaluarsa</th>
+                            <th>Petunjuk Penyimpanan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
                 </table>
             </div>
+        </div>
+    </div>
+</div>
 
-            <!-- Modal Tambah kemasan -->
-             <div class="modal fade" id="modalKemasan" tabindex="-1" aria-labelledby="modalKemasanLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalKemasanLabel">Tambah Kemasan</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+{{-- Modal Tambah --}}
+<div class="modal fade" id="modalKemasan" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tambah Kemasan</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="card shadow mb-0">
+        <div class="card-body">
+        <form id="form-kemasan">
+        @csrf
+        <div class="form-group">
+        <label>Nama Kemasan</label>
+        <input type="text" name="nama_kemasan" class="form-control" required>
+        </div>
+        <div class="form-group">
+        <label>Tanggal Produksi</label>
+        <input type="date" name="tanggal_produksi" class="form-control" required>
+        </div>
+        <div class="form-group">
+        <label>Tanggal Kadaluarsa</label>
+        <input type="date" name="tanggal_kadaluarsa" class="form-control" required>
+        </div>
+        <div class="form-group">
+        <label>Petunjuk Penyimpanan</label>
+        <input type="text" name="petunjuk_penyimpanan" class="form-control" required>
+        </div>
+        <button type="submit" class="btn btn-primary">Simpan</button>
+        <a href="{{ route('kemasan.index') }}" class="btn btn-secondary">Kembali</a>
+        </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-                           <!-- Form Card Tambah -->
-                        <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <form action="{{ route('kemasan.store') }}" method="POST">
-                                    @csrf
-
-                                    <div class="form-group">
-                                        <label for="nama_kemasan">Nama Kemasan</label>
-                                        <input type="text" name="nama_kemasan" id="nama_kemasan" class="form-control" placeholder="Masukkan Nama Kemasan" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="tanggal_produksi">Tanggal Produksi</label>
-                                        <input type="date" name="tanggal_produksi" id="tanggal_produksi" class="form-control" placeholder="Masukkan Tanggal Produksi" required>
-                                    </div>
-
-                                   <div class="form-group">
-                                        <label for="tanggal_kadaluarsa">Tanggal Kadaluarsa</label>
-                                        <input type="date" name="tanggal_kadaluarsa" id="tanggal_kadaluarsa" class="form-control" placeholder="Masukkan Tanggal Kadaluarsa" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="petunjuk_penyimpanan">Petunjuk Penyimpanan</label>
-                                        <input type="text" name="petunjuk_penyimpanan" id="petunjuk_penyimpanan" class="form-control" placeholder="Masukkan Petunjuk Penyimpanan" required>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-primary">Simpan</button>
-                                    <a href="{{ route('kemasan.index') }}" class="btn btn-secondary">Kembali</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+{{-- Modal Edit --}}
+<div class="modal fade" id="modalEditKemasan" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Edit Kemasan</h5>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="card shadow mb-0">
+        <div class="card-body">
+          <form id="form-edit-kemasan" method="POST">
+            @csrf
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" id="edit_id">
+            <div class="form-group mb-3">
+              <label>Nama Kemasan</label>
+              <input type="text" id="edit_nama_kemasan" name="nama_kemasan" class="form-control" required>
             </div>
-
-                @foreach ($kemasans as $item)
-            <!-- Modal Form Edit kemasan -->
-             <div class="modal fade" id="modalEditkemasan{{ $item->id }}" tabindex="-1" aria-labelledby="modalkemasanLabel{{ $item->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalkemasanLabel{{ $item->id }}">Edit kemasan</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <!-- Form Card Edit -->
-                        <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <form action="{{ route('kemasan.update', $item->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <div class="form-group mb-3">
-                                        <label for="nama_kemasan{{ $item->id }}">Nama Kemasan</label>
-                                        <input type="text" name="nama_kemasan" id="nama_kemasan{{ $item->id }}" 
-                                            class="form-control"
-                                            value="{{ old('nama_kemasan', $item->nama_kemasan) }}" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="tanggal_produksi{{ $item->id }}">Tanggal Produksi</label>
-                                        <input type="date" name="tanggal_produksi" id="tanggal_produksi{{ $item->id }}" 
-                                            class="form-control"
-                                            value="{{ old('tanggal_produksi', $item->tanggal_produksi) }}" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="tanggal_kadaluarsa{{ $item->id }}">Tanggal Kadaluarsa</label>
-                                        <input type="date" name="tanggal_kadaluarsa" id="tanggal_kadaluarsa{{ $item->id }}" 
-                                            class="form-control"
-                                            value="{{ old('tanggal_kadaluarsa', $item->tanggal_kadaluarsa) }}" required>
-                                    </div>
-
-                                    <div class="form-group mb-3">
-                                        <label for="petunjuk_penyimpanan{{ $item->id }}">Petunjuk Penyimpanan</label>
-                                        <input type="text" name="petunjuk_penyimpanan" id="petunjuk_penyimpanan{{ $item->id }}" 
-                                            class="form-control"
-                                            value="{{ old('petunjuk_penyimpanan', $item->petunjuk_penyimpanan) }}" required>
-                                    </div>
-
-                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" 
-                                        data-name="{{ $item->nama_kemasan }}">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-edit"></i>
-                                        </span>
-                                        <span class="text">Update</span>
-                                    </button>
-
-                                    <a href="{{ route('kemasan.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="form-group mb-3">
+              <label>Tanggal Produksi</label>
+              <input type="date" id="edit_tanggal_produksi" name="tanggal_produksi" class="form-control" required>
             </div>
-            @endforeach
+            <div class="form-group mb-3">
+              <label>Tanggal Kadaluarsa</label>
+              <input type="date" id="edit_tanggal_kadaluarsa" name="tanggal_kadaluarsa" class="form-control" required>
+            </div>
+            <div class="form-group mb-3">
+              <label>Petunjuk Penyimpanan</label>
+              <input type="text" id="edit_petunjuk_penyimpanan" name="petunjuk_penyimpanan" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="{{ route('kemasan.index') }}" class="btn btn-secondary">Kembali</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-            <!-- Membuka kembali modal setelah validasi error -->
-            @if(session('open_modal'))
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.bootstrap) {
-                // Bootstrap 5
-                new bootstrap.Modal(document.getElementById('modalKemasan')).show();
-            } else if (window.$) {
-                // Bootstrap 4
-                $('#modalKemasan').modal('show');
-            }
-        });
-         </script>
-         @endif
+{{-- Loader overlay ketika proses tambah/hapus --}}
+    <div id="loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
+            <p>Memproses data...</p>
+        </div>
+    </div>
+@endsection
 
-            <!-- Sweet Alert -->
-            @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@push('scripts')
+  {{-- Pastikan DataTables JS & CSS sudah di-include di layout --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script>
+    const kemasanApiUrl     = "{{ url('/api/kemasan') }}"; // sumber data DataTables
+  </script>
 
-            <!-- Sukses -->
-            @if (session('success'))
-            <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#3085d6'
-            });
-            </script>
-            @endif
-
-            <!-- Gagal -->
-            @if (session('error'))
-            <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33'
-            });
-            </script>
-            @endif
-
-            <!-- Konfirmasi Tindakan -->
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const deleteButtons = document.querySelectorAll(".show_confirm");
-
-                deleteButtons.forEach(function (button) {
-                    button.addEventListener("click", function (event) {
-                        event.preventDefault();
-
-                        const form = button.closest("form");
-                        const nama = button.getAttribute("data-name");
-
-                        Swal.fire({
-                            title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'Ya, hapus!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
-                    });
-                });
-                });
-                </script>
-
-                <!-- Konfirmasi Tindakan Update -->
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const updateButtons = document.querySelectorAll(".show_update");
-
-                updateButtons.forEach(function (button) {
-                    button.addEventListener("click", function (event) {
-                        event.preventDefault();
-
-                        const form = button.closest("form");
-                        const nama = button.getAttribute("data-name");
-
-                        Swal.fire({
-                            title: 'Konfirmasi Update',
-                            text: `Apakah kamu yakin ingin mengupdate data "${nama}"?`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Ya, update!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
-                    });
-                });
-                });
-                </script>
-
-                <!-- Validasi nama serupa -->
-                @if($errors->has('nama_kemasan'))
-                <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Input Frekuensi Pemakaian',
-                    text: '{{ $errors->first('nama_kemasan') }}'
-                });
-                </script>
-                @endif
-
-                @endpush
-    @endsection
+  <script src="{{ asset('js/kemasan.js') }}"></script>
+@endpush

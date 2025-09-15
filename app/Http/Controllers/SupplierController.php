@@ -15,8 +15,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = Supplier::all();
-        return view('supplier.index', compact('suppliers')); 
+        return view('supplier.index'); 
     }
 
     /**
@@ -58,7 +57,7 @@ class SupplierController extends Controller
             ], 422);
         }
 
-    $supplier = Supplier::create($validator->validated());
+        $supplier = Supplier::create($validator->validated());
     
         return response()->json([
             'status' => true,
@@ -110,11 +109,7 @@ class SupplierController extends Controller
         // Update data supplier
         $supplier->update($request->only(['nama_supplier', 'telepon', 'email', 'alamat']));
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Data berhasil diupdate!',
-            'data' => $supplier
-        ]);
+        return redirect()->route('satuankecil.index')->with('success', 'Data berhasil diupdate.');
     
     }
 
@@ -139,23 +134,6 @@ class SupplierController extends Controller
             'message' => 'Supplier berhasil dihapus'
         ]);
 
-    }
-
-    public function data()
-    {
-        $suppliers = Supplier::select(['id', 'nama_supplier', 'telepon', 'email', 'alamat']);
-
-        return datatables()->of($suppliers)
-        ->addIndexColumn() // nomer otomatis
-        ->addColumn('aksi', function ($row) {
-            return '
-            <button class="btn btn-sm btn-info btn-detail" data-id="'.$row->id.'">Detail</button>
-            <a href="'.route('supplier.edit', $row->id).'" class="btn btn-sm btn-warning btn-edit">Edit</a>
-            <a href="'.route('supplier.destroy', $row->id).'" class="btn btn-sm btn-danger btn-delete">Hapus</a>
-            ';
-        })
-        ->rawColumns(['aksi'])
-        ->make(true);
     }
 
 }

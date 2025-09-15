@@ -21,9 +21,7 @@ class ObatController extends Controller
     // Menampilkan View
     public function index()
     {
-       $obat = Obat::with(['supplier', 'kemasan', 'aturanpakai', 'satuankecil', 'satuanbesar', 'kategori', 'metodepembayaran'])->get();
-
-       return view('obat.index', compact('obat'));
+        return view('obat.index');
     }
 
     // Membuat Data
@@ -128,8 +126,10 @@ class ObatController extends Controller
      */
     public function update(Request $request, string $id)
     {
-    // Validasi input
-    $request->validate([
+        $obat = Obat::findOrFail($id);
+
+        // Validasi input
+        $request->validate([
         'nama_obat'           => 'required|string|max:255',
         'foto'                => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         'supplier_id'         => 'required|exists:suppliers,id',
@@ -141,14 +141,11 @@ class ObatController extends Controller
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
     ]);
 
-    // Ambil data obat dulu
-    $obat = Obat::findOrFail($id);
+        // Default foto lama
+        $fotoName = $obat->foto;
 
-    // Default foto lama
-    $fotoName = $obat->foto;
-
-    // Kalau ada foto baru
-    if ($request->hasFile('foto')) {
+        // Kalau ada foto baru
+        if ($request->hasFile('foto')) {
         // Hapus foto lama
         if ($obat->foto && Storage::disk('public')->exists('foto_obat/'.$obat->foto)) {
             Storage::disk('public')->delete('foto_obat/'.$obat->foto);
@@ -172,7 +169,14 @@ class ObatController extends Controller
         'metodepembayaran_id' => $request->metodepembayaran_id,
     ]);
 
-    return redirect()->route('obat.index')->with('success', 'Data berhasil diupdate.');
+    // lanjut update
+    $obat->update($request->all());
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Data berhasil diupdate',
+        'data' => $obat
+    ]);
     }
 
 
@@ -181,12 +185,13 @@ class ObatController extends Controller
      */
     public function destroy(string $id)
     {
-        // Hapus data obat
-        $obat = Obat::findOrFail($id);
-        $obat->delete();
-
-        // Redirect ke index dengan pesan sukses
-        return redirect()->route('obat.index')->with('success', 'Data berhasil dihapus.');
+        try {
+            $obat = Obat::findOrFail($id);
+   
+            $obat->delete();
+            return redirect()->back()->with('success', 'Obat berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus kategori.');
+        }
     }
 }
- 

@@ -83,7 +83,7 @@ class KategoriController extends Controller
         ]); 
 
         $validator = Validator::make($request->all(), [
-            'nama_kategori' => 'required|string|unique:kategoris,nama_kategori',
+            'nama_kategori' => 'required|string|unique:kategoris,nama_kategori,' . $id,
             'deskripsi'     => 'required|string',
         ]);
 

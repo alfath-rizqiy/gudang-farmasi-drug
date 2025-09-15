@@ -10,19 +10,16 @@ use App\Http\Controllers\Api\SatuanKecilController;
 use App\Http\Controllers\Api\SatuanBesarController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\MetodePembayaranController;
+use App\Http\Controllers\Api\ProfileController;
 
-Route::get('/obat', function (Request $request) {
-    return $request->obat();
-})->middleware('auth:sanctum');
+// routes/api.php
+Route::middleware('auth:sanctum')->put('/profil/update', [\App\Http\Controllers\Api\ProfileController::class, 'update']);
 
-Route::resource('/obat', ObatController::class);
-Route::resource('/supplier', SupplierController::class);
-Route::resource('/kemasan', KemasanController::class);
-Route::resource('/aturanpakai', AturanPakaiController::class);
-Route::resource('/satuankecil', SatuanKecilController::class);
-Route::resource('/satuanbesar', SatuanBesarController::class);
-Route::resource('/kategori', KategoriController::class);
-Route::resource('/metodepembayaran', MetodePembayaranController::class);
-
-// Ajax 
-Route::get('/supplier', [SupplierController::class, 'index'])->name('api.supplier');
+Route::apiResource('/obat', ObatController::class);
+Route::apiResource('/supplier', SupplierController::class);
+Route::apiResource('/kemasan', KemasanController::class);
+Route::apiResource('/aturanpakai', AturanPakaiController::class);
+Route::apiResource('/satuankecil', SatuanKecilController::class);
+Route::apiResource('/satuanbesar', SatuanBesarController::class);
+Route::apiResource('/kategori', KategoriController::class);
+Route::apiResource('/metodepembayaran', MetodePembayaranController::class);

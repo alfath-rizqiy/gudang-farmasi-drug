@@ -10,8 +10,7 @@ class KemasanController extends Controller
 {
     public function index()
     {
-        $kemasans = Kemasan::all();
-        return view('kemasan.index', compact('kemasans'));
+        return view('kemasan.index');
     }
 
     public function create()

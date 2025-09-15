@@ -13,7 +13,7 @@
         <!-- Tombol Tambah -->
                  @role('admin|petugas')
                      <div class="m-2 mb-4">
-                     <a href="{{ route('obat.create') }}" class="btn btn-sm btn-primary">
+                     <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalObat">
                         <span class="icon text-white-10">
                             <i class="fa fa-plus"></i>
                         </span>
@@ -51,167 +51,255 @@
                         </div>
                         <div class="card-body">
                             <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <table class="table table-bordered" id="tableObat" width="100%" cellspacing="0">
                                     <thead>
-                                        <th>No</th>
-                                        <th>Obat</th>
-                                        <th>Supllier</th>
-                                        <th>Kemasan</th>
-                                        <th>Satuan Kecil</th>
-                                        <th>Satuan Besar</th>
-                                        <th>Aturan Pakai</th>
-                                        <th>Kategori</th>
-                                        <th>Metode Pembayaran</th>
-                                        <th>Tanggal Input</th>
-                                        <th>Foto Obat</th>
-                                         @role('admin')
-                                        <th>Aksi</th>
-                                         @endrole
+                                        <meta name="csrf-token" content="{{ csrf_token() }}">
+                                        <tr>
+                                            <th>No</th>
+                                            <th>Obat</th>
+                                            <th>Supllier</th>
+                                            <th>Kemasan</th>
+                                            <th>Satuan Kecil</th>
+                                            <th>Satuan Besar</th>
+                                            <th>Aturan Pakai</th>
+                                            <th>Kategori</th>
+                                            <th>Metode Pembayaran</th>
+                                            <th>Tanggal Input</th>
+                                            <th>Foto Obat</th>
+                                            <th>Aksi</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="text-start">
-                                         @forelse($obat as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ $item->nama_obat }}</td>
-                                            <td>{{ $item->supplier->nama_supplier ?? '-' }}</td>
-                                            <td>{{ $item->kemasan->nama_kemasan ?? '-' }}</td>
-                                            <td>{{ $item->satuankecil->nama_satuankecil ?? '-' }}</td>
-                                            <td>{{ $item->satuanbesar->nama_satuanbesar ?? '-' }}</td>
-                                            <td>{{ $item->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
-                                            <td>{{ $item->kategori->nama_kategori ?? '-' }}</td>
-                                            <td>{{ $item->metodepembayaran->nama_metode ?? '-' }}</td>
-                                            <td>{{ $item->created_at->format('d F Y') }}</td>
-                                            <td><!-- Button trigger modal -->
-                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalFoto{{ $item->id }}">
-                                                    Lihat Foto
-                                                </button></td>
-                                         @role('admin')
-                                            <td>
-                                                <div class="d-flex justify-content-center">
-                                                    <!-- Edit -->
-                                                    <a href="{{ route('obat.edit', $item->id) }}" class="btn-sm btn btn-primary btn-icon-split mx-2">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-edit"></i>
-                                                        </span>
-                                                        <span class="text">Edit</span>
-                                                    </a>
-                                                    <!-- Hapus -->
-                                                    <form action="{{ route('obat.destroy', $item->id) }}" method="POST">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm" data-name="{{ $item->nama_obat }}">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Hapus</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        @endrole
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7">Data tidak ditemukan.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
                                 </table>
                             </div>
                         </div>
                     </div>
-                </table>
+
+<!-- Modal Foto -->
+<div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Foto Obat</h5>
+        <button type="button" class="btn" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body text-center">
+        <img id="fotoPreview" src="" class="img-fluid rounded shadow" alt="Foto Obat">
+        <p class="mt-2" id="namaObatFoto"></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal Tambah Obat -->
+<div class="modal fade" id="modalObat" tabindex="-1" aria-labelledby="modalObatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalObatLabel">Tambah Data Obat</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
+            <div class="card-body">
+                <form id="formObat" enctype="multipart/form-data">
+                    @csrf
+                    <div class="row">
 
+                        <!-- Nama Obat -->
+                        <div class="col-md-6 mb-3">
+                            <label for="nama_obat">Nama Obat</label>
+                            <input type="text" name="nama_obat" id="nama_obat" class="form-control" required>
+                        </div>
 
-            <!-- Sweet Alert -->
-            @push('scripts')
-            <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const deleteButtons = document.querySelectorAll(".show_confirm");
+                        <!-- Supplier -->
+                        <div class="col-md-6 mb-3">
+                            <label for="supplier_id">Supplier</label>
+                            <select name="supplier_id" id="supplier_id" class="form-control" required>
+                                <option value="">Pilih Supplier</option>
+                            </select>
+                        </div>
 
-                deleteButtons.forEach(function (button) {
-                    button.addEventListener("click", function (event) {
-                        event.preventDefault();
+                        <!-- Kemasan -->
+                        <div class="col-md-6 mb-3">
+                            <label for="kemasan_id">Kemasan</label>
+                            <select name="kemasan_id" id="kemasan_id" class="form-control" required>
+                                <option value="">Pilih Kemasan</option>
+                                
+                            </select>
+                        </div>
 
-                        const form = button.closest("form");
-                        const nama = button.getAttribute("data-name");
+                        <!-- Satuan Kecil -->
+                        <div class="col-md-6 mb-3">
+                            <label for="satuan_kecil_id">Satuan Kecil</label>
+                            <select name="satuan_kecil_id" id="satuan_kecil_id" class="form-control" required>
+                                <option value="">Pilih Satuan Kecil</option>
+                               
+                            </select>
+                        </div>
 
-                        Swal.fire({
-                            title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'Ya, hapus!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
-                    });
-                });
-                });
-                </script>
+                        <!-- Satuan Besar -->
+                        <div class="col-md-6 mb-3">
+                            <label for="satuan_besar_id">Satuan Besar</label>
+                            <select name="satuan_besar_id" id="satuan_besar_id" class="form-control" required>
+                                <option value="">Pilih Satuan Besar</option>
+                                
+                            </select>
+                        </div>
 
-                <!-- Succes -->
-                <script>
-                @if(session('success'))
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: '{{ session('success') }}',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                @endif
-                </script>
-       
+                        <!-- Kategori -->
+                        <div class="col-md-6 mb-3">
+                            <label for="kategori_id">Kategori</label>
+                            <select name="kategori_id" id="kategori_id" class="form-control" required>
+                                <option value="">Pilih Kategori</option>
+                               
+                            </select>
+                        </div>
 
-                <!-- Gagal -->
-            @if (session('error'))
-            <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33'
-            });
-            </script>
-            @endif
+                        <!-- Aturan Pakai -->
+                        <div class="col-md-6 mb-3">
+                            <label for="aturanpakai_id">Aturan Pakai</label>
+                            <select name="aturanpakai_id" id="aturanpakai_id" class="form-control" required>
+                                <option value="">Pilih Aturan Pakai</option>
+                               
+                            </select>
+                        </div>
 
-                <!-- Validasi nama serupa -->
-                @if($errors->has('nama_obat'))
-                <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Input Nama',
-                    text: '{{ $errors->first('nama_obat') }}'
-                });
-                </script>
-                @endif
+                        <!-- Metode Pembayaran -->
+                        <div class="col-md-6 mb-3">
+                            <label for="metodepembayaran_id">Metode Pembayaran</label>
+                            <select name="metodepembayaran_id" id="metodepembayaran_id" class="form-control" required>
+                                <option value="">Pilih Metode Pembayaran</option>
+                                
+                            </select>
+                        </div>
 
-                @endpush
-
-                @foreach ($obat as $item)
-                <!-- Modal Foto -->
-                 <div class="modal fade" id="modalFoto{{ $item->id }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h1 class="modal-title fs-5" id="exampleModalLabel">Foto Obat</h1>
-                                <button type="button" class="btn btn-outline-dark btn-sm" data-bs-dismiss="modal" aria-label="Close"><i class="fa fa-times"></i></button>
-                            </div>
-                            <div class="modal-body">
-                                <img src="{{ asset('storage/foto_obat/'.$item->foto) }}" alt="{{ $item->foto}}" class="img-fluid">
-                            </div>
+                        <!-- Foto Obat -->
+                        <div class="col-md-12 mb-3">
+                            <label for="foto">Foto Obat</label>
+                            <input type="file" name="foto" id="foto" class="form-control">
                         </div>
                     </div>
-                </div>
-                @endforeach
-                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    @endsection
+
+                    <button type="submit" id="btnSaveObat" class="btn btn-sm btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Form Edit Supplier -->
+ <div class="modal fade" id="modalEditObat" tabindex="-1"  aria-labelledby="modalEditObatLabel" aria-hidden="true">
+    <div class="modal-dialog modal-x1 modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalEditObatLabel">Edit Obat</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+<!-- Form Card Edit -->
+ <div class="modal-body">
+        <form id="formEditObat" method="POST">
+            @csrf
+            <div class="row">
+            <input type="hidden" name="_method" value="PUT">
+            <input type="hidden" id="edit_id" name="id">
+
+            <div class="col-md-6 mb-3">
+                <label>Nama Obat</label>
+                <input type="text" name="nama_obat" id="edit_nama_obat" class="form-control" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="supplier_id">Supplier</label>
+                <select name="supplier_id" id="edit_supplier_id" class="form-control" required>
+                    <option value="">Pilih Supplier</option>
+                   
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="kemasan_id">Kemasan</label>
+                <select name="kemasan_id" id="edit_kemasan_id" class="form-control" required>
+                    <option value="">Pilih Kemasan</option>
+                   
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="satuan_kecil_id">Satuan Kecil</label>
+                <select name="satuan_kecil_id" id="edit_satuan_kecil_id" class="form-control" required>
+                    <option value="">Pilih Satuan Kecil</option>
+                   
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="satuan_besar_id">Satuan Besar</label>
+                <select name="satuan_besar_id" id="edit_satuan_besar_id" class="form-control" required>
+                    <option value="">Pilih Satuan Besar</option>
+                    
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="kategori_id">Kategori</label>
+                <select name="kategori_id" id="edit_kategori_id" class="form-control" required>
+                    <option value="">Pilih Kategori</option>
+                    
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="aturanpakai_id">Aturan Pakai</label>
+                <select name="aturanpakai_id" id="edit_aturanpakai_id" class="form-control" required>
+                    <option value="">Pilih Aturan Pakai</option>
+                    
+                </select>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label for="metodepembayaran_id">Metode Pembayaran</label>
+                <select name="metodepembayaran_id" id="edit_metodepembayaran_id" class="form-control" required>
+                    <option value="">Pilih Metode Pembayaran</option>
+                    
+                </select>
+            </div>
+
+            <!-- Foto Obat -->
+             <div class="col-md-12 mb-3">
+                <label for="foto">Foto Obat</label>
+                <input type="file" name="foto" id="foto" class="form-control">
+            </div>
+            <div class="col-md-12 mb-3">
+                <label>Foto Lama</label><br>
+                <img id="preview_edit_foto" src="" class="img-thumbnail d-none mb-2" width="100">
+            </div>
+            
+        </div>
+        
+        <button type="submit" class="btn btn-sm btn-primary">Update</button>
+        <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+@endsection
+
+@push ('scripts')
+{{-- Pastikan DataTables JS& CSS sudah di-include di layout --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>const obatApiUrl = "{{ url('/api/obat') }}";</script>
+</script>
+
+<script src="{{ asset('js/obat.js') }}"></script>
+@endpush

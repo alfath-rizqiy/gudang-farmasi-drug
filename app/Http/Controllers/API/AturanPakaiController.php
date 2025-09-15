@@ -21,37 +21,39 @@ class AturanPakaiController extends Controller
 
     // Tambah aturan pakai baru
     public function store(Request $request)
-    {
-        // 🔧 Normalisasi nama_kategori sebelum validasi
+{
+    // Bersihin input dari spasi berlebih
+    // 🔧 Normalisasi frekuensi_pemakaian sebelum validasi
         $request->merge([
-            'frekuensi_pemakaian' => (preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
         ]);
 
-       $validator = Validator::make($request->all(), [
+    $validator = Validator::make($request->all(), [
         'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian',
-        'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian',
-        'deskripsi'           => 'nullable|string',
+        'waktu_pemakaian'     => 'required|string',
+        'deskripsi'           => 'required|string',
     ], [
         'frekuensi_pemakaian.required' => 'Frekuensi pemakaian wajib diisi.',
-        'waktu_pemakaian.required'     => 'Waktu pemakaian wajib diisi.',
+        'frekuensi_pemakaian.unique'   => 'Frekuensi pemakaian sudah digunakan.',
     ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Validasi error',
-                'errors'  => $validator->errors()
-            ], 422);
-        }
-
-        $aturanpakai = AturanPakai::create($validator->validated());
-
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Aturan pakai berhasil ditambahkan.',
-            'data'    => $aturanpakai
-        ], 201);
+            'status'  => false,
+            'message' => 'Validasi error',
+            'errors'  => $validator->errors()
+        ], 422);
     }
+
+    $aturanpakai = AturanPakai::create($validator->validated());
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Aturan pakai berhasil ditambahkan.',
+        'data'    => $aturanpakai
+    ], 201);
+}
+
 
     // Tampilkan detail aturan pakai
     public function show($id)
@@ -73,38 +75,45 @@ class AturanPakaiController extends Controller
 
     // Update aturan pakai
     public function update(Request $request, $id)
-    {
-        $validator = Validator::make($request->all(), [
-            'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
-            'waktu_pemakaian'     => 'required|string|unique:aturan_pakais,waktu_pemakaian,' . $id,
-            'deskripsi'           => 'nullable|string',
+{
+    // Bersihin input dari spasi berlebih
+    // 🔧 Normalisasi frekuensi_pemakaian sebelum validasi
+        $request->merge([
+            'frekuensi_pemakaian' => strtolower(preg_replace('/\s+/', ' ', trim($request->frekuensi_pemakaian)))
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Validasi error',
-                'errors'  => $validator->errors()
-            ], 422);
-        }
+    $validator = Validator::make($request->all(), [
+        'frekuensi_pemakaian' => 'required|string|unique:aturan_pakais,frekuensi_pemakaian,' . $id,
+        'waktu_pemakaian'     => 'required|string',
+        'deskripsi'           => 'required|string',
+    ]);
 
-        $aturanpakai = AturanPakai::find($id);
-
-        if (!$aturanpakai) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Aturan pakai tidak ditemukan.'
-            ], 404);
-        }
-
-        $aturanpakai->update($validator->validated());
-
+    if ($validator->fails()) {
         return response()->json([
-            'success' => true,
-            'message' => 'Aturan pakai berhasil diupdate.',
-            'data'    => $aturanpakai
-        ], 200);
+            'status'  => false,
+            'message' => 'Validasi error',
+            'errors'  => $validator->errors()
+        ], 422);
     }
+
+    $aturanpakai = AturanPakai::find($id);
+
+    if (!$aturanpakai) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Aturan pakai tidak ditemukan.'
+        ], 404);
+    }
+
+    $aturanpakai->update($validator->validated());
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Aturan pakai berhasil diupdate.',
+        'data'    => $aturanpakai
+    ], 200);
+}
+
 
     // Hapus aturan pakai
     public function destroy($id)

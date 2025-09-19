@@ -15,6 +15,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
+
 class ObatController extends Controller
 {
     
@@ -42,6 +43,8 @@ class ObatController extends Controller
     // Menyimpan data obat baru ke database
     public function store(Request $request)
     {
+         // Store on default disk
+         Excel::store(new ObatExport(2018), 'data-obat.xlsx');
 
         //  Normalisasi nama_kategori sebelum validasi
         $request->merge([
@@ -194,4 +197,5 @@ class ObatController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus kategori.');
         }
     }
+
 }

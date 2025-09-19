@@ -331,5 +331,63 @@ $(document).ready(function () {
         });
     });
 
+    // import
+    $("#formImport").on("submit", function (e) {
+        e.preventDefault();
+
+        let formData = new FormData(this);
+        let url = $(this).data("url");
+
+        $.ajax({
+            url: importObatUrl,
+            type: "POST",
+            data: formData,
+            contentType: false,
+            processData: false,
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+            },
+            beforeSend: function () {
+                // munculkan loader
+                $("#loader").fadeIn(200);
+            },
+
+            success: function (res) {
+                $("#loader").fadeOut(200);
+                $("#importModal").modal("hide");
+
+                Swal.fire({
+                    icon: "success",
+                    title: "Berhasil",
+                    text: res.message ?? "Data berhasil diimport!",
+                    timer: 2000,
+                }).then(() => {
+                    table.ajax.reload(false);
+                });
+            },
+            error: function (xhr) {
+                $("#loader").fadeOut(200);
+
+                if (xhr.status === 422) {
+                    let pesan = xhr.responseJSON.message ?? "Validasi gagal.";
+
+                    Swal.fire({
+                        icon: "error",
+                        title: "Import gagal!",
+                        html: pesan,
+                    });
+                } else {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Terjadi kesalahan!",
+                        text:
+                            xhr.responseJSON?.message ??
+                            "Silakan coba Import ulang.",
+                    });
+                }
+            },
+        });
+    });
+
     // ====== SHOW ======
 });

@@ -9,6 +9,7 @@
                     <h1 class="h3 mb-2 text-gray-800">Data Obat</h1>
                     <div class="p-6">
 
+                <div class="d-flex justify-content-between align-items-center mb-2">
                     <div class="d-flex gap-3 space-x-3">
         <!-- Tombol Tambah -->
                  @role('admin|petugas')
@@ -43,37 +44,92 @@
                      </div>
                  @endrole
                  </div>
+                 
+         <!-- Tombol Upload -->
+                 @role('admin|petugas')
+                     <div class="m-2 mb-4 ">
+                     <a href="#" class="btn-sm btn btn-info" data-bs-toggle="modal" data-bs-target="#importModal">
+                        <span class="icon text-white-10">
+                            <i class="fas fa-upload"></i>
+                        </span>
+                        Import Data</a>
+                     </div>
+                 @endrole
+                 </div>
+                </div>
 
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table class="table table-bordered" id="tableObat" width="100%" cellspacing="0">
-                                    <thead>
-                                        <meta name="csrf-token" content="{{ csrf_token() }}">
-                                        <tr>
-                                            <th>No</th>
-                                            <th>Obat</th>
-                                            <th>Supllier</th>
-                                            <th>Kemasan</th>
-                                            <th>Satuan Kecil</th>
-                                            <th>Satuan Besar</th>
-                                            <th>Aturan Pakai</th>
-                                            <th>Kategori</th>
-                                            <th>Metode Pembayaran</th>
-                                            <th>Tanggal Input</th>
-                                            <th>Foto Obat</th>
-                                            <th>Aksi</th>
-                                        </tr>
-                                    </thead>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+<!-- Modal -->
+<div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="importModalLabel">Panduan Import Data Obat</h5>
+        <button type="button" class="btn" data-bs-dismiss="modal">
+            <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>
+          Silakan download template Excel di bawah ini, isi data sesuai format yang sudah tersedia,
+          lalu upload kembali file tersebut dengan format xlsx/xls.
+        </p>
+        
+        <ul>
+          <li><b>Data</b> wajib diisi.</li>
+          <li><b>Data</b> input sesuai daftar yang tersedia di tabel.</li>
+        </ul>
 
+        <!-- Tombol download template -->
+        <a href="{{ asset('template-data.xlsx') }}" class="btn btn-sm btn-success mb-3" target="blank">
+          <i class="fas fa-file-excel"></i> Download Template
+        </a>
+
+        <!-- Form upload -->
+        <form id="formImport" action="{{ route('obat.import') }}" method="POST" enctype="multipart/form-data">
+          @csrf
+          <div class="mb-3">
+            <label for="formFileSm" class="form-label">Import your file excel</label>
+            <input class="form-control form-control-sm" id="formFileSm" name="file" type="file" accept=".xlsx,.xls" required>
+        </div>
+          <button type="submit" class="btn btn-sm btn-primary">
+            <i class="fas fa-upload"></i> Upload
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DataTales Example -->
+ <div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+            <table class="table table-bordered" id="tableObat" width="100%" cellspacing="0">
+                <thead>
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                    <tr>
+                        <th>No</th>
+                        <th>Obat</th>
+                        <th>Supllier</th>
+                        <th>Kemasan</th>
+                        <th>Satuan Kecil</th>
+                        <th>Satuan Besar</th>
+                        <th>Aturan Pakai</th>
+                        <th>Kategori</th>
+                        <th>Metode Pembayaran</th>
+                        <th>Tanggal Input</th>
+                        <th>Foto Obat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+                 
 <!-- Modal Foto -->
 <div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
@@ -290,16 +346,18 @@
   </div>
 </div>
 
+
 @endsection
 
-@push ('scripts')
-{{-- Pastikan DataTables JS& CSS sudah di-include di layout --}}
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@push('scripts')
+    {{-- Pastikan DataTables JS & CSS sudah di-include di layout --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        const importObatUrl = "{{ route('obat.import') }}";
+        const obatApiUrl = "{{ url('/api/obat') }}"; // sumber data DataTables
+    </script>
 
-<script>
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script>const obatApiUrl = "{{ url('/api/obat') }}";</script>
-</script>
-
-<script src="{{ asset('js/obat.js') }}"></script>
+    <script src="{{ asset('js/obat.js') }}"></script>
 @endpush
+
+

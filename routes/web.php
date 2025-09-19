@@ -14,19 +14,25 @@ use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
+use App\Http\Controllers\ObatController;
+use App\Http\Controllers\ObatImportExportController;
 
 
 // Pdf Download
 Route::get('/obat/export-pdf', function () {
     $obats = Obat::all();
     $pdf = Pdf::loadView('obat.pdf', compact('obats'));
-    return $pdf->download('data-obat.pdf');
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Obat {$tanggal}.pdf";
+
+    return $pdf->download($filename);
 })->name('obat.export.pdf');
 
 // Excel Download
-Route::get('/obat/export-excel', function () {
-    return Excel::download(new ObatExport, 'data-obat.xlsx');
-})->name('obat.export.excel');
+Route::get('obat/export/', [ObatImportExportController::class, 'export'])
+->name('obat.export.excel');
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,10 +51,14 @@ Route::middleware('auth')->group(function () {
 
     // Obat Route
     Route::prefix('obat')->name('obat.')->group(function () {
-        Route::get('/', function () {
-            return view('obat.index');
-        })->name('index');
+    Route::get('/', function () {
+        return view('obat.index');
+    })->name('index');
+
+    // ✅ ini yang penting
+    Route::post('/import', [ObatImportExportController::class, 'import'])->name('import');
     });
+
 
     // Supplier Route
     Route::prefix('supplier')->name('supplier.')->group(function () {

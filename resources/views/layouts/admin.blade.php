@@ -23,6 +23,10 @@
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 </head>
 
 <body id="page-top">
@@ -71,32 +75,9 @@
 <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Scripts -->
-   <!-- jQuery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-    <!-- Bootstrap Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-
-    <!-- DataTables JS -->
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-
-    <!-- SweetAlert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-    <!-- jQuery Easing & Template JS -->
+    <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('vendor/jquery-easing/jquery.easing.min.js') }}"></script>
     <script src="{{ asset('js/sb-admin-2.min.js') }}"></script>
-
-        <!-- Loader (pindahkan ke sini, di luar wrapper) -->
-<div id="loader" style="display:none; position:fixed; top:0; left:0; 
-     width:100%; height:100%; background:rgba(255,255,255,0.7); 
-     z-index:999999; text-align:center;">
-    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
-        <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
-        <p>Memproses data...</p>
-    </div>
-</div>
-
 
 @stack('scripts')
 </body>

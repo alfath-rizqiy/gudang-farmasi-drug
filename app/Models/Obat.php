@@ -11,6 +11,7 @@ use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
 use App\Models\Kategori;
 use App\Models\MetodePembayaran;
+use App\Models\Harga;
 
 class Obat extends Model
 {
@@ -63,4 +64,14 @@ class Obat extends Model
     public function metodepembayaran() {
         return $this->belongsTo(MetodePembayaran::class);
     }
+
+    public function harga()
+{
+    return $this->hasMany(Harga::class);
+}
+
+public function hargaTerbaru()
+{
+    return $this->hasOne(Harga::class)->latestOfMany();
+}
 }

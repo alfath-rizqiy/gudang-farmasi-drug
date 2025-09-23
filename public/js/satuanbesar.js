@@ -20,7 +20,7 @@ $(document).ready(function(){
       { data: "jumlah_satuankecil" },
       { data: "id", orderable:false, searchable:false, render: function(id, type, row){
           return `
-            <button class="btn btn-info btn-sm btn-show" data-id="${id}">
+            <button class="btn btn-info btn-sm btn-detail" data-id="${id}">
               <i class="fas fa-info-circle"></i> Detail
             </button>
             <button class="btn btn-primary btn-sm btn-edit"
@@ -107,6 +107,47 @@ $(document).ready(function(){
       });
     });
   });
+
+    // ====== DETAIL ======
+$(document).on('click', '.btn-detail', function(e) {
+    e.preventDefault();
+    let id = $(this).data('id');
+
+    showLoader();
+
+    $.get("/api/satuanbesar/" + id, function(res) {
+        hideLoader();
+
+        if (res.success) {
+            $('#detail_nama_satuanbesar').text(res.data.nama_satuanbesar);
+            $('#detail_deskripsi').text(res.data.deskripsi);
+            $('#detail_jumlah_satuankecil').text(res.data.jumlah_satuankecil);
+
+            // isi daftar obat
+            let obats = res.data.obats;
+            let html = "";
+            if (obats.length > 0) {
+                obats.forEach((obat, i) => {
+                    html += `
+                        <tr>
+                          <td>${i + 1}</td>
+                          <td>${obat.nama_obat}</td>
+                        </tr>`;
+                });
+            } else {
+                html = `<tr><td colspan="2" class="text-center text-muted">Belum ada obat</td></tr>`;
+            }
+            $("#detail_obats").html(html);
+
+            $('#modalDetailSatuanBesar').modal('show');
+        } else {
+            Swal.fire("Gagal!", res.message ?? "Data tidak ditemukan", "error");
+        }
+    }).fail(xhr => {
+        hideLoader();
+        Swal.fire("Error!", xhr.responseJSON?.message ?? "Terjadi kesalahan", "error");
+    });
+});
 
   // ====== HAPUS ======
   $(document).on('click', '.btn-delete', function(){

@@ -54,6 +54,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/', function () {
         return view('obat.index');
     })->name('index');
+    Route::get('/{obat}', [ObatController::class, 'show'])->name('show');
 
     // ✅ ini yang penting
     Route::post('/import', [ObatImportExportController::class, 'import'])->name('import');

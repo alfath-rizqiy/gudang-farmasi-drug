@@ -74,20 +74,20 @@ $(document).ready(function () {
                     });
                 },
             },
-            {
-                data: "foto",
-                title: "Foto Obat",
-                render: function (foto, type, row) {
-                    let gambar = foto ? foto : "default.png";
-                    return `
-            <button class="btn btn-sm btn-primary btn-foto"
-                data-foto="/storage/${foto}"
-                data-nama="${row.nama_obat}">
-                <i class="fas fa-image"></i> Lihat Foto
-            </button>
-        `;
-                },
-            },
+            //     {
+            //         data: "foto",
+            //         title: "Foto Obat",
+            //         render: function (foto, type, row) {
+            //             let gambar = foto ? foto : "default.png";
+            //             return `
+            //     <button class="btn btn-sm btn-primary btn-foto"
+            //         data-foto="/storage/${foto}"
+            //         data-nama="${row.nama_obat}">
+            //         <i class="fas fa-image"></i> Lihat Foto
+            //     </button>
+            // `;
+            //         },
+            //     },
 
             {
                 data: "id",
@@ -95,6 +95,9 @@ $(document).ready(function () {
                 searchable: false,
                 render: function (id, type, row) {
                     return `
+                        <button class="btn btn-info btn-sm btn-show" data-id="${id}">
+                            <i class="fas fa-info-circle"></i> Info
+                        </button>
                         <button class="btn btn-primary btn-sm btn-edit"
                                 data-id="${id}"
                                 data-nama="${row.nama_obat}"
@@ -390,4 +393,9 @@ $(document).ready(function () {
     });
 
     // ====== SHOW ======
+    $(document).on("click", ".btn-show", function () {
+        const id = $(this).data("id");
+
+        window.location.href = `/obat/${id}`;
+    });
 });

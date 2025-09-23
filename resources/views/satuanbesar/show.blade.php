@@ -1,25 +1,26 @@
 @extends('layouts.admin')
 
-@section('title', 'Detail Satuan Besar')
+@section('title', 'Detail SatuanBesar')
 
 @section('content')
 <div class="container-fluid">
 
-    <h1 class="h3 mb-4 text-gray-800">Detail Satuan Kecil</h1>
+    <h1 class="h3 mb-4 text-gray-800">Detail SatuanBesar</h1>
 
     <div class="card shadow mb-4">
         <div class="card-body">
 
-            <h5 class="font-weight-bold mb-3">Informasi Satuan Besar</h5>
-            <p><strong>Nama Satuan Besar:</strong> {{ $satuanbesar->nama_satuanbesar }}</p>
+            <h5 class="font-weight-bold mb-3">Informasi satuanbesar</h5>
+            <p><strong>Nama satuanbesar:</strong> {{ $satuanbesar->nama_satuanbesar }}</p>
             <p><strong>Deskripsi:</strong> {{ $satuanbesar->deskripsi }}</p>
+            <p><strong>Jumlah Satuan Kecil:</strong> {{ $satuanbesar->jumlah_satuankecil }}</p>
 
             <hr>
 
-            <h5 class="font-weight-bold mt-4 mb-3">Satuan Besar Obat</h5>
+            <h5 class="font-weight-bold mt-4 mb-3">Obat yang Terdaftar</h5>
 
             @if($satuanbesar->obats->isEmpty())
-                <p>Tidak ada satuan besar obat.</p>
+                <p>Tidak ada obat yang terdaftar.</p>
             @else
                 <div class="table-responsive">
                     <table class="table table-bordered">
@@ -41,7 +42,7 @@
                 </div>
             @endif
 
-            <a href="{{ route('satuanbesar.index') }}" class="btn btn-secondary mt-3">Kembali</a>
+            <a href="{{ route('satuanbesar.index') }}" class="btn btn-sm btn-secondary mt-3">Kembali</a>
         </div>
     </div>
 

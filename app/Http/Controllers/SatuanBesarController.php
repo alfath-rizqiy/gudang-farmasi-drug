@@ -9,8 +9,7 @@ class SatuanBesarController extends Controller
 {
     public function index()
     {
-        $satuanbesar = SatuanBesar::all();
-        return view('satuanbesar.index', compact('satuanbesar'));
+        return view('satuanbesar.index');
     }
 
     public function create()
@@ -50,8 +49,8 @@ class SatuanBesarController extends Controller
 
     public function show(string $id)
     {
-        $satuanbesar = SatuanBesar::with('obats')->findOrFail($id);
-        return view('satuanbesar.show', compact('satuanbesar'));
+         $satuanbesar = SatuanBesar::with('obats')->findOrFail($id);
+         return response()->json($satuanbesar);
     }
 
     public function edit(string $id)

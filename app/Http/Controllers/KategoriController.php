@@ -5,12 +5,11 @@ use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
 
-class kategoriController extends Controller
+class KategoriController extends Controller
 {
     public function index()
     {
-        $kategori = Kategori::all();
-        return view('kategori.index', compact('kategori'));
+        return view('kategori.index');
     }
 
     public function create()

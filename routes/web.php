@@ -2,7 +2,11 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\ObatController;
+use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ObatExport;
+use App\Models\Obat;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\AturanPakaiController;
@@ -11,23 +15,21 @@ use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\HargaController;
-use Illuminate\Support\Facades\Auth;
-use Barryvdh\DomPDF\Facade\Pdf;
-use Maatwebsite\Excel\Facades\Excel;
-use App\Exports\ObatExport;
-use App\Models\Obat;
 
 // Pdf Download
 Route::get('/obat/export-pdf', function () {
     $obats = Obat::all();
     $pdf = Pdf::loadView('obat.pdf', compact('obats'));
-    return $pdf->download('data-obat.pdf');
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Obat {$tanggal}.pdf";
+
+    return $pdf->download($filename);
 })->name('obat.export.pdf');
 
 // Excel Download
-Route::get('/obat/export-excel', function () {
-    return Excel::download(new ObatExport, 'data-obat.xlsx');
-})->name('obat.export.excel');
+Route::get('obat/export/', [ObatImportExportController::class, 'export'])
+->name('obat.export.excel');
 
 
 Route::get('/', function () {
@@ -47,44 +49,30 @@ Route::middleware('auth')->group(function () {
 
     // Obat Route
     Route::prefix('obat')->name('obat.')->group(function () {
-        Route::get('/', [ObatController::class, 'index'])->name('index');
-        Route::get('/create', [ObatController::class, 'create'])->name('create');
-        Route::post('/', [ObatController::class, 'store'])->name('store');
-        Route::get('/{id}/edit', [ObatController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [ObatController::class, 'update'])->name('update');
-        Route::delete('/{id}', [ObatController::class, 'destroy'])->name('destroy');
+    Route::get('/', function () {
+        return view('obat.index');
+    })->name('index');
+
+    // ✅ ini yang penting
+    Route::post('/import', [ObatImportExportController::class, 'import'])->name('import');
     });
+
 
     // Supplier Route
     Route::prefix('supplier')->name('supplier.')->group(function () {
         Route::get('/', [SupplierController::class, 'index'])->name('index');
-        Route::get('/create', [SupplierController::class, 'create'])->name('create');
-        Route::post('/', [SupplierController::class, 'store'])->name('store');
         Route::get('/{supplier}', [SupplierController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [SupplierController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [SupplierController::class, 'update'])->name('update');
-        Route::delete('/{id}', [SupplierController::class, 'destroy'])->name('destroy');
     });
 
     // Kemasan Route
     Route::prefix('kemasan')->name('kemasan.')->group(function () {
         Route::get('/', [KemasanController::class, 'index'])->name('index');
-        Route::get('/create', [KemasanController::class, 'create'])->name('create');
-        Route::post('/', [KemasanController::class, 'store'])->name('store');
         Route::get('/{kemasan}', [KemasanController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [KemasanController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [KemasanController::class, 'update'])->name('update');
-        Route::delete('/{id}', [KemasanController::class, 'destroy'])->name('destroy');
     });
 
      Route::prefix('aturanpakai')->name('aturanpakai.')->group(function () {
     Route::get('/', [AturanPakaiController::class, 'index'])->name('index');
-    Route::get('/create', [AturanPakaiController::class, 'create'])->name('create');
-    Route::post('/', [AturanPakaiController::class, 'store'])->name('store');
     Route::get('/{aturanpakai}', [AturanPakaiController::class, 'show'])->name('show');
-    Route::get('/{id}/edit', [AturanPakaiController::class, 'edit'])->name('edit');
-    Route::put('/{id}', [AturanPakaiController::class, 'update'])->name('update');
-    Route::delete('/{id}', [AturanPakaiController::class, 'destroy'])->name('destroy');
      });
     
      // Satuan Kecil Route
@@ -100,23 +88,13 @@ Route::middleware('auth')->group(function () {
     // Kategori Route
     Route::prefix('kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::get('/create', [KategoriController::class, 'create'])->name('create');
-        Route::post('/', [KategoriController::class, 'store'])->name('store');
         Route::get('/{kategori}', [KategoriController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [KategoriController::class, 'update'])->name('update');
-        Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('destroy');
     });
 
     // Metode Pembayaran Route
     Route::prefix('metodepembayaran')->name('metodepembayaran.')->group(function () {
         Route::get('/', [MetodePembayaranController::class, 'index'])->name('index');
-        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('create');
-        Route::post('/', [MetodePembayaranController::class, 'store'])->name('store');
         Route::get('/{metodepembayaran}', [MetodePembayaranController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [MetodePembayaranController::class, 'update'])->name('update');
-        Route::delete('/{id}', [MetodePembayaranController::class, 'destroy'])->name('destroy');
     });
 
      // Harga Route

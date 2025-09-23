@@ -6,24 +6,69 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Obat;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class ObatController extends Controller
 {
     // Tampilkan Obat
     public function index()
-    {
-        return response()->json([
-            'status' => true,
-            'code' => 200,
-            'data' => 'test'
-        ]);
-    }
+{
+    $obat = Obat::with([
+            'supplier:id,nama_supplier',
+            'kategori:id,nama_kategori',
+            'kemasan:id,nama_kemasan',
+            'aturanpakai:id,frekuensi_pemakaian',
+            'satuanKecil:id,nama_satuankecil',
+            'satuanBesar:id,nama_satuanbesar',
+            'metodepembayaran:id,nama_metode'
+        ])->get()->map(function($item) {
+            return [
+            'id' => $item->id,
+            'nama_obat' => $item->nama_obat,
+            'foto' => $item->foto,
+            'created_at' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : null,
+            
+            // relasi
+            'supplier_id' => $item->supplier->id ?? null,
+            'supplier' => $item->supplier->nama_supplier ?? '-',
+
+            'kemasan_id' => $item->kemasan->id ?? null,
+            'kemasan' => $item->kemasan->nama_kemasan ?? '-',
+
+            'aturanpakai_id' => $item->aturanpakai->id ?? null,
+            'aturanpakai' => $item->aturanpakai->frekuensi_pemakaian ?? '-',
+
+            'satuan_kecil_id' => $item->satuanKecil->id ?? null,
+            'satuan_kecil' => $item->satuanKecil->nama_satuankecil ?? '-',
+
+            'satuan_besar_id' => $item->satuanBesar->id ?? null,
+            'satuan_besar' => $item->satuanBesar->nama_satuanbesar ?? '-',
+
+            'kategori_id' => $item->kategori->id ?? null,
+            'kategori' => $item->kategori->nama_kategori ?? '-',
+
+            'metodepembayaran_id' => $item->metodepembayaran->id ?? null,
+            'metode_pembayaran' => $item->metodepembayaran->nama_metode ?? '-',
+        ];
+    });
+
+    return response()->json([
+        'status' => true,
+        'data' => $obat
+    ]);
+}
+
 
     // Input Obat
     public function store(Request $request)
     {
+        $request->merge([
+            'nama_obat' => (preg_replace('/\s+/', ' ', trim($request->nama_obat)))
+        ]);
+
         $validator = Validator::make($request->all(),[
-            'nama_obat' => 'required|string||unique:obats,nama_obat',
+            'nama_obat' => 'required|string|unique:obats,nama_obat',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -31,9 +76,10 @@ class ObatController extends Controller
             'satuan_besar_id' => 'required|exists:satuan_besars,id',
             'kategori_id' => 'required|exists:kategoris,id',
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ], [
-            'nama_supplier.required' => 'Nama obat wajib diisi',
-            'nama_supplier.unique' => 'Nama obat sudah terdaftar',
+            'nama_obat.required' => 'Nama obat wajib diisi',
+            'nama_obat.unique' => 'Nama obat sudah terdaftar',
         ]);
 
         // Supplier tidak valid
@@ -45,14 +91,21 @@ class ObatController extends Controller
             ], 422);
         }
 
-        $obat = Obat::create($validator->validated());
+        $data = $validator->validated();
+        
+        /// simpan foto kalau ada
+        if ($request->hasFile('foto')) {
+            $data['foto'] = $request->file('foto')->store('foto_obat', 'public');
+        }
 
-        $obat= Obat::create($request->all());
+        $obat = Obat::create($data);
+
         return response()->json([
-            'succes' => true,
+            'success' => true,
             'message' => 'Obat berhasil ditambahkan',
             'data' => $obat
         ], 201);
+
     }
 
     // Tampilkan detail
@@ -62,8 +115,8 @@ class ObatController extends Controller
             'supplier',
             'kemasan',
             'aturanpakai',
-            'satuankecil',
-            'satuanbesar',
+            'satuanKecil',
+            'satuanBesar',
             'kategori',
             'metodepembayaran'
         ])->findOrFail($id);
@@ -74,6 +127,10 @@ class ObatController extends Controller
     // Update Obat
     public function update(Request $request, $id)
     {
+        $request->merge([
+            'nama_obat' => preg_replace('/\s+/', ' ', trim($request->nama_obat))
+        ]);
+
         $validator = Validator::make($request->all(), [
             'nama_obat' => 'required|string|max:255|unique:obats,nama_obat,' . $id,
             'supplier_id' => 'required|exists:suppliers,id',
@@ -83,6 +140,7 @@ class ObatController extends Controller
             'satuan_besar_id' => 'required|exists:satuan_besars,id',
             'kategori_id' => 'required|exists:kategoris,id',
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         if ($validator->fails()) {
@@ -95,19 +153,35 @@ class ObatController extends Controller
 
         $obat = Obat::findOrFail($id);
 
-        if (!$supplier) {
+        if (!$obat) {
             return response()->json([
                 'success' => false,
-                'message' => 'Supplier tidak ditemukan.'
+                'message' => 'obat tidak ditemukan.'
             ], 404);
         }
 
-        $obat->update($validator->validated());
+        $data = $validator->validated();
+
+        // Update foto jika ada file baru
+    if ($request->hasFile('foto')) {
+        // hapus foto lama
+        if ($obat->foto && Storage::disk('public')->exists($obat->foto)) {
+            Storage::disk('public')->delete($obat->foto);
+        }
+
+        // simpan foto baru
+        $fotoName = Str::uuid() . '.' . $request->foto->extension();
+        $path = $request->foto->storeAs('foto_obat', $fotoName, 'public');
+        $data['foto'] = $path;
+    }
+
+
+        $obat->update($data);
 
         return response()->json([
             'success' => true,
-            'message' => 'Supplier berhasil diupdate.',
-            'data'    => $supplier
+            'message' => 'obat berhasil diupdate.',
+            'data'    => $obat
         ], 200);
     }
 
@@ -115,10 +189,15 @@ class ObatController extends Controller
     public function destroy($id)
     {
         $obat = Obat::findOrFail($id);
+
+        if ($obat->foto && \Storage::disk('public')->exists($obat->foto)) {
+            \Storage::disk('public')->delete($obat->foto);
+        }
         $obat->delete();
 
         return response()->json([
-            'message' => 'Obat berhasil dihapus'
-        ]);
+            'success' => true,
+            'message' => 'Obat berhasil dihapus.'
+        ], 200);
     }
 }

@@ -9,45 +9,48 @@ function hideLoader(){ $('#loader').fadeOut(200); }
 
 $(document).ready(function(){
 
-  const apiUrl = "/api/satuankecil";   // endpoint API
-  const table = $('#satuankecilTable').DataTable({
+  const apiUrl = "/api/kemasan";   // semua CRUD lewat API
+  const table = $('#kemasanTable').DataTable({
     processing: true,
     ajax: { url: apiUrl, dataSrc: "data" },
     columns: [
       { data: null, render: (d,t,r,m)=> m.row + 1 }, // nomor urut
-      { data: "nama_satuankecil" },
-      { data: "deskripsi" },
+      { data: "nama_kemasan" },
+      { data: "tanggal_produksi", render: d => new Date(d).toLocaleDateString('id-ID') },
+      { data: "tanggal_kadaluarsa", render: d => new Date(d).toLocaleDateString('id-ID') },
+      { data: "petunjuk_penyimpanan" },
       { data: "id", orderable:false, searchable:false, render: function(id, type, row){
-          return `
-            <button class="btn btn-info btn-sm btn-detail" data-id="${id}">
-              <i class="fas fa-info-circle"></i> Detail
-            </button>
-            <button class="btn btn-primary btn-sm btn-edit"
-                    data-id="${id}"
-                    data-nama="${row.nama_satuankecil}"
-                    data-deskripsi="${row.deskripsi}">
-              <i class="fas fa-edit"></i> Edit
-            </button>
-            <button class="btn btn-danger btn-sm btn-delete"
-                    data-id="${id}"
-                    data-name="${row.nama_satuankecil}">
-              <i class="fas fa-trash"></i> Hapus
-            </button>
+                    return `
+          <button class="btn btn-info btn-sm btn-show" data-id="${id}">
+            <i class="fas fa-info-circle"></i> Detail
+          </button>
+          <button class="btn btn-primary btn-sm btn-edit" 
+                 data-id="${id}"
+                    data-nama="${row.nama_kemasan}"
+                    data-prod="${row.tanggal_produksi}"
+                    data-exp="${row.tanggal_kadaluarsa}"
+                    data-petunjuk="${row.petunjuk_penyimpanan}">
+            <i class="fas fa-edit"></i> Edit
+          </button>
+          <button class="btn btn-danger btn-sm btn-delete" data-id="${id}" data-name="${row.frekuensi_pemakaian}">
+            <i class="fas fa-trash"></i> Hapus
+          </button>
           `;
+
       }}
     ]
   });
 
   // ====== TAMBAH ======
-  $(document).on('submit', '#form-satuankecil', function(e){
+  $(document).on('submit', '#form-kemasan', function(e){
     e.preventDefault();
     showLoader();
     $.post(apiUrl, $(this).serialize())
       .done(res => {
         hideLoader();
-        $('#modalSatuanKecil').modal('hide');
-        $('#form-satuankecil')[0].reset();
-        Swal.fire("Berhasil!", res.message ?? "Satuan kecil berhasil ditambahkan", "success");
+        $('#modalKemasan').modal('hide');
+        $('#form-kemasan')[0].reset();
+        Swal.fire("Berhasil!", res.message ?? "Kemasan berhasil ditambahkan", "success");
         table.ajax.reload(null, false);
       })
       .fail(xhr => {
@@ -61,16 +64,18 @@ $(document).ready(function(){
   // ====== BUKA MODAL EDIT ======
   $(document).on('click', '.btn-edit', function(){
     $('#edit_id').val($(this).data('id'));
-    $('#edit_nama_satuankecil').val($(this).data('nama'));
-    $('#edit_deskripsi').val($(this).data('deskripsi'));
-    $('#modalEditSatuanKecil').modal('show');
+    $('#edit_nama_kemasan').val($(this).data('nama'));
+    $('#edit_tanggal_produksi').val($(this).data('prod'));
+    $('#edit_tanggal_kadaluarsa').val($(this).data('exp'));
+    $('#edit_petunjuk_penyimpanan').val($(this).data('petunjuk'));
+    $('#modalEditKemasan').modal('show');
   });
 
   // ====== UPDATE ======
-  $(document).on('submit', '#form-edit-satuankecil', function(e){
+  $(document).on('submit', '#form-edit-kemasan', function(e){
     e.preventDefault();
     const id   = $('#edit_id').val();
-    const nama = $('#edit_nama_satuankecil').val();
+    const nama = $('#edit_nama_kemasan').val();
 
     Swal.fire({
       title: 'Konfirmasi Update',
@@ -88,10 +93,10 @@ $(document).ready(function(){
       $.ajax({
         url: `${apiUrl}/${id}`,
         method: "PUT",
-        data: $(this).serialize(),
+        data: $('#form-edit-kemasan').serialize(),
         success: res => {
           hideLoader();
-          $('#modalEditSatuanKecil').modal('hide');
+          $('#modalEditKemasan').modal('hide');
           Swal.fire("Berhasil!", res.message ?? `Data "${nama}" berhasil diupdate`, "success");
           table.ajax.reload(null, false);
         },
@@ -104,46 +109,6 @@ $(document).ready(function(){
       });
     });
   });
-
-  // ====== DETAIL ======
-$(document).on('click', '.btn-detail', function(e) {
-    e.preventDefault();
-    let id = $(this).data('id');
-
-    showLoader();
-
-    $.get("/api/satuankecil/" + id, function(res) {
-        hideLoader();
-
-        if (res.success) {
-            $('#detail_nama_satuankecil').text(res.data.nama_satuankecil);
-            $('#detail_deskripsi').text(res.data.deskripsi);
-
-            // isi daftar obat
-            let obats = res.data.obats;
-            let html = "";
-            if (obats.length > 0) {
-                obats.forEach((obat, i) => {
-                    html += `
-                        <tr>
-                          <td>${i + 1}</td>
-                          <td>${obat.nama_obat}</td>
-                        </tr>`;
-                });
-            } else {
-                html = `<tr><td colspan="2" class="text-center text-muted">Belum ada obat</td></tr>`;
-            }
-            $("#detail_obats").html(html);
-
-            $('#modalDetailSatuanKecil').modal('show');
-        } else {
-            Swal.fire("Gagal!", res.message ?? "Data tidak ditemukan", "error");
-        }
-    }).fail(xhr => {
-        hideLoader();
-        Swal.fire("Error!", xhr.responseJSON?.message ?? "Terjadi kesalahan", "error");
-    });
-});
 
   // ====== HAPUS ======
   $(document).on('click', '.btn-delete', function(){
@@ -182,7 +147,8 @@ $(document).on('click', '.btn-detail', function(e) {
   // ====== SHOW ======
   $(document).on('click', '.btn-show', function(){
     const id = $(this).data('id');
-    window.location.href = `/satuankecil/${id}`;
+    // redirect ke halaman show
+    window.location.href = `/kemasan/${id}`;
   });
 
 });

@@ -3,327 +3,184 @@
 @section('title', 'Data Supplier')
 
 @section('content')
+<h1 class="h3 mb-2 text-gray-800">Data Supplier</h1>
+<div class="p-6">
 
-        {{-- Tabel Data --}}
-       <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data Supplier</h1>
-                  <div class="p-6">
+{{-- Tombol Tambah --}}
+@role('admin')
+<div class="mb-4">
+    <a href="#" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSupplier">
+        <span class="icon text-white-10">
+            <i class="fa fa-plus"></i>
+        </span>
+        Tambah Supplier</a>
+    </div>
+@endrole
 
-        {{-- Tombol Tambah --}}
-                 @role('admin')
-                     <div class="mb-4">
-                     <a href="{{ route('supplier.create') }}" class="btn-sm btn btn-primary" data-toggle="modal" data-target="#modalSupplier">
-                        + Tambah Supplier</a>
-                     </div>
-                 @endrole
+<!-- DataTales Example -->
+ <div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+            <table class="table table-bordered" id="tabelSupplier" width="100%" cellspacing="0">
+                <thead>
+                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Supplier</th>
+                        <th>Telepon</th>
+                        <th>Email</th>
+                        <th>Alamat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
 
-                    <!-- DataTales Example -->
-                    <div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                                    <thead>
-                                        <th>No</th>
-                                        <th>Nama Supplier</th>
-                                        <th>Telepon</th>
-                                        <th>Email</th>
-                                        <th>Alamat</th>
-                                         @role('admin')
-                                        <th>Aksi</th>
-                                         @endrole
-                                        </tr>
-                                    </thead>
-                                    <tbody class="text-start">
-                                         @forelse($suppliers as $item)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td> 
-                                            <td>{{ $item->nama_supplier }}</td>
-                                            <td>{{ $item->telepon }}</td>
-                                            <td>{{ $item->email }}</td>
-                                            <td>{{ $item->alamat }}</td>
-                                         @role('admin')
-                                            <td>
-                                                 <div class="d-flex justify-content-center">
-                                                    <!-- Detail -->
-                                                     <a href="{{ route('supplier.show', $item->id) }}" class="btn-sm btn btn-info btn-icon-split">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-info"></i>
-                                                        </span>
-                                                        <span class="text">Detail</span>
-                                                    </a>
-                                                    <!-- Edit -->
-                                                    <a href="#" class="btn-sm btn btn-primary btn-icon-split mx-2"
-                                                       data-toggle="modal" data-target="#modalEditSupplier{{ $item->id }}">
-                                                        <span class="icon text-white-50">
-                                                            <i class="fas fa-edit"></i>
-                                                        </span>
-                                                        <span class="text">Edit</span>
-                                                    </a>
-                                                    <!-- Hapus -->
-                                                    <form action="{{ route('supplier.destroy', $item->id) }}" method="POST" >
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn-sm btn btn-danger btn-icon-split show_confirm"
-                                                         data-name="{{ $item->nama_supplier }}">
-                                                            <span class="icon text-white-50">
-                                                                <i class="fas fa-trash"></i>
-                                                            </span>
-                                                            <span class="text">Hapus</span>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            </td>
-                                        @endrole
-                                    </tr>
-                                    @empty
-                                    <tr>
-                                        <td colspan="7">Data tidak ditemukan.</td>
-                                    </tr>
-                                    @endforelse
-                                </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+<!-- Modal Form Tambah kemasan -->
+ <div class="modal fade" id="modalSupplier" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Supplier</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+<!-- Form Card Tambah -->
+ <div class="card shadow mb-0">
+    <div class="card-body">
+        <form id="formSupplier">
+    @csrf
+    <div class="form-group">    
+        <label>Nama Supplier</label>
+        <input type="text" name="nama_supplier" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label>Telepon</label>
+        <input type="text" name="telepon" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label>Email</label>
+        <input type="text" name="email" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label>Alamat</label>
+        <input type="text" name="alamat" class="form-control" required>
+    </div>
+
+    <button type="submit" id="btnSaveSupplier" class="btn btn-sm btn-primary">Simpan</button>
+    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
+    </form>
+   </div>
+  </div>
+ </div>
+</div>
+</div>
+         
+<!-- Modal Form Edit Supplier -->
+ <div class="modal fade" id="modalEditSupplier" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Supplier</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+<!-- Form Card Edit -->
+ <div class="card shadow mb-0">
+    <div class="card-body">
+        <form id="formEditSupplier">
+            @csrf
+            <input type="hidden" id="edit_id">
+
+            <div class="form-group mb-3">
+                <label>Nama Supplier</label>
+                <input type="text" name="nama_supplier" id="edit_nama_supplier" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_telepon">Telepon</label>
+                <input type="text" name="telepon" id="edit_telepon" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_email">Email</label>
+                <input type="text" name="email" id="edit_email" class="form-control" required>
+            </div>
+
+            <div class="form-group">
+                <label for="edit_alamat">Alamat</label>
+                <input type="text" name="alamat" id="edit_alamat" class="form-control" required>
+            </div>
+
+            <button type="submit" class="btn btn-sm btn-primary">Update</button>
+            <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
+        </form>
+       </div>
+      </div>
+     </div>
+    </div>
+   </div>
+
+<!-- Modal Detail Supplier -->
+ <div class="modal fade" id="modalDetailSupplier" tabindex="-1" aria-labelledby="modalDetailLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalDetailLabel">Detail Supplier</h5>
+                <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-card shadow mb-0">
+                <div class="card-body">
+                <ul class="list-group">
+                    <li class="list-group-item"><strong>Supplier:</strong> <span id="detail_nama_supplier"></span></li>
+                </ul>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Nama Obat</th>
+                        </tr>
+                    </thead>
+                    <tbody id="detail_obat_list">
+
+                    </tbody>
                 </table>
-            </div>
+              </div>
+          </div>
+      </div>
+   </div>
+</div>
 
-            <!-- Modal Form Tambah Kategori -->
-             <div class="modal fade" id="modalSupplier" tabindex="-1" aria-labelledby="modalSupplierLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalSupplierLabel">Tambah Supplier</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
+{{-- Loader overlay ketika proses tambah/hapus --}}
+    <div id="loader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+        <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+            <i class="fas fa-spinner fa-spin fa-3x text-primary"></i>
+            <p>Memproses data...</p>
+        </div>
+    </div>
+@endsection
 
-                        <!-- Form Card Tambah -->
-                        <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <form action="{{ route('supplier.store') }}" method="POST">
-                                    @csrf
-                                    
-                                    <div class="form-group">
-                                        <label for="nama">Nama Supplier</label>
-                                        <input type="text" name="nama_supplier" id="nama_supplier" class="form-control" placeholder="Masukkan Supplier" required>
-                                    </div>
-                                    
-                                    <div class="form-group">
-                                        <label for="nama">Telepon</label>
-                                        <input type="number" name="telepon" id="telepon" class="form-control" placeholder="Masukkan Telepon" required>
-                                    </div>
+@push ('scripts')
+{{-- Pastikan DataTables JS& CSS sudah di-include di layout --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    const supplierApiUrl = "{{ url('/api/supplier') }}";
+</script>
 
-                                    <div class="form-group">
-                                        <label for="nama">Email</label>
-                                        <input type="email" name="email" id="email" class="form-control" placeholder="Masukkan Email" required>
-                                    </div>
+<script src="{{ asset('js/supplier.js') }}"></script>
+@endpush
 
-                                    <div class="form-group">
-                                        <label for="nama">Alamat</label>
-                                        <input type="text" name="alamat" id="alamat" class="form-control" placeholder="Masukkan Alamat" required>
-                                    </div>
-
-                                    <button type="submit" class="btn btn-sm btn-primary">Simpan</button>
-                                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            @foreach ($suppliers as $item)
-            <!-- Modal Form Edit Supplier -->
-             <div class="modal fade" id="modalEditSupplier{{ $item->id }}" tabindex="-1" aria-labelledby="modalSupplierLabel{{ $item->id }}" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="modalSupplierLabel{{ $item->id }}">Edit Supplier</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-
-                        <!-- Form Card Edit -->
-                         <div class="card shadow mb-4">
-                            <div class="card-body">
-                                <form action="{{ route('supplier.update', $item->id) }}" method="POST">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <div class="form-group">
-                                        <label for="nama_supplier{{ $item->id }}">Nama Supplier</label>
-                                        <input type="text" name="nama_supplier" id="nama_supplier{{ $item->id }}" class="form-control"
-                                        value="{{ old('nama_supplier', $item->nama_supplier) }}" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="telepon{{ $item->id }}">Telepon</label>
-                                        <input type="number" name="telepon" id="telepon{{ $item->id }}" class="form-control"
-                                        value="{{ old('telepon', $item->telepon) }}" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="email{{ $item->id }}">Email</label>
-                                        <input type="email" name="email" id="email{{ $item->id }}" class="form-control"
-                                        value="{{ old('email', $item->email) }}" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label for="alamat{{ $item->id }}">Alamat</label>
-                                        <input type="text" name="alamat" id="alamat{{ $item->id }}" class="form-control"
-                                        value="{{ old('alamat', $item->alamat) }}" required>
-                                    </div>
-
-                                    <button type="submit" class="btn-sm btn btn-primary btn-icon-split show_update" data-name="{{ $item->nama_supplier }}">
-                                        <span class="icon text-white-50">
-                                            <i class="fas fa-edit"></i>
-                                        </span>
-                                        <span class="text">Update</span>
-                                    </button>
-     
-                                    <a href="{{ route('supplier.index') }}" class="btn btn-sm btn-secondary">Kembali</a>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            @endforeach
-
-
-            <!-- Membuka kembali modal setelah validasi error -->
-            @if(session('open_modal'))
-            <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.bootstrap) {
-                // Bootstrap 5
-                new bootstrap.Modal(document.getElementById('modalSupplier')).show();
-            } else if (window.$) {
-                // Bootstrap 4
-                $('#modalSupplier').modal('show');
-            }
-        });
-         </script>
-         @endif
-
-
-         <!-- Sweet Alert -->
-          @push('scripts')
-          <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-
-          <!-- Sukses -->
-            @if (session('success'))
-            <script>
-            Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: '{{ session('success') }}',
-                confirmButtonColor: '#3085d6'
-            });
-            </script>
-            @endif
-
-            <!-- Gagal -->
-            @if (session('error'))
-            <script>
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal!',
-                text: '{{ session('error') }}',
-                confirmButtonColor: '#d33'
-            });
-            </script>
-            @endif
-
-            <!-- Konfirmasi Tindakan -->
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const deleteButtons = document.querySelectorAll(".show_confirm");
-
-                deleteButtons.forEach(function (button) {
-                    button.addEventListener("click", function (event) {
-                        event.preventDefault();
-
-                        const form = button.closest("form");
-                        const nama = button.getAttribute("data-name");
-
-                        Swal.fire({
-                            title: 'Apakah kamu yakin?',
-                            text: `Data "${nama}" akan dihapus secara permanen!`,
-                            icon: 'warning',
-                            showCancelButton: true,
-                            confirmButtonColor: '#d33',
-                            cancelButtonColor: '#3085d6',
-                            confirmButtonText: 'Ya, hapus!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
-                    });
-                });
-                });
-                </script>
-
-            <!-- Konfirmasi Tindakan Update -->
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const updateButtons = document.querySelectorAll(".show_update");
-
-                updateButtons.forEach(function (button) {
-                    button.addEventListener("click", function (event) {
-                        event.preventDefault();
-
-                        const form = button.closest("form");
-                        const nama = button.getAttribute("data-name");
-
-                        Swal.fire({
-                            title: 'Konfirmasi Update',
-                            text: `Apakah kamu yakin ingin mengupdate data "${nama}"?`,
-                            icon: 'question',
-                            showCancelButton: true,
-                            confirmButtonColor: '#3085d6',
-                            cancelButtonColor: '#d33',
-                            confirmButtonText: 'Ya, update!',
-                            cancelButtonText: 'Batal'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                form.submit();
-                            }
-                        });
-                    });
-                });
-                });
-                </script>
-
-                <!-- Validasi nama serupa -->
-                @if($errors->has('nama_supplier'))
-                <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Input Nama',
-                    text: '{{ $errors->first('nama_supplier') }}'
-                });
-                </script>
-                @endif
-
-                <!-- Validasi email serupa -->
-                @if($errors->has('email'))
-                <script>
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal Input Nama',
-                    text: '{{ $errors->first('email') }}'
-                });
-                </script>
-                @endif
-
-                @endpush
-    @endsection
+   

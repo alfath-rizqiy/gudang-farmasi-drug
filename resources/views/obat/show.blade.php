@@ -188,38 +188,58 @@
     </div>
 </div>
 
-
-
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
     const ctx = document.getElementById('myAreaChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['Januari', 'Februari', 'Maret', 'April', 'Mei'],
-            datasets: [{
-                label: 'Penjualan',
-                data: [12, 19, 3, 5, 8],
-                fill: true, // bikin jadi area
-                borderColor: 'rgba(75, 192, 192, 1)',
-                backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                tension: 0.4
-            }]
-        },
-        options: {
-            responsive: true,
-            plugins: {
-                legend: {
-                    position: 'top'
+
+    fetch(`/api/obat/{{ $obat->id }}/statistik?range=minute`)
+        .then(res => res.json())
+        .then(data => {
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: data.labels, // e.g. ["2025-09-24 11:23", "2025-09-24 11:30"]
+                    datasets: [{
+                        label: 'Harga Jual',
+                        data: data.harga_jual,
+                        fill: true,
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { position: 'top' }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'minute',
+                                displayFormats: {
+                                    minute: 'HH:mm'
+                                },
+                                tooltipFormat: 'dd MMM yyyy HH:mm'
+                            },
+                            title: {
+                                display: true,
+                                text: 'Waktu'
+                            }
+                        },
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Harga Jual (Rp)'
+                            }
+                        }
+                    }
                 }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+            });
+        });
 });
 </script>
 

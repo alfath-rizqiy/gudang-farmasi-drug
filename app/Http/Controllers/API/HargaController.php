@@ -111,16 +111,30 @@ public function update(Request $request, $id)
     ]);
 }
 
-    /**
-     * 🔹 Hapus harga
-     */
+    // Hapus harga
     public function destroy($id)
     {
-        $harga = Harga::findOrFail($id);
+        $harga = Harga::find($id);
+
+        if (!$harga) {
+            return response()->json([
+                'success' => false,
+                'message' => 'harga tidak ditemukan.'
+            ], 404);
+        }
+
+        if ($harga->obats()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Data harga tidak dapat dihapus karena masih digunakan oleh data obat.'
+            ], 409); // 409 Conflict
+        }
+
         $harga->delete();
 
         return response()->json([
-            "message" => "Harga obat berhasil dihapus"
-        ]);
+            'success' => true,
+            'message' => 'Data harga berhasil dihapus.'
+        ], 200);
     }
 }

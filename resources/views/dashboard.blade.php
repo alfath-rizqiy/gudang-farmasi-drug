@@ -23,7 +23,7 @@
                                             target="_blank" rel="nofollow" href="{{ route('obat.index') }}/">DataObat</a>, a
                                         constantly updated collection of beautiful svg images that you can use
                                         completely free and without attribution!</p>
-                                    <a target="_blank" rel="nofollow" href="{{ route('obat.create') }}">Tambahkan Data &rarr;</a>
+                                    <a target="_blank" rel="nofollow" href="#">Tambahkan Data &rarr;</a>
                                 </div>
                             </div>
         @endrole

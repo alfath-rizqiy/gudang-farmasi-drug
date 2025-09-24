@@ -15,62 +15,63 @@
     </div>
     @endrole
 
-    <!-- Card untuk menampilkan DataTable -->
-    <div class="card shadow mb-4">
-        <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                    <thead>
-                        {{-- Token CSRF dipakai untuk request AJAX --}}
-                        <meta name="csrf-token" content="{{ csrf_token() }}">
-                        <tr>
-                            <th>No</th>
-                            <th>Nama kategori</th>
-                            <th>Deskripsi</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    {{-- Body tabel akan otomatis diisi DataTables --}}
+                    <!-- DataTales Example -->
+                    <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="table-responsive" style="overflow-x: auto; white-space: nowrap;">
+                                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                    <thead>
+                                    <meta name="csrf-token" content="{{ csrf_token() }}">
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama kategori</th>
+                                        <th>Deskripsi</th>
+                                        <th>Aksi</th>
+                                        </tr>
+                                    </thead>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
                 </table>
             </div>
         </div>
     </div>
 </div>
 
-<!-- Modal Tambah Kategori -->
-<div class="modal fade" id="modalKategori" tabindex="-1" aria-labelledby="modalKategoriLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modalKategoriLabel">Tambah Kategori</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
-      </div>
-      <div class="card shadow mb-0">
-        <div class="card-body">
-          {{-- Form tambah kategori --}}
-          <form id="form-kategori">
-            @csrf
-            <div class="form-group">
-              <label>Nama Kategori</label>
-              <input type="text" name="nama_kategori" class="form-control" required>
+                        <!-- Modal Tambah Kategori -->
+            <div class="modal fade" id="modalKategori" tabindex="-1" aria-labelledby="modalKategoriLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="modalKategoriLabel">Tambah Kategori</h5>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="card shadow mb-0">
+                        <div class="card-body">
+                        <form id="form-kategori">
+                        @csrf
+                        <div class="form-group">
+                            <label>Nama Kategori</label>
+                            <input type="text" name="nama_kategori" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea name="deskripsi" class="form-control" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Simpan</button>
+                            <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Kembali</a>
+</form>
+                          </div>
+                </div>
+                </div>
             </div>
-            <div class="form-group">
-              <label>Deskripsi</label>
-              <textarea name="deskripsi" class="form-control" required></textarea>
             </div>
-            <button type="submit" class="btn btn-primary">Simpan</button>
-            <a href="{{ route('kategori.index') }}" class="btn btn-secondary">Kembali</a>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
-{{-- Modal Edit Kategori --}}
+           {{-- Modal Edit --}}
 <div class="modal fade" id="modalEditKategori" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">

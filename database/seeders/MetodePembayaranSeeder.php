@@ -14,13 +14,10 @@ class MetodePembayaranSeeder extends Seeder
      */
     public function run(): void
     {
-        // =============================
-// METODE PEMBAYARAN (15 data)
-// =============================
-DB::table('metode_pembayarans')->insert([
+        DB::table('metode_pembayarans')->insert([
     [
-        'nama_metode' => 'Cash',
-        'deskripsi'   => 'Bayar tunai di tempat',
+                'nama_metode' => 'Cash',
+                'deskripsi'   => 'Bayar tunai di tempat',
     ],
     [
         'nama_metode' => 'Transfer BCA',

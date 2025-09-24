@@ -17,8 +17,12 @@ class DatabaseSeeder extends Seeder
         RolePermissionSeeder::class,
         UserSeeder::class,
         SupplierSeeder::class,
+        SatuanKecilSeeder::class,
+        SatuanBesarSeeder::class,
         KategoriSeeder::class,
-        MetodePembayaranSeeder::class
+        MetodePembayaranSeeder::class,
+        KemasanSeeder::class,
+        AturanPakaiSeeder::class
         ]);
     }
 }

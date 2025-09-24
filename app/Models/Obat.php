@@ -37,7 +37,7 @@ class Obat extends Model
      * Relasi ke tabel Supplier: setiap obat dimiliki oleh satu supplier.
      */
     public function supplier(){
-        return $this->belongsTo(Supplier::class);
+        return $this->belongsTo(Supplier::class, 'supplier_id');
     }
 
     public function kemasan() {

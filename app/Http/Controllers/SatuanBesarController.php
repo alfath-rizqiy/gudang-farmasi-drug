@@ -9,8 +9,7 @@ class SatuanBesarController extends Controller
 {
     public function index()
     {
-        $satuanbesar = SatuanBesar::all();
-        return view('satuanbesar.index', compact('satuanbesar'));
+        return view('satuanbesar.index');
     }
 
     public function create()

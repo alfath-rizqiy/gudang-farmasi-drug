@@ -8,7 +8,7 @@
     <h1 class="h3 mb-2 text-gray-800">Data Metode Pembayaran</h1>
     <div class="p-6">
 
-        {{-- Tombol tambah hanya muncul untuk role admin --}}
+        {{-- Tombol Tambah --}}
         @role('admin')
             <div class="mb-4">
                 <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalMetodePembayaran">
@@ -17,7 +17,7 @@
             </div>
         @endrole
 
-        <!-- Card untuk menampilkan tabel DataTables -->
+        <!-- DataTales Example -->
         <div class="card shadow mb-4">
             <div class="card-header py-3">
                 <h6 class="m-0 font-weight-bold text-primary">DataTables Example</h6>

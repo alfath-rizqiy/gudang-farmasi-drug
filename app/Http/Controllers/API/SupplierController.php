@@ -15,8 +15,9 @@ class SupplierController extends Controller
         $suppliers = Supplier::all();
         return response()->json([
             'success' => true,
+            'message' =>'Data supplier berhasil diambil',
             'data' => $suppliers
-        ], 200);
+        ]);
     }
 
     // Input Supplier
@@ -38,20 +39,9 @@ class SupplierController extends Controller
             'email.unique' => 'Email supplier sudah digunakan.'
         ]);
 
-
-        // Supplier tidak valid
-        if ($validator->fails()) {
-            return response()->json([
-                'status'=> false,
-                'message'=> 'validasi error',
-                'errors'=> $validator->errors()
-            ], 422);
-        }
-
-         $supplier = Supplier::create($validator->validated());
-
         // Supplier valid
         $supplier = Supplier::create($request->all());
+
         return response()->json([
             'success' => true,
             'message' => 'Supplier berhasil ditambahkan.',
@@ -81,6 +71,19 @@ class SupplierController extends Controller
     // Update Supplier
     public function update(Request $request, $id)
     {
+        $supplier = Supplier::find($id);
+        
+        if (!$supplier) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Supplier tidak ditemukan.'
+            ], 404);
+        }
+
+        $request->merge([
+            'nama_supplier' => preg_replace('/\s+/', ' ', trim($request->nama_supplier))
+        ]);
+
         $validator = Validator::make($request->all(), [
             'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
             'telepon'       => 'required|string',
@@ -88,21 +91,13 @@ class SupplierController extends Controller
             'alamat'        => 'required|string',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json([
-                'status'  => false,
-                'message' => 'Validasi error',
-                'errors'  => $validator->errors()
-            ], 422);
-        }
         
-        $supplier = Supplier::find($id);
-
-        if (!$supplier) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Supplier tidak ditemukan.'
-            ], 404);
+        if ($supplier->obats()->exists()) {
+        return response()->json([
+            'status' => false,
+            'message' => 'Data supplier sudah digunakan pada obat, tidak bisa diupdate!',
+            'data' => $supplier
+        ], 422);
         }
 
         $supplier->update($validator->validated());

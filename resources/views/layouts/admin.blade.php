@@ -14,8 +14,9 @@
     {{-- Judul halaman, default "Dashboard" jika tidak ada yield --}}
     <title>@yield('title', 'Dashboard')</title>
 
-    <!-- Custom fonts for this template-->
-    <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+     <link href="{{ asset('vendor/fontawesome-free/css/all.min.css') }}" rel="stylesheet" type="text/css">
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700" rel="stylesheet">
 
     <!-- Custom styles for this template (SB Admin 2) -->
@@ -71,6 +72,11 @@
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>
+    
+    <!-- jQuery -->
+<script src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+<!-- Bootstrap -->
+<script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
     <!-- Scripts utama -->
     <script src="{{ asset('vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>

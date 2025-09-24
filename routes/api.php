@@ -12,9 +12,6 @@ use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\MetodePembayaranController;
 use App\Http\Controllers\Api\HargaController;
 
-Route::get('/obat', function (Request $request) {
-    return $request->obat();
-})->middleware('auth:sanctum');
 
 Route::resource('/obat', ObatController::class);
 Route::resource('/supplier', SupplierController::class);

@@ -14,9 +14,6 @@ class KategoriSeeder extends Seeder
      */
     public function run(): void
     {
-        // =============================
-        // KATEGORI (15 data)
-        // =============================
         DB::table('kategoris')->insert([
             ['nama_kategori' => 'Antibiotik', 
              'deskripsi' => 'Obat untuk membunuh bakteri'

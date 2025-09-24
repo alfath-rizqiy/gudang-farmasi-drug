@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
 
-class kategoriController extends Controller
+class KategoriController extends Controller
 {
     // 🔹 Tampilkan halaman daftar kategori
     public function index()

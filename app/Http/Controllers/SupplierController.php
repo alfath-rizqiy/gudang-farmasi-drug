@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\Facades\DataTables;
+
 
 class SupplierController extends Controller
 {
@@ -13,8 +15,7 @@ class SupplierController extends Controller
      */
     public function index()
     {
-        $suppliers = Supplier::all();
-        return view('supplier.index', compact('suppliers')); 
+        return view('supplier.index'); 
     }
 
     /**
@@ -40,23 +41,29 @@ class SupplierController extends Controller
         'telepon' => 'required|string',
         'email' => 'required|string|unique:suppliers,email',
         'alamat' => 'required|string',
-    ], [
-        'nama_supplier.required' => 'Nama obat wajib diisi',
-        'nama_supplier.unique' => 'Nama obat sudah terdaftar',
+        ], [
+        'nama_supplier.required' => 'Nama supplier wajib diisi',
+        'telepon.required' => 'Telepon supplier wajib diisi',
+        'alamat.required' => 'Alamat supplier wajib diisi',
+        'email.required' => 'Email supplier wajib diisi',
+        'nama_supplier.unique' => 'Nama supplier sudah terdaftar',
         'email.unique' => 'Email supplier sudah digunakan.'
-    ]);
+        ]);
 
-     if ($validator->fails()) {
-        return redirect()
-            ->route('supplier.index') // balik keForm
-            ->withErrors($validator) 
-            ->with('open_modal', true)
-            ->withInput(); 
-    }
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'errors' => $validator->errors()
+            ], 422);
+        }
 
-    $supplier = Supplier::create($validator->validated());
-
-    return redirect()->route('supplier.index')->with('success', 'Supplier berhasil ditambahkan.');
+        $supplier = Supplier::create($validator->validated());
+    
+        return response()->json([
+            'status' => true,
+            'message'  => 'Data berhasil disimpan!',
+            'data'     => $supplier,
+        ]);
 
     }
 
@@ -66,7 +73,7 @@ class SupplierController extends Controller
     public function show(string $id)
     {
         $supplier = Supplier::with('obats')->findOrFail($id);
-         return view('supplier.show', compact('supplier'));
+         return response()->json($supplier);
     }
 
     /**
@@ -75,7 +82,7 @@ class SupplierController extends Controller
     public function edit(string $id)
     {
         $supplier = Supplier::findOrFail($id); 
-        return view('supplier.edit', compact('supplier'));
+        return response()->json($supplier);
     }
 
     /**
@@ -83,26 +90,27 @@ class SupplierController extends Controller
      */
     public function update(Request $request, string $id)
     {
-    // Ambil supplier dulu
-    $supplier = Supplier::findOrFail($id);
+        // Ambil supplier dulu
+        $supplier = Supplier::findOrFail($id);
 
-    // Cek apakah supplier masih punya relasi obat
-    if ($supplier->obats()->count() > 0) {
-        return redirect()->back()->with('error', 'Data supplier tidak dapat diedit karena masih digunakan oleh data obat.');
-    }
+        // Cek apakah supplier masih punya relasi obat
+        if ($supplier->obats()->count() > 0) {
+            return redirect()->back()->with('error', 'Data supplier tidak dapat diedit karena masih digunakan oleh data obat.');
+        }
 
-    // Validasi input
-    $request->validate([
-        'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
-        'telepon' => 'required|string',
-        'email' => 'required|email|unique:suppliers,email,' . $id,
-        'alamat' => 'required', 
-    ]);
+        // Validasi input
+        $request->validate([
+            'nama_supplier' => 'required|string|unique:suppliers,nama_supplier,' . $id,
+            'telepon' => 'required|string',
+            'email' => 'required|email|unique:suppliers,email,' . $id,
+            'alamat' => 'required', 
+        ]);
 
-    // Update data supplier
-    $supplier->update($request->only(['nama_supplier', 'telepon', 'email', 'alamat']));
+        // Update data supplier
+        $supplier->update($request->only(['nama_supplier', 'telepon', 'email', 'alamat']));
 
-    return redirect()->route('supplier.index')->with('success', 'Data berhasil diupdate.');
+        return redirect()->route('satuankecil.index')->with('success', 'Data berhasil diupdate.');
+    
     }
 
 
@@ -111,7 +119,7 @@ class SupplierController extends Controller
      */
     public function destroy($id)
     {
-    try {
+ 
         $supplier = Supplier::findOrFail($id);
 
         // Cek apakah supplier masih punya relasi obat
@@ -120,10 +128,12 @@ class SupplierController extends Controller
         }
 
         $supplier->delete();
-        return redirect()->back()->with('success', 'Data supplier berhasil dihapus.');
-    } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus data supplier.');
-    }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Supplier berhasil dihapus'
+        ]);
+
     }
 
 }

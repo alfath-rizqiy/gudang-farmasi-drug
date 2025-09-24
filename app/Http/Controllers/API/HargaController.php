@@ -14,13 +14,21 @@ class HargaController extends Controller
      * 🔹 Ambil semua data harga (untuk DataTables)
      */
     public function index()
-    {
-        $hargas = Harga::with('obat')->latest()->get();
+{
+    // Ambil harga terbaru per obat
+    $hargas = Harga::with('obat')
+        ->whereIn('id', function ($query) {
+            $query->selectRaw('MAX(id)')
+                  ->from('hargas')
+                  ->groupBy('obat_id');
+        })
+        ->latest()
+        ->get();
 
-        return response()->json([
-            "data" => $hargas
-        ]);
-    }
+    return response()->json([
+        "data" => $hargas
+    ]);
+}
 
     /**
      * 🔹 Simpan harga baru
@@ -56,43 +64,52 @@ class HargaController extends Controller
      * 🔹 Detail harga
      */
     public function show($id)
-    {
-        $harga = Harga::with("obat")->findOrFail($id);
+{
+    $harga = Harga::with("obat")->findOrFail($id);
 
-        return response()->json($harga);
-    }
+    // Ambil semua riwayat harga obat ini
+    $riwayat = Harga::where("obat_id", $harga->obat_id)
+                    ->orderBy("created_at", "desc")
+                    ->get();
+
+    return response()->json([
+        "obat"    => $harga->obat,
+        "riwayat" => $riwayat
+    ]);
+}
 
     /**
-     * 🔹 Update harga
-     */
-    public function update(Request $request, $id)
-    {
-        $harga = Harga::findOrFail($id);
+ * 🔹 Update harga (simpan sebagai riwayat baru)
+ */
+public function update(Request $request, $id)
+{
+    $old = Harga::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            "obat_id"      => "required|exists:obats,id",
-            "harga_pokok"  => "required|numeric|min:0",
-            "margin"       => "nullable|numeric|min:0",
-        ]);
+    $validator = Validator::make($request->all(), [
+        "obat_id"      => "required|exists:obats,id",
+        "harga_pokok"  => "required|numeric|min:0",
+        "margin"       => "nullable|numeric|min:0",
+    ]);
 
-        if ($validator->fails()) {
-            return response()->json(["message" => $validator->errors()->first()], 422);
-        }
-
-        $harga_jual = $request->harga_pokok + ($request->margin ?? 0);
-
-        $harga->update([
-            "obat_id"     => $request->obat_id,
-            "harga_pokok" => $request->harga_pokok,
-            "margin"      => $request->margin ?? 0,
-            "harga_jual"  => $harga_jual,
-        ]);
-
-        return response()->json([
-            "message" => "Harga obat berhasil diperbarui",
-            "data"    => $harga->load("obat")
-        ]);
+    if ($validator->fails()) {
+        return response()->json(["message" => $validator->errors()->first()], 422);
     }
+
+    $harga_jual = $request->harga_pokok + ($request->margin ?? 0);
+
+    // 👉 Insert record baru, bukan update
+    $newHarga = Harga::create([
+        "obat_id"     => $request->obat_id,
+        "harga_pokok" => $request->harga_pokok,
+        "margin"      => $request->margin ?? 0,
+        "harga_jual"  => $harga_jual,
+    ]);
+
+    return response()->json([
+        "message" => "Harga obat berhasil diperbarui",
+        "data"    => $newHarga->load("obat")
+    ]);
+}
 
     /**
      * 🔹 Hapus harga

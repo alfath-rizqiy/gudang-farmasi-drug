@@ -49,8 +49,8 @@ class SatuanBesarController extends Controller
 
     public function show(string $id)
     {
-        $satuanbesar = SatuanBesar::with('obats')->findOrFail($id);
-        return view('satuanbesar.show', compact('satuanbesar'));
+         $satuanbesar = SatuanBesar::with('obats')->findOrFail($id);
+         return response()->json($satuanbesar);
     }
 
     public function edit(string $id)

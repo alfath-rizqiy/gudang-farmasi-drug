@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('obats', function (Blueprint $table) {
             $table->id();
             $table->string('nama_obat');
+            $table->text('deskripsi_obat');
+            $table->string('stok')->default(1);
             $table->timestamps();
 
             // Supplier id akan koneksi ke id supplier dengan menggunakan Foreign Key, id akan masuk ke Obat statusnya value id lalu akan menjadi nama_supplier, sehingga yang muncul itu nama bukan id
@@ -37,6 +39,10 @@ return new class extends Migration
 
           $table->unsignedBigInteger('metodepembayaran_id');
           $table->foreign('metodepembayaran_id')->references('id')->on('metode_pembayarans')->onDelete('restrict');
+
+          $table->unsignedBigInteger('harga_id');
+          $table->foreign('harga_id')->references('id')->on('hargas')->onDelete('restrict');
+
 
         });
     }

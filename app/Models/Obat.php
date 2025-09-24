@@ -11,6 +11,7 @@ use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
 use App\Models\Kategori;
 use App\Models\MetodePembayaran;
+use App\Models\Harga;
 
 class Obat extends Model
 {
@@ -23,6 +24,8 @@ class Obat extends Model
      */
     protected $fillable = [
         'nama_obat', 
+        'deskripsi_obat',
+        'stok',
         'foto',
         'supplier_id',
         'kemasan_id',
@@ -31,6 +34,7 @@ class Obat extends Model
         'satuan_besar_id',
         'kategori_id',
         'metodepembayaran_id',
+        'hargas'
     ];
 
     /**
@@ -63,4 +67,17 @@ class Obat extends Model
     public function metodepembayaran() {
         return $this->belongsTo(MetodePembayaran::class);
     }
+
+    public function hargas() {
+        return $this->hasMany(Harga::class);
+    }
+
+    public function hargaTerbaru() {
+        return $this->hasOne(Harga::class)->latestOfMany();
+    }
+
+    public function hargaLama() {
+        return $this->hasOne(Harga::class)->oldestOfMany();
+    }
+
 }

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Obat;
 use App\Models\Harga;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
 
 class HargaController extends Controller
 {
@@ -30,30 +29,30 @@ class HargaController extends Controller
      * Simpan harga baru untuk obat (khusus admin/petugas)
      */
     public function store(Request $request, $obat_id)
-{
-    $validator = Validator::make($request->all(), [
-        'harga_pokok' => 'required|numeric|min:0',
-        'margin'      => 'required|numeric|min:0',
-    ]);
+    {
+        $request->validate([
+            'harga_pokok' => 'required|numeric|min:0',
+            'margin'      => 'required|numeric|min:0',
+        ]);
 
-    if ($validator->fails()) {
-        return redirect()
-            ->route('harga.index')
-            ->withErrors($validator)
-            ->withInput();
+        if ($validator->fails()) {
+            return redirect()
+                ->route('harga.index')
+                ->withErrors($validator)
+                ->withInput();
+        }
+
+        $obat = Obat::findOrFail($obat_id);
+
+        Harga::create([
+            'obat_id'     => $obat->id,
+            'harga_pokok' => $request->harga_pokok,
+            'margin'      => $request->margin,
+            'harga_jual'  => $request->harga_pokok + $request->margin,
+        ]);
+
+        return redirect()->route('harga.index')->with('success', 'Harga obat berhasil ditambahkan.');
     }
-
-    $obat = Obat::findOrFail($obat_id);
-
-    Harga::create([
-        'obat_id'     => $obat->id,
-        'harga_pokok' => $request->harga_pokok,
-        'margin'      => $request->margin,
-        'harga_jual'  => $request->harga_pokok + $request->margin,
-    ]);
-
-    return redirect()->route('harga.index')->with('success', 'Harga obat berhasil ditambahkan.');
-}
 
     /**
      * Detail harga per obat

@@ -232,6 +232,18 @@
                             </select>
                         </div>
 
+                        <!-- Deskripsi Obat -->
+                        <div class="col-md-6 mb-3">
+                            <label for="deskripsi_obat">Deskripsi Obat</label>
+                            <input type="text" name="deskripsi_obat" id="deskripsi_obat" class="form-control" required>
+                        </div>
+
+                        <!-- Nama Obat -->
+                        <div class="col-md-6 mb-3">
+                            <label for="stok">Stok Obat</label>
+                            <input type="number" name="stok" id="stok" class="form-control" required>
+                        </div>
+
                         <!-- Foto Obat -->
                         <div class="col-md-12 mb-3">
                             <label for="foto">Foto Obat</label>
@@ -325,6 +337,16 @@
                     <option value="">Pilih Metode Pembayaran</option>
                     
                 </select>
+            </div>
+            
+            <div class="col-md-6 mb-3">
+                <label>Deskripsi Obat</label>
+                <input type="text" name="deskripsi_obat" id="edit_deskripsi_obat" class="form-control" required>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label>Stok Obat</label>
+                <input type="number" name="stok" id="edit_stok" class="form-control" required>
             </div>
 
             <!-- Foto Obat -->

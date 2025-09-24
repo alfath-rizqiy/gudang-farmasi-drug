@@ -150,16 +150,26 @@
         <button type="button" class="close text-white" data-dismiss="modal"><span>&times;</span></button>
       </div>
       <div class="modal-body">
-
-        <p><strong>Nama Obat:</strong> <span id="detail_nama_obat"></span></p>
-        <p><strong>Harga Pokok:</strong> <span id="detail_harga_pokok"></span></p>
-        <p><strong>Margin:</strong> <span id="detail_margin"></span></p>
-        <p><strong>Harga Jual:</strong> <span id="detail_harga_jual"></span></p>
-        <p><strong>Update Terakhir:</strong> <span id="detail_updated_at"></span></p>
-
-      </div>
+  <p><strong>Nama Obat:</strong> <span id="detail_nama_obat"></span></p>
+  <hr>
+  <h6>Riwayat Harga:</h6>
+  <div class="table-responsive">
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>No</th>
+          <th>Harga Pokok</th>
+          <th>Margin</th>
+          <th>Harga Jual</th>
+          <th>Update Terakhir</th>
+        </tr>
+      </thead>
+      <tbody id="detailRiwayat"></tbody>
+    </table>
+  </div>
+</div>
       <div class="modal-footer bg-light">
-        <button class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+        <button class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>

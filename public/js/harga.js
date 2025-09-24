@@ -156,20 +156,31 @@ $(document).ready(function () {
 
   // ====== DETAIL ======
   $(document).on('click', '.btn-detail', function () {
-    const id = $(this).data('id');
-    showLoader();
-    $.get(`${apiUrl}/${id}`, function (res) {
-      hideLoader();
-      $("#detail_nama_obat").text(res.obat.nama_obat);
-      $("#detail_harga_pokok").text(formatNumber(res.harga_pokok));
-      $("#detail_margin").text(formatNumber(res.margin));
-      $("#detail_harga_jual").text(formatNumber(res.harga_jual));
-      $("#detail_updated_at").text(formatDateToWIB(res.updated_at));
-      $("#modalDetailHarga").modal("show");
-    }).fail(xhr => {
-      hideLoader();
-      Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Data tidak ditemukan", "error");
-    });
-  });
+  const id = $(this).data('id');
+  showLoader();
+  $.get(`${apiUrl}/${id}`, function (res) {
+    hideLoader();
 
+    let html = '';
+    res.riwayat.forEach((h, i) => {
+      html += `
+        <tr>
+          <td>${i + 1}</td>
+          <td>${formatNumber(h.harga_pokok)}</td>
+          <td>${formatNumber(h.margin)}</td>
+          <td>${formatNumber(h.harga_jual)}</td>
+          <td>${formatDateToWIB(h.updated_at)}</td>
+        </tr>
+      `;
+    });
+
+    $("#detail_nama_obat").text(res.obat.nama_obat);
+    $("#detailRiwayat").html(html);
+
+    $("#modalDetailHarga").modal("show");
+  }).fail(xhr => {
+    hideLoader();
+    Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Data tidak ditemukan", "error");
+  });
+});
 });

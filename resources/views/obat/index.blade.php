@@ -121,7 +121,7 @@
                         <th>Kategori</th>
                         <th>Metode Pembayaran</th>
                         <th>Tanggal Input</th>
-                        <th>Foto Obat</th>
+                        <!-- <th>Foto Obat</th> -->
                         <th>Aksi</th>
                     </tr>
                 </thead>
@@ -130,7 +130,7 @@
     </div>
 </div>
                  
-<!-- Modal Foto -->
+<!-- Modal Foto
 <div class="modal fade" id="modalFoto" tabindex="-1" role="dialog" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -146,7 +146,7 @@
       </div>
     </div>
   </div>
-</div>
+</div> -->
 
 
 <!-- Modal Tambah Obat -->
@@ -345,7 +345,6 @@
     </div>
   </div>
 </div>
-
 
 @endsection
 

@@ -20,7 +20,7 @@
                  <h6 class="m-0 font-weight-bold text-primary">Data Table</h6>
              </div>
         <div class="card-body">
-        <div class="table-responsive">
+        <div class="table-responsive"  style="overflow-x: auto; white-space: nowrap;">
            <table class="table table-bordered" id="hargaTable" width="100%" cellspacing="0">
                 <thead>
                     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -49,8 +49,8 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalHarga">Tambah Harga</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
+                        <button type="button" class="btn" data-bs-dismiss="modal">
+                            <i class="fas fa-times"></i>
                         </button>
                     </div>
                     <div class="modal-body">
@@ -133,8 +133,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" data-dismiss="modal">Tutup</button>
-                    <button class="btn btn-primary">Update</button>
+                    <button class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
+                    <button class="btn btn-sm btn-primary">Update</button>
                 </div>
             </div>
         </form>
@@ -169,7 +169,7 @@
   </div>
 </div>
       <div class="modal-footer bg-light">
-        <button class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+        <button class="btn btn-sm btn-secondary" data-dismiss="modal">Tutup</button>
       </div>
     </div>
   </div>

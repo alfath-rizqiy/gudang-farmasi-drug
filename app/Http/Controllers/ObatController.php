@@ -99,6 +99,8 @@ class ObatController extends Controller
         'satuanbesar',
         'kategori',
         'metodepembayaran',
+        'hargaTerbaru',
+        'hargaLama'
     ])->findOrFail($id);
 
         // Tampilkan ke view show

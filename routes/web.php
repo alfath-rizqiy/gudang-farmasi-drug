@@ -14,6 +14,8 @@ use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
+use App\Http\Controllers\ObatImportExportController;
+use App\Http\Controllers\ObatController;
 use App\Http\Controllers\HargaController;
 
 // Pdf Download

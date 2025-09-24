@@ -21,11 +21,13 @@ class ObatController extends Controller
             'aturanpakai:id,frekuensi_pemakaian',
             'satuanKecil:id,nama_satuankecil',
             'satuanBesar:id,nama_satuanbesar',
-            'metodepembayaran:id,nama_metode'
+            'metodepembayaran:id,nama_metode',
         ])->get()->map(function($item) {
             return [
             'id' => $item->id,
             'nama_obat' => $item->nama_obat,
+            'deskripsi_obat' => $item->deskripsi_obat,
+            'stok' => $item->stok,
             'foto' => $item->foto,
             'created_at' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : null,
             
@@ -69,6 +71,8 @@ class ObatController extends Controller
 
         $validator = Validator::make($request->all(),[
             'nama_obat' => 'required|string|unique:obats,nama_obat',
+            'deskripsi_obat' => 'required|string',
+            'stok' => 'required|integer',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -133,6 +137,8 @@ class ObatController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nama_obat' => 'required|string|max:255|unique:obats,nama_obat,' . $id,
+            'deskripsi_obat' => 'required|string',
+            'stok' => 'required|integer',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',

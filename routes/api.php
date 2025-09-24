@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SatuanKecilController;
 use App\Http\Controllers\Api\SatuanBesarController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\MetodePembayaranController;
+use App\Http\Controllers\Api\HargaController;
 
 Route::get('/obat', function (Request $request) {
     return $request->obat();
@@ -21,5 +22,6 @@ Route::resource('/kemasan', KemasanController::class);
 Route::resource('/aturanpakai', AturanPakaiController::class);
 Route::resource('/satuankecil', SatuanKecilController::class);
 Route::resource('/satuanbesar', SatuanBesarController::class);
-Route::resource('/kategori', KategoriController::class);
-Route::resource('/metodepembayaran', MetodePembayaranController::class);
+Route::apiResource('/kategori', KategoriController::class);
+Route::apiResource('/metodepembayaran', MetodePembayaranController::class);
+Route::apiResource('/harga', HargaController::class);

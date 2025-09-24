@@ -10,6 +10,7 @@ use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\MetodePembayaranController;
+use App\Http\Controllers\HargaController;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -111,23 +112,18 @@ Route::middleware('auth')->group(function () {
     // Kategori Route
     Route::prefix('kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
-        Route::get('/create', [KategoriController::class, 'create'])->name('create');
-        Route::post('/', [KategoriController::class, 'store'])->name('store');
         Route::get('/{kategori}', [KategoriController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [KategoriController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [KategoriController::class, 'update'])->name('update');
-        Route::delete('/{id}', [KategoriController::class, 'destroy'])->name('destroy');
     });
 
     // Metode Pembayaran Route
     Route::prefix('metodepembayaran')->name('metodepembayaran.')->group(function () {
         Route::get('/', [MetodePembayaranController::class, 'index'])->name('index');
-        Route::get('/create', [MetodePembayaranController::class, 'create'])->name('create');
-        Route::post('/', [MetodePembayaranController::class, 'store'])->name('store');
         Route::get('/{metodepembayaran}', [MetodePembayaranController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [MetodePembayaranController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [MetodePembayaranController::class, 'update'])->name('update');
-        Route::delete('/{id}', [MetodePembayaranController::class, 'destroy'])->name('destroy');
+    });
+
+    // Harga Route
+    Route::prefix('harga')->name('harga.')->group(function () {
+        Route::get('/', [HargaController::class, 'index'])->name('index');
     });
 });
 });

@@ -31,8 +31,8 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                                 Harga (Baru)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                                             <p class="harga-tanggal">Tanggal 10 Oktober 2025</p>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $obat->hargaTerbaru->harga_jual ?? '-' }}</div>
+                                             <p class="harga-tanggal">{{ $obat->hargaTerbaru?->updated_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? '-' }}</p>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -50,8 +50,8 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                                 Harga (Lama)</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">$215,000</div>
-                                            <p class="harga-tanggal">Tanggal 10 Oktober 2025</p>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $obat->hargaLama->harga_jual ?? '-'}}</div>
+                                            <p class="harga-tanggal">{{ $obat->hargaLama?->updated_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? '-' }}</p>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -66,21 +66,30 @@
                             <div class="card border-left-info shadow h-60 py-2">
                                 <div class="card-body py-2">
                                     <div class="row no-gutters align-items-center">
-                                        <div class="col mr-2">
-                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Pembelian
+                                        <div class="col mr-2 py-1">
+                                            <div class="text-xs font-weight-bold text-info text-uppercase mb-1">Riwayat Harga
                                             </div>
                                             <div class="row no-gutters align-items-center">
-                                                <div class="col-auto">
-                                                    <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+                                                <div class="dropdown">
+                                                    <button class="btn btn-sm dropdown-toggle" type="button" id="dropdownRiwayat" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        Lihat Riwayat
+                                                    </button>
+                                                    <ul class="dropdown-menu" aria-labelledby="dropdownRiwayat">
+                                                        @forelse($obat->hargas as $harga)
+                                                        <li>
+                                                            <a class="dropdown-item" href="#">
+                                                                Rp{{ number_format($harga->harga_jual) }} 
+                                                                <br>
+                                                                <small class="text-muted">
+                                                                    {{ $harga->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}
+                                                                </small>
+                                                            </a>
+                                                        </li>
+                                                        @empty
+                                                        <li><span class="dropdown-item text-muted">Tidak ada riwayat harga</span></li>
+                                                        @endforelse
+                                                    </ul>
                                                 </div>
-                                                <div class="col">
-                                                    <div class="progress progress-sm mr-2">
-                                                        <div class="progress-bar bg-info" role="progressbar"
-                                                            style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-                                                            aria-valuemax="100"></div>
-                                                    </div>
-                                                </div>
-                                                <p class="harga-tanggal">Tanggal 10 Oktober 2025</p>
                                             </div>
                                         </div>
                                         <div class="col-auto">
@@ -99,8 +108,8 @@
                                         <div class="col mr-2">
                                             <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                 Stok</div>
-                                            <div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
-                                            <p class="harga-tanggal">Tanggal 10 Oktober 2025</p>
+                                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $obat->stok }}</div>
+                                            <p class="harga-tanggal">{{ $obat->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}</p>
                                         </div>
                                         <div class="col-auto">
                                             <i class="fas fa-box fa-2x text-gray-300"></i>
@@ -173,7 +182,7 @@
             <!-- Kolom Keterangan -->
             <div class="col-md-7">
                 <p><strong>{{ $obat->nama_obat }}</strong> 
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Repellendus corporis sapiente illo dolore rerum suscipit necessitatibus vero, voluptate ipsa! Ad aut voluptates quos modi dolores tempore, totam deleniti sit blanditiis.</p>
+           {{ $obat->deskripsi_obat}}.</p>
             </div>
         </div>
     </div>

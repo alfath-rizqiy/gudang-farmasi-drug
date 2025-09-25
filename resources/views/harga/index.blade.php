@@ -10,7 +10,7 @@
         {{-- Tombol Tambah --}}
         @role('admin')
             <div class="mb-4">
-                <button class="btn btn-primary" data-toggle="modal" data-target="#modalHarga">Tambah Harga</button>
+                <button class="btn btn-sm btn-primary" data-toggle="modal" data-target="#modalHarga">Tambah Harga</button>
             </div>
         @endrole
 

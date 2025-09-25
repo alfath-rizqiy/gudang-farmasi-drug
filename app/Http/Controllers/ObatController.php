@@ -62,6 +62,8 @@ class ObatController extends Controller
         'satuan_besar_id'     => 'required|exists:satuan_besars,id',
         'kategori_id'         => 'required|exists:kategoris,id',
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+        'deskripsi_obat'      => 'nullable|string|max:500',
+        'stok'                => 'integer|min:0',
         ], [
             'nama_obat.required' => 'Nama obat wajib diisi',
             'nama_obat.unique' => 'Nama obat sudah terdaftar'
@@ -144,6 +146,8 @@ class ObatController extends Controller
         'satuan_besar_id'     => 'required|exists:satuan_besars,id',
         'kategori_id'         => 'required|exists:kategoris,id',
         'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
+        'deskripsi_obat'      => 'string|max:500',
+        'stok'                => 'integer|min:0',
     ]);
 
         // Default foto lama
@@ -172,6 +176,8 @@ class ObatController extends Controller
         'satuan_besar_id'     => $request->satuan_besar_id,
         'kategori_id'         => $request->kategori_id,
         'metodepembayaran_id' => $request->metodepembayaran_id,
+        'deskripsi_obat'      => $request->deskripsi_obat,
+        'stok'                => $request->stok,
     ]);
 
     // lanjut update

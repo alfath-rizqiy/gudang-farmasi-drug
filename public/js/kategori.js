@@ -17,7 +17,11 @@ $(document).ready(function () {
         processing: true,
         ajax: { url: apiUrl, dataSrc: "data" },
         columns: [
-            { data: null, render: (d, t, r, m) => m.row + 1 }, // nomor urut
+            {
+                data: null,
+                render: (d, t, r, m) => m.row + 1,
+                className: "text-center",
+            }, // nomor urut
             { data: "nama_kategori" },
             { data: "deskripsi" },
             {

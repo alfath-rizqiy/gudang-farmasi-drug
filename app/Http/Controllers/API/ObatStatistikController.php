@@ -9,40 +9,82 @@ use Carbon\Carbon;
 
 class ObatStatistikController extends Controller
 {
+    /**
+     * Ambil data statistik harga obat.
+     * Bisa per hari atau detail per tanggal.
+     */
     public function index(Request $request, $id)
-{
-    // Ambil range dari query string, default ke 'month' kalau nggak dikasih
-    $range = $request->query('range', 'month');
+    {
+        $range = $request->query('range', 'day');
+        $date  = $request->query('date');
 
-    // Ambil data harga sesuai obat_id
-    $data = Harga::where("obat_id", $id)
-        ->orderBy("created_at", "asc")
-        ->get()
-        ->groupBy(function ($item) use ($range) {
-            $date = Carbon::parse($item->created_at);
-            switch ($range) {
-                case 'minute':
-                    return $date->format('Y-m-d H:i'); // Grup per menit
-                case 'hour':
-                    return $date->format('Y-m-d H:00');
-                case 'day':
-                    return $date->format('Y-m-d');
-                default:
-                    return $date->format('F Y');
-            }
-        })
-        ->map(function ($group) {
-            return [
-                "harga_pokok" => $group->last()->harga_pokok,
-                "harga_jual"  => $group->last()->harga_jual,
-                "tanggal"     => $group->last()->created_at->format("Y-m-d H:i:s"),
+        if ($range === 'detail' && $date) {
+            return $this->detailPerTanggal($id, $date);
+        }
+
+        return $this->perHari($id);
+    }
+
+    /**
+     * 📌 Statistik per hari (labels = tanggal, data = harga jual terakhir di hari itu)
+     */
+    private function perHari($obatId)
+    {
+        // Ambil semua harga untuk obat ini
+        $hargas = Harga::where('obat_id', $obatId)
+            ->orderBy('updated_at', 'asc')
+            ->get()
+            ->groupBy(function ($item) {
+                return Carbon::parse($item->updated_at)->format('Y-m-d'); // group by hari
+            });
+
+        $labels = [];
+        $hargaJual = [];
+        $detail = [];
+
+        foreach ($hargas as $tanggal => $records) {
+            // Ambil record terakhir di hari itu
+            $last = $records->last();
+
+            $labels[] = $tanggal;
+            $hargaJual[] = $last->harga_jual;
+            $detail[] = [
+                'waktu' => Carbon::parse($last->updated_at)
+                    ->setTimezone('Asia/Jakarta')
+                    ->format('H:i:s')
             ];
-        });
+        }
 
-    return response()->json([
-        "labels" => $data->keys()->values(),
-        "harga_pokok" => $data->pluck("harga_pokok")->values(),
-        "harga_jual" => $data->pluck("harga_jual")->values(),
-    ]);
-}
+        return response()->json([
+            'labels'     => $labels,
+            'harga_jual' => $hargaJual,
+            'detail'     => $detail
+        ]);
+    }
+
+    /**
+     * 📌 Statistik detail per tanggal (labels = jam:menit:detik, data = harga jual)
+     */
+    private function detailPerTanggal($obatId, $tanggal)
+    {
+        $hargas = Harga::where('obat_id', $obatId)
+            ->whereDate('updated_at', $tanggal)
+            ->orderBy('updated_at', 'asc')
+            ->get();
+
+        $labels = [];
+        $hargaJual = [];
+
+        foreach ($hargas as $record) {
+            $labels[] = Carbon::parse($record->updated_at)
+                ->setTimezone('Asia/Jakarta')
+                ->format('H:i:s');
+            $hargaJual[] = $record->harga_jual;
+        }
+
+        return response()->json([
+            'labels'     => $labels,
+            'harga_jual' => $hargaJual
+        ]);
+    }
 }

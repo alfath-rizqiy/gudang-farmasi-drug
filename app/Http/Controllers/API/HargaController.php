@@ -111,16 +111,34 @@ public function update(Request $request, $id)
     ]);
 }
 
-    /**
-     * 🔹 Hapus harga
-     */
-    public function destroy($id)
-    {
+    // Hapus harga
+   public function destroy($id)
+{
+    try {
         $harga = Harga::findOrFail($id);
+
+        // opsional: kalau kamu mau pastikan harga tidak dipakai di tempat lain
+        if ($harga->obat) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Harga ini terkait dengan obat dan tidak bisa dihapus.'
+            ], 400);
+        }
+
         $harga->delete();
 
         return response()->json([
-            "message" => "Harga obat berhasil dihapus"
-        ]);
+            'success' => true,
+            'message' => 'Harga berhasil dihapus'
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat menghapus harga',
+            'error'   => $e->getMessage() // tampilkan pesan asli untuk debug
+        ], 500);
     }
+}
+
 }

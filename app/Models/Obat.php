@@ -69,7 +69,7 @@ class Obat extends Model
     }
 
     public function hargas() {
-        return $this->hasMany(Harga::class);
+        return $this->hasMany(Harga::class, 'obat_id');
     }
 
     public function hargaTerbaru() {

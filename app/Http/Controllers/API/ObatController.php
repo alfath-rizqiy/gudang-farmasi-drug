@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Obat;
+use App\Models\Harga;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
@@ -147,6 +148,10 @@ class ObatController extends Controller
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             'deskripsi_obat' => 'required|string',
             'stok' => 'required|integer',
+            // tambahin validasi harga juga
+            'harga_pokok' => 'nullable|numeric|min:0',
+            'margin'      => 'nullable|numeric|min:0',
+            'harga_jual'  => 'nullable|numeric|min:0',
         ]);
 
         if ($validator->fails()) {
@@ -181,6 +186,18 @@ class ObatController extends Controller
         $data['foto'] = $path;
     }
 
+    // Update data obat (kecuali harga)
+    $obat->update(collect($data)->except(['harga_pokok','margin','harga_jual'])->toArray());
+
+    // 🔹 Simpan riwayat harga baru kalau ada input harga
+    if ($request->filled('harga_pokok')) {
+        Harga::create([
+            'obat_id'     => $obat->id,
+            'harga_pokok' => $request->harga_pokok,
+            'margin'      => $request->margin ?? 0,
+            'harga_jual'  => $request->harga_jual,
+        ]);
+    }
 
         $obat->update($data);
 

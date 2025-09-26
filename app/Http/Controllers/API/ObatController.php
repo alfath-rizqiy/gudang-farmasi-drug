@@ -72,8 +72,6 @@ class ObatController extends Controller
 
         $validator = Validator::make($request->all(),[
             'nama_obat' => 'required|string|unique:obats,nama_obat',
-            'deskripsi_obat' => 'required|string',
-            'stok' => 'required|integer',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -82,6 +80,8 @@ class ObatController extends Controller
             'kategori_id' => 'required|exists:kategoris,id',
             'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'deskripsi_obat' => 'required|string',
+            'stok' => 'required|integer',
         ], [
             'nama_obat.required' => 'Nama obat wajib diisi',
             'nama_obat.unique' => 'Nama obat sudah terdaftar',
@@ -138,8 +138,6 @@ class ObatController extends Controller
 
         $validator = Validator::make($request->all(), [
             'nama_obat' => 'required|string|max:255|unique:obats,nama_obat,' . $id,
-            'deskripsi_obat' => 'required|string',
-            'stok' => 'required|integer',
             'supplier_id' => 'required|exists:suppliers,id',
             'kemasan_id' => 'required|exists:kemasans,id',
             'aturanpakai_id' => 'required|exists:aturan_pakais,id',
@@ -153,6 +151,8 @@ class ObatController extends Controller
         'harga_pokok' => 'nullable|numeric|min:0',
         'margin'      => 'nullable|numeric|min:0',
         'harga_jual'  => 'nullable|numeric|min:0',
+            'deskripsi_obat' => 'required|string',
+            'stok' => 'required|integer',
         ]);
 
         if ($validator->fails()) {

@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\ProfileController;
 
 
 Route::resource('/obat', ObatController::class);
+Route::get('/obat/{id}/statistik', [ObatStatistikController::class, 'index']);
 Route::resource('/supplier', SupplierController::class);
 Route::resource('/kemasan', KemasanController::class);
 Route::resource('/aturanpakai', AturanPakaiController::class);

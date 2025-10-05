@@ -64,4 +64,20 @@ class HargaController extends Controller
         // Tetap 1 view saja
         return view('harga.show', compact('obat'));
     }
+
+     public function destroy(string $id)
+    {
+        try {
+            $harga = Harga::findOrFail($id);
+
+            if ($harga->obats()->count() > 0) {
+                return redirect()->back()->with('error', 'harga tidak dapat dihapus karena masih digunakan oleh data obat.');
+            }
+
+            $harga->delete();
+            return redirect()->back()->with('success', 'harga berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus harga.');
+        }
+    }
 }

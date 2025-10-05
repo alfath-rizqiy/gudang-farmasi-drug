@@ -10,24 +10,26 @@ function showLoader(){ $('#loader').fadeIn(200); }
 // Fungsi untuk menyembunyikan loader
 function hideLoader(){ $('#loader').fadeOut(200); }
 
-$(document).ready(function(){
-
-  const apiUrl = "/api/kategori";   // Endpoint API kategori
-
-  // Inisialisasi DataTables
-  const table = $('#dataTable').DataTable({
-    processing: true,
-    ajax: { url: apiUrl, dataSrc: "data" }, // load data dari API
-    columns: [
-      { data: null, render: (d,t,r,m)=> m.row + 1 }, // Kolom nomor urut
-      { data: "nama_kategori" },                     // Kolom nama kategori
-      { data: "deskripsi" },                         // Kolom deskripsi
-      { 
-        data: "id", orderable:false, searchable:false, 
-        render: function(id, type, row){
-          // Kolom aksi (detail, edit, hapus)
-          return `
-            <button class="btn btn-info btn-sm btn-detail" data-id="${id}">
+$(document).ready(function () {
+    const apiUrl = "/api/kategori"; // API endpoint
+    const table = $("#dataTable").DataTable({
+        processing: true,
+        ajax: { url: apiUrl, dataSrc: "data" },
+        columns: [
+            {
+                data: null,
+                render: (d, t, r, m) => m.row + 1,
+                className: "text-center",
+            }, // nomor urut
+            { data: "nama_kategori" },
+            { data: "deskripsi" },
+            {
+                data: "id",
+                orderable: false,
+                searchable: false,
+                render: function (id, type, row) {
+                    return `
+            <button class="btn btn-info btn-sm btn-show" data-id="${id}">
               <i class="fas fa-info-circle"></i> Detail
             </button>
             <button class="btn btn-primary btn-sm btn-edit" 

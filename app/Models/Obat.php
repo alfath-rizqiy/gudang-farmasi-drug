@@ -24,8 +24,6 @@ class Obat extends Model
      */
     protected $fillable = [
         'nama_obat', 
-        'deskripsi_obat',
-        'stok',
         'foto',
         'supplier_id',
         'kemasan_id',
@@ -34,7 +32,9 @@ class Obat extends Model
         'satuan_besar_id',
         'kategori_id',
         'metodepembayaran_id',
-        'hargas'
+        'hargas',
+        'deskripsi_obat',
+        'stok',
     ];
 
     /**
@@ -69,7 +69,7 @@ class Obat extends Model
     }
 
     public function hargas() {
-        return $this->hasMany(Harga::class);
+        return $this->hasMany(Harga::class, 'obat_id');
     }
 
     public function hargaTerbaru() {

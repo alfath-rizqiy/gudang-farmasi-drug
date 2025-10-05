@@ -16,6 +16,7 @@ use Maatwebsite\Excel\Concerns\Importable;
 use Maatwebsite\Excel\Concerns\WithValidation;
 
 
+
 class ObatImport implements ToModel, WithHeadingRow, WithValidation
 {
     use Importable;
@@ -44,6 +45,8 @@ class ObatImport implements ToModel, WithHeadingRow, WithValidation
             'satuan_besar_id'     => $satuan_besar_id,
             'aturanpakai_id'      => $aturanpakai_id,
             'metodepembayaran_id' => $metodepembayaran_id,
+            'deskripsi_obat'      => $row['deskripsi'],
+            'stok'                => $row['stok'],
         ]);
     }
 
@@ -67,6 +70,8 @@ class ObatImport implements ToModel, WithHeadingRow, WithValidation
             '*.satuan_besar'  => 'required|exists:satuan_besars,nama_satuanbesar',
             '*.aturan_pakai'  => 'required|exists:aturan_pakais,frekuensi_pemakaian',
             '*.metode_pembayaran'  => 'required|exists:metode_pembayarans,nama_metode',
+            '*.deskripsi_obat' => 'nullable|string|max:500',
+            '*.stok' => 'nullable|integer|min:0',
         ];
     }
 
@@ -75,6 +80,9 @@ class ObatImport implements ToModel, WithHeadingRow, WithValidation
         return [
             '*.nama_obat.required' => 'Nama obat wajib diisi.',
             '*.nama_obat.unique'   => 'Nama obat sudah ada di database.',
+
+            '*.stok.integer' => 'Stok obat harus berupa angka.',
+            '*.stok.min' => 'Stok obat minimal 0.',
 
             '*.supplier.required'  => 'Supplier wajib diisi.',
             '*.supplier.exists'  => 'Supplier tidak ditemukan di tabel, silahkan cek kembali tabelnya.',

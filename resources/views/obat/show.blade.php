@@ -212,7 +212,7 @@
 let mainChart;
 
 function loadMainChart() {
-    fetch(/api/obat/{{ $obat->id }}/statistik?range=day)
+    fetch(`/api/obat/{{ $obat->id }}/statistik?range=day`)
         .then(res => res.json())
         .then(data => {
             const ctx = document.getElementById('myAreaChart').getContext('2d');
@@ -249,7 +249,7 @@ mainChart = new Chart(ctx, {
                     label: function (ctx) {
                         const harga = ctx.raw.toLocaleString("id-ID");
                         const detail = data.detail[ctx.dataIndex];
-                        return Harga: Rp ${harga} (update: ${detail.waktu});
+                        return `Harga: Rp ${harga} (update: ${detail.waktu})`;
                     }
                 }
             }

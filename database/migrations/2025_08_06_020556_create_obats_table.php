@@ -40,7 +40,6 @@ return new class extends Migration
           $table->unsignedBigInteger('metodepembayaran_id');
           $table->foreign('metodepembayaran_id')->references('id')->on('metode_pembayarans')->onDelete('restrict');
 
-         
 
         });
     }

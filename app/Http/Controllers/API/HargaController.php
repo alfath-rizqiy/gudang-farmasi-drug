@@ -23,101 +23,120 @@ class HargaController extends Controller
             ->latest()  
             ->get();  
 
-        return response()->json([  
-            "data" => $hargas  
-        ]);  
-    }  
+    return response()->json([
+        "data" => $hargas
+    ]);
+}
 
-    /** 🔹 Simpan harga baru */     
-    public function store(Request $request)  
-    {         
-        $validator = Validator::make($request->all(), [  
-            "obat_id"      => "required|exists:obats,id",  
-            "harga_pokok"  => "required|numeric|min:0",  
-            "margin"       => "nullable|numeric|min:0",  
-        ]);  
+    /**
+     * 🔹 Simpan harga baru
+     */
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "obat_id"      => "required|exists:obats,id",
+            "harga_pokok"  => "required|numeric|min:0",
+            "margin"       => "nullable|numeric|min:0",
+        ]);
 
-        if ($validator->fails()) {  
-            return response()->json(["message" => $validator->errors()->first()], 422);  
-        }  
+        if ($validator->fails()) {
+            return response()->json(["message" => $validator->errors()->first()], 422);
+        }
 
-        $harga_jual = $request->harga_pokok + ($request->margin ?? 0);  
+        $harga_jual = $request->harga_pokok + ($request->margin ?? 0);
 
-        $harga = Harga::create([  
-            "obat_id"     => $request->obat_id,  
-            "harga_pokok" => $request->harga_pokok,  
-            "margin"      => $request->margin ?? 0,  
-            "harga_jual"  => $harga_jual,  
-        ]);  
+        $harga = Harga::create([
+            "obat_id"     => $request->obat_id,
+            "harga_pokok" => $request->harga_pokok,
+            "margin"      => $request->margin ?? 0,
+            "harga_jual"  => $harga_jual,
+        ]);
 
-        return response()->json([  
-            "message" => "Harga obat berhasil ditambahkan",  
-            "data"    => $harga->load("obat")  
-        ]);  
-    }  
+        return response()->json([
+            "message" => "Harga obat berhasil ditambahkan",
+            "data"    => $harga->load("obat")
+        ]);
+    }
 
-    /** 🔹 Detail harga */     
-    public function show($id)  
-    {     
-        $harga = Harga::with("obat")->findOrFail($id);  
+    /**
+     * 🔹 Detail harga
+     */
+    public function show($id)
+{
+    $harga = Harga::with("obat")->findOrFail($id);
 
-        // Ambil semua riwayat harga obat ini     
-        $riwayat = Harga::where("obat_id", $harga->obat_id)  
-                        ->orderBy("created_at", "desc")  
-                        ->get();  
+    // Ambil semua riwayat harga obat ini
+    $riwayat = Harga::where("obat_id", $harga->obat_id)
+                    ->orderBy("created_at", "desc")
+                    ->get();
 
-        return response()->json([  
-            "obat"    => $harga->obat,  
-            "riwayat" => $riwayat  
-        ]);  
-    }  
+    return response()->json([
+        "obat"    => $harga->obat,
+        "riwayat" => $riwayat
+    ]);
+}
 
-    /** 🔹 Update harga (simpan sebagai riwayat baru) */  
-    public function update(Request $request, $id)  
-    {     
-        $old = Harga::findOrFail($id);  
+    /**
+ * 🔹 Update harga (simpan sebagai riwayat baru)
+ */
+public function update(Request $request, $id)
+{
+    $old = Harga::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [  
-            "obat_id"      => "required|exists:obats,id",  
-            "harga_pokok"  => "required|numeric|min:0",  
-            "margin"       => "nullable|numeric|min:0",  
-        ]);  
+    $validator = Validator::make($request->all(), [
+        "obat_id"      => "required|exists:obats,id",
+        "harga_pokok"  => "required|numeric|min:0",
+        "margin"       => "nullable|numeric|min:0",
+    ]);
 
-        if ($validator->fails()) {  
-            return response()->json(["message" => $validator->errors()->first()], 422);  
-        }  
+    if ($validator->fails()) {
+        return response()->json(["message" => $validator->errors()->first()], 422);
+    }
 
-        $harga_jual = $request->harga_pokok + ($request->margin ?? 0);  
+    $harga_jual = $request->harga_pokok + ($request->margin ?? 0);
 
-        // 👉 Insert record baru, bukan update     
-        $newHarga = Harga::create([  
-            "obat_id"     => $request->obat_id,  
-            "harga_pokok" => $request->harga_pokok,  
-            "margin"      => $request->margin ?? 0,  
-            "harga_jual"  => $harga_jual,  
-        ]);  
+    // 👉 Insert record baru, bukan update
+    $newHarga = Harga::create([
+        "obat_id"     => $request->obat_id,
+        "harga_pokok" => $request->harga_pokok,
+        "margin"      => $request->margin ?? 0,
+        "harga_jual"  => $harga_jual,
+    ]);
 
-        return response()->json([  
-            "message" => "Harga obat berhasil diperbarui",  
-            "data"    => $newHarga->load("obat")  
-        ]);  
-    }  
+    return response()->json([
+        "message" => "Harga obat berhasil diperbarui",
+        "data"    => $newHarga->load("obat")
+    ]);
+}
 
-    /** 🔹 Hapus harga */     
-    public function destroy(string $id)  
-    {         
-        try {  
-            $harga = Harga::findOrFail($id);  
+    // Hapus harga
+   public function destroy($id)
+{
+    try {
+        $harga = Harga::findOrFail($id);
 
-            if ($harga->obats()->count() > 0) {  
-                return redirect()->back()->with('error', 'harga tidak dapat dihapus karena masih digunakan oleh data obat.');  
-            }  
+        // opsional: kalau kamu mau pastikan harga tidak dipakai di tempat lain
+        if ($harga->obat) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Harga ini terkait dengan obat dan tidak bisa dihapus.'
+            ], 400);
+        }
 
-            $harga->delete();  
-            return redirect()->back()->with('success', 'harga berhasil dihapus.');  
+        $harga->delete();
 
-        } catch (\Exception $e) {  
-            return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus harga.');  
-        }  
-    }  
+        return response()->json([
+            'success' => true,
+            'message' => 'Harga berhasil dihapus'
+        ], 200);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Terjadi kesalahan saat menghapus harga',
+            'error'   => $e->getMessage() // tampilkan pesan asli untuk debug
+        ], 500);
+    }
+}
+
 }

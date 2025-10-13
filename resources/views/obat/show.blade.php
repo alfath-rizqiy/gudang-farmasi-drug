@@ -22,9 +22,9 @@
     </div>
 
     <!-- Content Row -->
-    <div class="row">
+    <div class="row gx-4 gy-4">
         <!-- Harga Baru -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-5 mb-4">
             <div class="card border-left-primary shadow h-60 py-2">
                 <div class="card-body py-2">
                     <div class="row no-gutters align-items-center">
@@ -47,7 +47,7 @@
         </div>
 
         <!-- Harga Lama -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-success shadow h-60 py-2">
                 <div class="card-body py-2">
                     <div class="row no-gutters align-items-center">
@@ -70,7 +70,7 @@
         </div>
 
         <!-- Riwayat Harga -->
-        <div class="col-xl-3 col-md-6 mb-4">
+        <div class="col-xl-4 col-md-6 mb-4">
             <div class="card border-left-info shadow h-60 py-2">
                 <div class="card-body py-2">
                     <div class="row no-gutters align-items-center">
@@ -104,27 +104,6 @@
                         </div>
                         <div class="col-auto">
                             <i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Stok -->
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-left-warning shadow h-60 py-2">
-                <div class="card-body py-2">
-                    <div class="row no-gutters align-items-center">
-                        <div class="col mr-2">
-                            <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-                                Stok</div>
-                            <div class="h5 mb-0 font-weight-bold text-gray-800">{{ $obat->stok }}</div>
-                            <p class="harga-tanggal">
-                                {{ $obat->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}
-                            </p>
-                        </div>
-                        <div class="col-auto">
-                            <i class="fas fa-box fa-2x text-gray-300"></i>
                         </div>
                     </div>
                 </div>

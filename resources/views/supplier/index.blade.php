@@ -3,19 +3,48 @@
 @section('title', 'Data Supplier')
 
 @section('content')
-<h1 class="h3 mb-2 text-gray-800">Data Supplier</h1>
-<div class="p-6">
 
-{{-- Tombol Tambah --}}
-@role('admin')
-<div class="mb-4">
-    <a href="#" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSupplier">
-        <span class="icon text-white-10">
-            <i class="fa fa-plus"></i>
-        </span>
-        Tambah Supplier</a>
+<!-- Page Heading -->
+ <h1 class="h3 mb-2 text-gray-800">Data Supplier</h1>
+ <div class="p-6">
+
+ <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex gap-3 space-x-3">
+        <!-- Tambah -->
+         @role('admin')
+         <div class="m-2 mb-4">
+            <a href="#" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalSupplier">
+                <span class="icon text-white-10">
+                    <i class="fa fa-plus"></i>
+                </span>
+                Tambah Supplier</a>
+            </div>
+            @endrole
+
+        <!-- Download PDF -->
+         @role('admin|petugas')
+         <div class="m-2 mb-4">
+            <a href="{{ route('supplier.export.pdf') }}" class="btn-sm btn btn-danger">
+                <span class="icon text-white-10">
+                    <i class="fas fa-download"></i>
+                </span>
+                Download PDF</a>
+            </div>
+            @endrole
+
+        <!-- Download Excel -->
+         @role('admin|petugas')
+         <div class="m-2 mb-4">
+            <a href="{{ route('supplier.export.excel') }}" class="btn-sm btn btn-success">
+                <span class="icon text-white-10">
+                    <i class="fas fa-download"></i>
+                </span>
+                Download Excel</a>
+            </div>
+            @endrole
+        
+        </div>
     </div>
-@endrole
 
 <!-- DataTales Example -->
  <div class="card shadow mb-4">

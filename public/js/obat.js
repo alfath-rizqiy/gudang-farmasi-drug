@@ -38,7 +38,6 @@ $(document).ready(function () {
     loadDropdown("/api/satuanbesar", "satuan_besar_id", "nama_satuanbesar");
     loadDropdown("/api/kategori", "kategori_id", "nama_kategori");
     loadDropdown("/api/aturanpakai", "aturanpakai_id", "frekuensi_pemakaian");
-    loadDropdown("/api/metodepembayaran", "metodepembayaran_id", "nama_metode");
     const apiUrl = "/api/obat"; // API route resource
 
     const table = $("#tableObat").DataTable({
@@ -58,13 +57,11 @@ $(document).ready(function () {
             { data: "nama_obat" },
             { data: "supplier", title: "Supplier" },
             { data: "kategori", title: "Kategori" },
-            { data: "kemasan", title: "Kemasan" },
-            { data: "aturanpakai", title: "Aturan Pakai" },
-            { data: "satuan_kecil", title: "Satuan Kecil" },
-            { data: "satuan_besar", title: "Satuan Besar" },
-            { data: "metode_pembayaran", title: "Metode Pembayaran" },
+            // { data: "kemasan", title: "Kemasan" },
+            // { data: "aturanpakai", title: "Aturan Pakai" },
+            // { data: "satuan_kecil", title: "Satuan Kecil" },
+            // { data: "satuan_besar", title: "Satuan Besar" },
             // { data: "deskripsi_obat" },
-            // { data: "stok" },
             {
                 data: "created_at",
                 render: function (data) {
@@ -109,9 +106,7 @@ $(document).ready(function () {
                                 data-satuan_besar="${row.satuan_besar_id}"
                                 data-aturanpakai="${row.aturanpakai_id}"
                                 data-kategori="${row.kategori_id}"
-                                data-metodepembayaran="${row.metodepembayaran_id}"
                                 data-deskripsi_obat="${row.deskripsi_obat}"
-                                data-stok="${row.stok}"
                                 data-foto="${row.foto}">
                             <i class="fas fa-edit"></i> Edit
                         </button>
@@ -184,7 +179,6 @@ $(document).ready(function () {
         $("#edit_id").val($(this).data("id"));
         $("#edit_nama_obat").val($(this).data("nama"));
         $("#edit_deskripsi_obat").val($(this).data("deskripsi_obat"));
-        $("#edit_stok").val($(this).data("stok"));
 
         // Load semua dropdown edit dan set selected sesuai data
         loadDropdown(
@@ -222,12 +216,6 @@ $(document).ready(function () {
             "edit_aturanpakai_id",
             "frekuensi_pemakaian",
             $(this).data("aturanpakai")
-        );
-        loadDropdown(
-            "/api/metodepembayaran",
-            "edit_metodepembayaran_id",
-            "nama_metode",
-            $(this).data("metodepembayaran")
         );
 
         // Preview foto lama
@@ -378,12 +366,26 @@ $(document).ready(function () {
                 $("#loader").fadeOut(200);
 
                 if (xhr.status === 422) {
-                    let pesan = xhr.responseJSON.message ?? "Validasi gagal.";
+                    let data = xhr.responseJSON;
+                    let pesan = `<p>${
+                        data.message ?? "Validasi gagal pada beberapa kolom."
+                    }</p>`;
 
+                    if (data.errors) {
+                        pesan += "<hr>";
+                        for (let kolom in data.errors) {
+                            pesan += `<strong>Kolom ${kolom}:</strong><br>`;
+                            data.errors[kolom].forEach((err) => {
+                                pesan += `&nbsp;&nbsp;- Baris ${err.row}: ${err.message}<br>`;
+                            });
+                            pesan += "<br>";
+                        }
+                    }
                     Swal.fire({
                         icon: "error",
                         title: "Import gagal!",
                         html: pesan,
+                        width: 600,
                     });
                 } else {
                     Swal.fire({

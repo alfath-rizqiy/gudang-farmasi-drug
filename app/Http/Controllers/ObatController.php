@@ -10,7 +10,6 @@ use App\Models\AturanPakai;
 use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
 use App\Models\Kategori;
-use App\Models\MetodePembayaran;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -35,7 +34,6 @@ class ObatController extends Controller
         'satuan_kecils'      => SatuanKecil::all(),
         'satuan_besars'      => SatuanBesar::all(),
         'kategoris'          => Kategori::all(),
-        'metode_pembayarans' => MetodePembayaran::all(),
         ]);
     }
 
@@ -46,10 +44,17 @@ class ObatController extends Controller
          // Store on default disk
          Excel::store(new ObatExport(2018), 'data-obat.xlsx');
 
-        //  Normalisasi nama_kategori sebelum validasi
+        //  Nama serupa
         $request->merge([
             'nama_obat' => (preg_replace('/\s+/', ' ', trim($request->nama_obat)))
         ]);
+
+        //  cek nama serupa
+        $exists = Obat::where('nama_obat', $request->nama_obat)->exists();
+
+        if ($exists) {
+        return back()->with('warning', 'Nama sudah ada, tidak ditambahkan ulang.');
+        }
 
         // Validasi input
         $validator = Validator::make($request->all(), [
@@ -61,9 +66,7 @@ class ObatController extends Controller
         'satuan_kecil_id'     => 'required|exists:satuan_kecils,id',
         'satuan_besar_id'     => 'required|exists:satuan_besars,id',
         'kategori_id'         => 'required|exists:kategoris,id',
-        'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
         'deskripsi_obat'      => 'nullable|string|max:500',
-        'stok'                => 'integer|min:0',
         ], [
             'nama_obat.required' => 'Nama obat wajib diisi',
             'nama_obat.unique' => 'Nama obat sudah terdaftar'
@@ -100,7 +103,6 @@ class ObatController extends Controller
         'satuankecil',
         'satuanbesar',
         'kategori',
-        'metodepembayaran',
         'hargaTerbaru',
         'hargaLama'
     ])->findOrFail($id);
@@ -122,9 +124,8 @@ class ObatController extends Controller
         $satuan_kecils = SatuanKecil::all();
         $satuan_besars = SatuanBesar::all();
         $kategoris = Kategori::all();
-        $metode_pembayarans = MetodePembayaran::all(); 
 
-        return view('obat.edit', compact('obat', 'suppliers', 'kemasans', 'aturan_pakais', 'satuan_kecils', 'satuan_besars',  'kategoris', 'metode_pembayarans'));
+        return view('obat.edit', compact('obat', 'suppliers', 'kemasans', 'aturan_pakais', 'satuan_kecils', 'satuan_besars',  'kategoris'));
     }
 
     /**
@@ -145,9 +146,7 @@ class ObatController extends Controller
         'satuan_kecil_id'     => 'required|exists:satuan_kecils,id',
         'satuan_besar_id'     => 'required|exists:satuan_besars,id',
         'kategori_id'         => 'required|exists:kategoris,id',
-        'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
-        'deskripsi_obat'      => 'string|max:500',
-        'stok'                => 'integer|min:0',
+        'deskripsi_obat'      => 'nullable|string|max:500',
     ]);
 
         // Default foto lama
@@ -175,9 +174,7 @@ class ObatController extends Controller
         'satuan_kecil_id'     => $request->satuan_kecil_id,
         'satuan_besar_id'     => $request->satuan_besar_id,
         'kategori_id'         => $request->kategori_id,
-        'metodepembayaran_id' => $request->metodepembayaran_id,
-        'deskripsi_obat'      => $request->deskripsi_obat,
-        'stok'                => $request->stok,
+        'deskripsi_obat'      => $deskripsi_obat,
     ]);
 
     // lanjut update

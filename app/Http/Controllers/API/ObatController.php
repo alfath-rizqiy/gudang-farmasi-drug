@@ -22,13 +22,11 @@ class ObatController extends Controller
             'aturanpakai:id,frekuensi_pemakaian',
             'satuanKecil:id,nama_satuankecil',
             'satuanBesar:id,nama_satuanbesar',
-            'metodepembayaran:id,nama_metode',
         ])->get()->map(function($item) {
             return [
             'id' => $item->id,
             'nama_obat' => $item->nama_obat,
             'deskripsi_obat' => $item->deskripsi_obat,
-            'stok' => $item->stok,
             'foto' => $item->foto,
             'created_at' => $item->created_at ? $item->created_at->format('Y-m-d H:i:s') : null,
             
@@ -51,8 +49,6 @@ class ObatController extends Controller
             'kategori_id' => $item->kategori->id ?? null,
             'kategori' => $item->kategori->nama_kategori ?? '-',
 
-            'metodepembayaran_id' => $item->metodepembayaran->id ?? null,
-            'metode_pembayaran' => $item->metodepembayaran->nama_metode ?? '-',
         ];
     });
 
@@ -78,10 +74,8 @@ class ObatController extends Controller
             'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
             'satuan_besar_id' => 'required|exists:satuan_besars,id',
             'kategori_id' => 'required|exists:kategoris,id',
-            'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'deskripsi_obat' => 'required|string',
-            'stok' => 'required|integer',
+            'deskripsi_obat' => 'nullable|required|string',
         ], [
             'nama_obat.required' => 'Nama obat wajib diisi',
             'nama_obat.unique' => 'Nama obat sudah terdaftar',
@@ -123,7 +117,6 @@ class ObatController extends Controller
             'satuanKecil',
             'satuanBesar',
             'kategori',
-            'metodepembayaran'
         ])->findOrFail($id);
 
         return response()->json($obat);
@@ -144,11 +137,9 @@ class ObatController extends Controller
             'satuan_kecil_id' => 'required|exists:satuan_kecils,id',
             'satuan_besar_id' => 'required|exists:satuan_besars,id',
             'kategori_id' => 'required|exists:kategoris,id',
-            'metodepembayaran_id' => 'required|exists:metode_pembayarans,id',
             'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-            'deskripsi_obat' => 'required|string',
-            'stok' => 'required|integer',
-            // tambahin validasi harga juga
+            'deskripsi_obat' => 'nullable|required|string',
+            // validasi harga
             'harga_pokok' => 'nullable|numeric|min:0',
             'margin'      => 'nullable|numeric|min:0',
             'harga_jual'  => 'nullable|numeric|min:0',

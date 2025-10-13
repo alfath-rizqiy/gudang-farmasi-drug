@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\Supplier;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
+use App\Exports\SupplierExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 class SupplierController extends Controller
@@ -134,6 +136,14 @@ class SupplierController extends Controller
             'message' => 'Supplier berhasil dihapus'
         ]);
 
+    }
+
+    public function export() 
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Supplier {$tanggal}.xlsx";
+
+        return Excel::download(new SupplierExport, $filename );
     }
 
 }

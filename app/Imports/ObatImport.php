@@ -9,23 +9,51 @@ use App\models\Kemasan;
 use App\models\SatuanBesar;
 use App\models\SatuanKecil;
 use App\models\AturanPakai;
-use App\models\MetodePembayaran;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\Importable;
-use Maatwebsite\Excel\Concerns\WithValidation;
+// use Maatwebsite\Excel\Concerns\WithValidation;
+use Maatwebsite\Excel\Validators\Failure;
 
 
 
-class ObatImport implements ToModel, WithHeadingRow, WithValidation
+class ObatImport implements ToModel, WithHeadingRow
 {
     use Importable;
 
+    protected $failures = [];
+    protected $rowNumber = 1;
+
     public function model(array $row)
     {
-        if (!array_filter($row)) {
-            return null;
+        $this->rowNumber++;
+
+        // cek nama serupa
+        $exists = Obat::where('nama_obat', $row['nama_obat'])->first();
+
+        if ($exists) {
+            return null; // jika serupa lewatin ajah
         }
+
+        // ====== VALIDASI MANUAL ======
+        $this->validateColumn($row, 'nama_obat', 'Nama obat wajib diisi.');
+        $this->validateColumn($row, 'supplier', 'Supplier wajib diisi.');
+        $this->validateColumn($row, 'kategori', 'Kategori wajib diisi.');
+        $this->validateColumn($row, 'kemasan', 'Kemasan wajib diisi.');
+        $this->validateColumn($row, 'satuan_kecil', 'Satuan kecil wajib diisi.');
+        $this->validateColumn($row, 'satuan_besar', 'Satuan besar wajib diisi.');
+        $this->validateColumn($row, 'aturan_pakai', 'Aturan pakai wajib diisi.');
+
+        // Jika kolom ada tapi tidak ditemukan di tabel referensi
+        $this->checkExist($row, 'supplier', Supplier::class, 'nama_supplier', 'Supplier tidak ditemukan.');
+        $this->checkExist($row, 'kategori', Kategori::class, 'nama_kategori', 'Kategori tidak ditemukan.');
+        $this->checkExist($row, 'kemasan', Kemasan::class, 'nama_kemasan', 'Kemasan tidak ditemukan.');
+        $this->checkExist($row, 'satuan_kecil', SatuanKecil::class, 'nama_satuankecil', 'Satuan kecil tidak ditemukan.');
+        $this->checkExist($row, 'satuan_besar', SatuanBesar::class, 'nama_satuanbesar', 'Satuan besar tidak ditemukan.');
+        $this->checkExist($row, 'aturan_pakai', AturanPakai::class, 'frekuensi_pemakaian', 'Aturan pakai tidak ditemukan.');
+
+        // Jika ada error di baris ini, lewati
+        if ($this->hasFailuresForRow($this->rowNumber)) return null;
         
         // Berdasarkan nama
         $supplier_id = Supplier::where('nama_supplier', $row['supplier'])->value('id');
@@ -34,7 +62,6 @@ class ObatImport implements ToModel, WithHeadingRow, WithValidation
         $satuan_kecil_id = SatuanKecil::where('nama_satuankecil', $row['satuan_kecil'])->value('id');
         $satuan_besar_id = SatuanBesar::where('nama_satuanbesar', $row['satuan_besar'])->value('id');
         $aturanpakai_id = AturanPakai::where('frekuensi_pemakaian', $row['aturan_pakai'])->value('id');
-        $metodepembayaran_id = MetodePembayaran::where('nama_metode', $row['metode_pembayaran'])->value('id');
 
         return new Obat([
             'nama_obat'           => $row['nama_obat'],
@@ -44,67 +71,35 @@ class ObatImport implements ToModel, WithHeadingRow, WithValidation
             'satuan_kecil_id'     => $satuan_kecil_id,
             'satuan_besar_id'     => $satuan_besar_id,
             'aturanpakai_id'      => $aturanpakai_id,
-            'metodepembayaran_id' => $metodepembayaran_id,
-            'deskripsi_obat'      => $row['deskripsi'],
-            'stok'                => $row['stok'],
+            'deskripsi_obat'      => !empty($row['deskripsi']) ? $row['deskripsi'] : null,
         ]);
     }
 
-    /** 
-     * return @int
-    */
+    private function validateColumn($row, $column, $message)
+    {
+        if (empty($row[$column])) {
+            $this->failures[] = new Failure($this->rowNumber, $column, [$message], $row);
+        }
+    }
+
+    private function checkExist($row, $column, $model, $field, $message)
+    {
+        if (!empty($row[$column]) && !$model::where($field, $row[$column])->exists()) {
+            $this->failures[] = new Failure($this->rowNumber, $column, [$message], $row);
+        }
+    }
     
-    public function startRow(): int
+    private function hasFailuresForRow($rowNumber)
     {
-        return 1;
+        foreach ($this->failures as $failure) {
+            if ($failure->row() === $rowNumber) return true;
+        }
+        return false;
     }
 
-     public function rules(): array
+    public function getFailures()
     {
-        return [
-            '*.nama_obat' => 'required|string|max:255|unique:obats,nama_obat',
-            '*.supplier'  => 'required|exists:suppliers,nama_supplier',
-            '*.kategori'  => 'required|exists:kategoris,nama_kategori',
-            '*.kemasan'  => 'required|exists:kemasans,nama_kemasan',
-            '*.satuan_kecil'  => 'required|exists:satuan_kecils,nama_satuankecil',
-            '*.satuan_besar'  => 'required|exists:satuan_besars,nama_satuanbesar',
-            '*.aturan_pakai'  => 'required|exists:aturan_pakais,frekuensi_pemakaian',
-            '*.metode_pembayaran'  => 'required|exists:metode_pembayarans,nama_metode',
-            '*.deskripsi_obat' => 'nullable|string|max:500',
-            '*.stok' => 'nullable|integer|min:0',
-        ];
-    }
-
-    public function customValidationMessages()
-    {
-        return [
-            '*.nama_obat.required' => 'Nama obat wajib diisi.',
-            '*.nama_obat.unique'   => 'Nama obat sudah ada di database.',
-
-            '*.stok.integer' => 'Stok obat harus berupa angka.',
-            '*.stok.min' => 'Stok obat minimal 0.',
-
-            '*.supplier.required'  => 'Supplier wajib diisi.',
-            '*.supplier.exists'  => 'Supplier tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-
-            '*.kategori.required'  => 'Kategori wajib diisi.',
-            '*.kategori.exists'  => 'Kategori tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-
-            '*.kemasan.required'  => 'Kemasan wajib diisi.',
-            '*.kemasan.exists'  => 'Kemasan tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-
-            '*.satuan_kecil.required'  => 'Satuan kecil wajib diisi.',
-            '*.satuan_kecil.exists'  => 'Satuan kecil tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-
-            '*.satuan_besar.required'  => 'Satuan besar wajib diisi.',
-            '*.satuan_besar.exists'  => 'Satuan besar tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-            
-            '*.aturan_pakai.required'  => 'Aturan pakai wajib diisi.',
-            '*.aturan_pakai.exists'  => 'Aturan pakai tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-
-            '*.metode_pembayaran.required'  => 'Metode pembayaran wajib diisi.',
-            '*.metode_pembayaran.exists'  => 'Metode pembayaran tidak ditemukan di tabel, silahkan cek kembali tabelnya.',
-        ];
+        return $this->failures;
     }
     
 }

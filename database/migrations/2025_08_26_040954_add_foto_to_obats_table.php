@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
     Schema::table('obats', function (Blueprint $table) {
-        $table->string('foto')->nullable()->after('metodepembayaran_id');
+        $table->string('foto')->nullable()->after('kategori_id');
     });
     }
 

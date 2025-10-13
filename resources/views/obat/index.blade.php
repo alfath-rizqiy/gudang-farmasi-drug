@@ -4,23 +4,24 @@
 
 @section('content')
 
-        <!-- Tabel Data -->
-       <!-- Page Heading -->
-                    <h1 class="h3 mb-2 text-gray-800">Data Obat</h1>
-                    <div class="p-6">
+<!-- Tabel Data -->
+ 
+<!-- Page Heading -->
+ <h1 class="h3 mb-2 text-gray-800">Data Obat</h1>
+ <div class="p-6">
 
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <div class="d-flex gap-3 space-x-3">
+ <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex gap-3 space-x-3">
         <!-- Tombol Tambah -->
-                 @role('admin|petugas')
-                     <div class="m-2 mb-4">
-                     <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalObat">
-                        <span class="icon text-white-10">
-                            <i class="fa fa-plus"></i>
-                        </span>
-                        Tambah Obat</a>
-                     </div>
-                 @endrole
+         @role('admin|petugas')
+         <div class="m-2 mb-4">
+            <a href="#" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#modalObat">
+                <span class="icon text-white-10">
+                    <i class="fa fa-plus"></i>
+                </span>
+                Tambah Obat</a>
+            </div>
+            @endrole
 
         <!-- Tombol Download -->
                  @role('admin|petugas')
@@ -114,12 +115,12 @@
                         <th>No</th>
                         <th>Obat</th>
                         <th>Supllier</th>
-                        <th>Kemasan</th>
+                        <!-- <th>Kemasan</th>
                         <th>Satuan Kecil</th>
                         <th>Satuan Besar</th>
-                        <th>Aturan Pakai</th>
+                        <th>Aturan Pakai</th> -->
                         <th>Kategori</th>
-                        <th>Metode Pembayaran</th>
+                       <!-- <th>Metode Pembayaran</th> -->
                         <th>Tanggal Input</th>
                         <!-- <th>Foto Obat</th> -->
                         <th>Aksi</th>
@@ -223,25 +224,10 @@
                             </select>
                         </div>
 
-                        <!-- Metode Pembayaran -->
-                        <div class="col-md-6 mb-3">
-                            <label for="metodepembayaran_id">Metode Pembayaran</label>
-                            <select name="metodepembayaran_id" id="metodepembayaran_id" class="form-control" required>
-                                <option value="">Pilih Metode Pembayaran</option>
-                                
-                            </select>
-                        </div>
-
                         <!-- Deskripsi Obat -->
                         <div class="col-md-6 mb-3">
                             <label for="deskripsi_obat">Deskripsi Obat</label>
                             <input type="text" name="deskripsi_obat" id="deskripsi_obat" class="form-control" required>
-                        </div>
-
-                        <!-- Nama Obat -->
-                        <div class="col-md-6 mb-3">
-                            <label for="stok">Stok Obat</label>
-                            <input type="number" name="stok" id="stok" class="form-control" required>
                         </div>
 
                         <!-- Foto Obat -->
@@ -330,23 +316,10 @@
                     
                 </select>
             </div>
-
-            <div class="col-md-6 mb-3">
-                <label for="metodepembayaran_id">Metode Pembayaran</label>
-                <select name="metodepembayaran_id" id="edit_metodepembayaran_id" class="form-control" required>
-                    <option value="">Pilih Metode Pembayaran</option>
-                    
-                </select>
-            </div>
             
             <div class="col-md-6 mb-3">
                 <label>Deskripsi Obat</label>
                 <input type="text" name="deskripsi_obat" id="edit_deskripsi_obat" class="form-control" required>
-            </div>
-
-            <div class="col-md-6 mb-3">
-                <label>Stok Obat</label>
-                <input type="number" name="stok" id="edit_stok" class="form-control" required>
             </div>
 
             <!-- Foto Obat -->

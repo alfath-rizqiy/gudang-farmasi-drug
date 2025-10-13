@@ -27,24 +27,33 @@ class ObatImportExportController extends Controller
             'file.mimes' => 'Format file harus .xlsx atau .xls.',
         ]);
 
-        try {
-            Excel::import(new ObatImport, $request->file('file'));
-            return response()->json([
-                'success' => true,
-                'message' => 'Data obat berhasil diimport!'
-            ]);
-        } catch (ValidationException $e) {
-            $failures = $e->failures();
-            $messages = [];
+        $import = new ObatImport();
+        $import->import($request->file('file'));
+
+        $failures = $import->getFailures();
+
+        if (!empty($failures)) {
+            $errors = [];
 
             foreach ($failures as $failure) {
-                $messages[] = "Baris {$failure->row()} kolom {$failure->attribute()}: " . implode(', ', $failure->errors());
+                $attribute = $failure->attribute();
+                $row = $failure->row();
+                $message = $failure->errors()[0];
+
+                $errors[$attribute][] = [
+                    'row' => $row,
+                    'message' => $message
+                ];
             }
 
             return response()->json([
-                'success' => false,
-                'message' => implode('<br>', $messages)
+                'message' => 'Validasi gagal pada beberapa kolom.',
+                'errors' => $errors
             ], 422);
+
+            return response()->json([
+                'message' => 'Data berhasil diimport!'
+            ], 200);
         }
     }
 }

@@ -24,7 +24,7 @@
     @php
     $isMasterActive = request()->is('obat*') || request()->is('supplier*') || request()->is('kemasan*') ||
                       request()->is('satuankecil*') || request()->is('satuanbesar*') || request()->is('aturanpakai*') ||
-                      request()->is('kategori*') || request()->is('metodepembayaran*') || request()->is('harga*');
+                      request()->is('kategori*') || request()->is('harga*');
     @endphp
 
     <li class="nav-item {{ $isMasterActive ? 'active' : '' }}">
@@ -42,7 +42,6 @@
             <a class="collapse-item {{ request()->is('satuanbesar') ? 'active' : '' }}" href="{{ route('satuanbesar.index') }}">Satuan Besar</a>
             <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Aturan Pakai</a>
             <a class="collapse-item {{ request()->is('kategori') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
-            <a class="collapse-item {{ request()->is('metodepembayaran') ? 'active' : '' }}" href="{{ route('metodepembayaran.index') }}">Metode Pembayaran</a>
             <a class="collapse-item {{ request()->is('harga') ? 'active' : '' }}" href="{{ route('harga.index') }}">Harga</a>
         </div>
     </div>

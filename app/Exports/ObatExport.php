@@ -23,7 +23,6 @@ class ObatExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
         'aturanpakai',
         'satuanBesar',
         'satuanKecil',
-        'metodepembayaran'
         ])->get()->map(function ($obat) {
             return [
             'id'                => $obat->id,
@@ -34,7 +33,6 @@ class ObatExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
             'aturanpakai'       => $obat->aturanpakai ? $obat->aturanpakai->frekuensi_pemakaian : '-',
             'satuan_kecil'      => $obat->satuanKecil ? $obat->satuanKecil->nama_satuankecil : '-',
             'satuan_besar'      => $obat->satuanBesar ? $obat->satuanBesar->nama_satuanbesar : '-',
-            'metode_pembayaran' => $obat->metodepembayaran ? $obat->metodepembayaran->nama_metode : '-',
             'created_at'        => $obat->created_at,
             'foto'              => $obat->foto,
             ];
@@ -54,7 +52,6 @@ class ObatExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
                 'Aturan Pakai',
                 'Satuan Kecil',
                 'Satuan Besar',
-                'Metode Pembayaran',
                 'Tanggal Masuk',
                 'Foto'
             ],
@@ -81,7 +78,7 @@ class ObatExport implements FromCollection, WithHeadings, WithStyles, ShouldAuto
     public function drawings()
     {
     $drawings = [];
-    $row = 3; // karena row 1 = judul, row 2 = header
+    $row = 3; 
 
     foreach ($this->obatData as $obat) {
         if ($obat->foto && file_exists(public_path('storage/' . $obat->foto))) {

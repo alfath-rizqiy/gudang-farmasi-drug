@@ -10,7 +10,6 @@ use App\Models\AturanPakai;
 use App\Models\SatuanKecil;
 use App\Models\SatuanBesar;
 use App\Models\Kategori;
-use App\Models\MetodePembayaran;
 use App\Models\Harga;
 
 class Obat extends Model
@@ -31,10 +30,8 @@ class Obat extends Model
         'satuan_kecil_id',
         'satuan_besar_id',
         'kategori_id',
-        'metodepembayaran_id',
         'hargas',
         'deskripsi_obat',
-        'stok',
     ];
 
     /**
@@ -62,10 +59,6 @@ class Obat extends Model
     
     public function kategori() {
         return $this->belongsTo(Kategori::class);
-    }
-
-    public function metodepembayaran() {
-        return $this->belongsTo(MetodePembayaran::class);
     }
 
     public function hargas() {

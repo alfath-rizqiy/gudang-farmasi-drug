@@ -59,7 +59,6 @@
                 <th>Satuan Besar</th>
                 <th>Aturan Pakai</th>
                 <th>Kategori</th>
-                <th>Metode Pembayaran</th>
                 <th>Tanggal Input</th>
                 <th>Foto</th>
             </tr>
@@ -75,7 +74,6 @@
                 <td>{{ $obat->satuanbesar->nama_satuanbesar ?? '-' }}</td>
                 <td>{{ $obat->aturanpakai->frekuensi_pemakaian ?? '-' }}</td>
                 <td>{{ $obat->kategori->nama_kategori ?? '-' }}</td>
-                <td>{{ $obat->metodepembayaran->nama_metode ?? '-' }}</td>
                 <td>{{ $obat->created_at->format('d F Y') }}</td>
                 <td>
                     @if($obat->foto)

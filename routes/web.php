@@ -7,18 +7,18 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ObatExport;
 use App\Models\Obat;
+use App\Models\Supplier;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\AturanPakaiController;
 use App\Http\Controllers\SatuanKecilController;
 use App\Http\Controllers\SatuanBesarController;
 use App\Http\Controllers\KategoriController;
-use App\Http\Controllers\MetodePembayaranController;
 use App\Http\Controllers\ObatImportExportController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\HargaController;
 
-// Pdf Download
+// Pdf Obat
 Route::get('/obat/export-pdf', function () {
     $obats = Obat::all();
     $pdf = Pdf::loadView('obat.pdf', compact('obats'));
@@ -29,10 +29,24 @@ Route::get('/obat/export-pdf', function () {
     return $pdf->download($filename);
 })->name('obat.export.pdf');
 
-// Excel Download
+// Pdf Supplier
+Route::get('/supplier/export-pdf', function () {
+    $suppliers = Supplier::all();
+    $pdf = Pdf::loadView('supplier.pdf', compact('suppliers'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Supplier {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('supplier.export.pdf');
+
+// Excel Obat
 Route::get('obat/export/', [ObatImportExportController::class, 'export'])
 ->name('obat.export.excel');
 
+// Excel Supplier
+Route::get('supplier/export/', [SupplierController::class, 'export'])
+->name('supplier.export.excel');
 
 Route::get('/', function () {
     return view('welcome');
@@ -92,12 +106,6 @@ Route::middleware('auth')->group(function () {
     Route::prefix('kategori')->name('kategori.')->group(function () {
         Route::get('/', [KategoriController::class, 'index'])->name('index');
         Route::get('/{kategori}', [KategoriController::class, 'show'])->name('show');
-    });
-
-    // Metode Pembayaran Route
-    Route::prefix('metodepembayaran')->name('metodepembayaran.')->group(function () {
-        Route::get('/', [MetodePembayaranController::class, 'index'])->name('index');
-        Route::get('/{metodepembayaran}', [MetodePembayaranController::class, 'show'])->name('show');
     });
 
      // Harga Route

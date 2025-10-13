@@ -2,14 +2,16 @@
 <html lang="en">
 
 <head>
+    {{-- Token CSRF untuk keamanan request AJAX --}}
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    {{-- Responsive meta tag --}}
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
 
-
+    {{-- Judul halaman, default "Dashboard" jika tidak ada yield --}}
     <title>@yield('title', 'Dashboard')</title>
 
     <!-- Font -->
@@ -19,11 +21,16 @@
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css?family=Nunito:200,300,400,700" rel="stylesheet">
 
-    <!-- Template CSS -->
+    <!-- Custom styles for this template (SB Admin 2) -->
     <link href="{{ asset('css/sb-admin-2.min.css') }}" rel="stylesheet">
 
-    <!-- DataTables CSS -->
+    <!-- Sweet Alert (versi lama untuk swal) -->
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+    {{-- DataTables CSS & JS --}}
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/luxon@3/build/global/luxon.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-luxon@1"></script>
@@ -34,7 +41,7 @@
 
 <body id="page-top">
 
-    <!-- Page Wrapper -->
+    <!-- Page Wrapper utama -->
     <div id="wrapper">
 
         {{-- Sidebar --}}
@@ -51,6 +58,7 @@
 
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
+                    {{-- Konten halaman akan di-render di sini --}}
                     @yield('content')
                 </div>
                 <!-- /.container-fluid -->
@@ -67,7 +75,7 @@
     </div>
     <!-- End of Page Wrapper -->
 
-    <!-- Scroll to Top Button-->
+    <!-- Tombol scroll ke atas -->
     <a class="scroll-to-top rounded" href="#page-top">
         <i class="fas fa-angle-up"></i>
     </a>

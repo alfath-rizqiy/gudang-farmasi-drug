@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('obat_id')->constrained('obats')->onDelete('cascade');
             $table->decimal('harga_pokok', 15, 2);
             $table->decimal('margin', 15, 2)->default(0);
+            $table->decimal('ppn', 15, 2)->default(0); // ✅ Tambah kolom ppn
             $table->decimal('harga_jual', 15, 2);
             $table->timestamps();
         });

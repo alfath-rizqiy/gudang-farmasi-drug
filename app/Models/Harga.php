@@ -9,16 +9,17 @@ class Harga extends Model
 {
     use HasFactory;
 
+    // Kolom yang boleh diisi secara mass-assignment
+    // PPN ditambahkan agar nilai pajak bisa tersimpan di database
     protected $fillable = [
         'obat_id',
         'harga_pokok',
         'margin',
+        'ppn', // kolom pajak 11%
         'harga_jual',
     ];
 
-    /**
-     * Relasi ke obat
-     */
+    // Relasi ke tabel obat (setiap harga terkait dengan satu obat)
     public function obat()
     {
         return $this->belongsTo(Obat::class, 'obat_id');

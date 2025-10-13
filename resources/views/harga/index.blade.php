@@ -67,19 +67,19 @@
                         {{-- Harga Pokok --}}
                         <div class="form-group mb-3">
                             <label for="harga_pokok">Harga Pokok</label>
-                            <input type="number" name="harga_pokok" id="harga_pokok" class="form-control" required>
+                            <input type="number" name="harga_pokok" id="harga_pokok" class="form-control"  step="0.01" required>
                         </div>
 
                         {{-- Margin --}}
                         <div class="form-group mb-3">
                             <label for="margin">Margin</label>
-                            <input type="number" name="margin" id="margin" class="form-control" required>
+                            <input type="number" name="margin" id="margin" class="form-control"  step="0.01" required>
                         </div>
 
                         {{-- Harga Jual --}}
                         <div class="form-group mb-3">
                             <label for="harga_jual">Harga Jual</label>
-                            <input type="number" name="harga_jual" id="harga_jual" class="form-control" readonly>
+                            <input type="number" name="harga_jual" id="harga_jual" class="form-control"  step="0.01" readonly>
                         </div>
 
                     </div>
@@ -117,17 +117,17 @@
 
                         <div class="form-group mb-3">
                             <label for="edit_harga_pokok">Harga Pokok</label>
-                            <input type="number" name="harga_pokok" id="edit_harga_pokok" class="form-control" required>
+                            <input type="number" name="harga_pokok" id="edit_harga_pokok" class="form-control"  step="0.01" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="edit_margin">Margin</label>
-                            <input type="number" name="margin" id="edit_margin" class="form-control" required>
+                            <input type="number" name="margin" id="edit_margin" class="form-control"  step="0.01" required>
                         </div>
 
                         <div class="form-group mb-3">
                             <label for="edit_harga_jual">Harga Jual</label>
-                            <input type="number" name="harga_jual" id="edit_harga_jual" class="form-control" readonly>
+                            <input type="number" name="harga_jual" id="edit_harga_jual" class="form-control"  step="0.01" readonly>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -191,7 +191,7 @@
             function updateHargaJual() {
                 const hp = parseFloat(hargaPokok.value) || 0;
                 const m = parseFloat(margin.value) || 0;
-                hargaJual.value = hp + m;
+                hargaJual.value = (hp + m).toFixed(2);
             }
 
             hargaPokok.addEventListener("input", updateHargaJual);

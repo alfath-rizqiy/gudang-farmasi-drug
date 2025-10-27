@@ -10,6 +10,7 @@ use App\Http\Controllers\Api\SatuanKecilController;
 use App\Http\Controllers\Api\SatuanBesarController;
 use App\Http\Controllers\Api\KategoriController;
 use App\Http\Controllers\Api\HargaController;
+use App\Http\Controllers\Api\PurchaseOrderController;
 use App\Http\Controllers\Api\ObatStatistikController;
 use App\Http\Controllers\Api\ProfileController;
 
@@ -23,3 +24,7 @@ Route::apiResource('/satuankecil', SatuanKecilController::class);
 Route::apiResource('/satuanbesar', SatuanBesarController::class);
 Route::resource('/kategori', KategoriController::class);
 Route::apiResource('/harga', HargaController::class);
+
+   // PO //
+Route::get('/purchase_orders', [PurchaseOrderController::class, 'index']);
+Route::get('/suppliers', [PurchaseOrderController::class, 'getSuppliers']);

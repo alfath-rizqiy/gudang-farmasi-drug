@@ -17,6 +17,7 @@ use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ObatImportExportController;
 use App\Http\Controllers\ObatController;
 use App\Http\Controllers\HargaController;
+use App\Http\Controllers\PurchaseOrderController;
 
 // Pdf Obat
 Route::get('/obat/export-pdf', function () {
@@ -112,6 +113,10 @@ Route::middleware('auth')->group(function () {
     Route::prefix('harga')->name('harga.')->group(function () {
         Route::get('/', [HargaController::class, 'index'])->name('index');
     });
+
+    // ===== PURCHASE ORDER (PO) =====
+Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');
+
 });
 });
 

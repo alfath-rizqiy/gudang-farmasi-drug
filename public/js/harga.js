@@ -15,15 +15,19 @@ function hideLoader() {
 
 // ====== Helper untuk format angka jadi Rupiah (contoh: Rp 20.000,00) ======
 function formatNumber(num) {
-    if (num === null || num === undefined || num === "") return "0,00";
+    if (num === null || num === undefined || num === "") return "Rp 0,00";
     return (
         "Rp " +
-        parseFloat(num).toLocaleString("id-ID", { minimumFractionDigits: 2 })
+        parseFloat(num).toLocaleString("id-ID", {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+        })
     );
 }
 
-// ====== Helper untuk ubah format tanggal ke WIB ======
-// contoh output: 12-10-2025 16:51 WIB
+// =========================
+// Helper format tanggal
+// =========================
 function formatDateToWIB(isoDateStr) {
     if (!isoDateStr) return "-";
     const date = new Date(isoDateStr);
@@ -92,8 +96,14 @@ $(document).ready(function () {
                               let day = String(date.getDate()).padStart(2, "0");
                               let month = months[date.getMonth()];
                               let year = date.getFullYear();
-                              let hours = String(date.getHours()).padStart(2, "0");
-                              let minutes = String(date.getMinutes()).padStart(2, "0");
+                              let hours = String(date.getHours()).padStart(
+                                  2,
+                                  "0"
+                              );
+                              let minutes = String(date.getMinutes()).padStart(
+                                  2,
+                                  "0"
+                              );
 
                               return `${day} ${month} ${year}, ${hours}:${minutes}`;
                           },
@@ -134,7 +144,29 @@ $(document).ready(function () {
         ],
     });
 
-    // ====== TAMBAH DATA HARGA ======
+    // ======================================================
+    // Hitung Harga Jual otomatis (Form Tambah)
+    // ======================================================
+    $(document).on("input", "#harga_pokok, #margin", function () {
+        const hp = parseFloat($("#harga_pokok").val()) || 0;
+        const m = parseFloat($("#margin").val()) || 0;
+        const total = hp + m;
+        $("#harga_jual").val(total.toFixed(2));
+    });
+
+    // ======================================================
+    // Hitung Harga Jual otomatis (Form Edit)
+    // ======================================================
+    $(document).on("input", "#edit_harga_pokok, #edit_margin", function () {
+        const hp = parseFloat($("#edit_harga_pokok").val()) || 0;
+        const m = parseFloat($("#edit_margin").val()) || 0;
+        const total = hp + m;
+        $("#edit_harga_jual").val(total.toFixed(2));
+    });
+
+    // ======================================================
+    // Tambah Data
+    // ======================================================
     $(document).on("submit", "#form-harga", function (e) {
         e.preventDefault();
         showLoader(); // tampilkan loading
@@ -143,16 +175,26 @@ $(document).ready(function () {
                 hideLoader();
                 $("#modalHarga").modal("hide");
                 $("#form-harga")[0].reset();
-                Swal.fire("Berhasil!", res.message ?? "Harga berhasil ditambahkan", "success");
+                Swal.fire(
+                    "Berhasil!",
+                    res.message ?? "Harga berhasil ditambahkan",
+                    "success"
+                );
                 table.ajax.reload(null, false); // reload tabel tanpa reset halaman
             })
             .fail((xhr) => {
                 hideLoader();
-                Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Terjadi kesalahan", "error");
+                Swal.fire(
+                    "Gagal!",
+                    xhr.responseJSON?.message ?? "Terjadi kesalahan",
+                    "error"
+                );
             });
     });
 
-    // ====== BUKA MODAL EDIT ======
+    // ======================================================
+    // Buka Modal Edit
+    // ======================================================
     $(document).on("click", ".btn-edit", function () {
         // Ambil data dari tombol edit dan isi ke form edit
         $("#edit_id").val($(this).data("id"));
@@ -160,7 +202,9 @@ $(document).ready(function () {
         $("#edit_harga_pokok").val($(this).data("hp"));
         $("#edit_margin").val($(this).data("m"));
         $("#edit_harga_jual").val(
-            parseFloat($(this).data("hp")) + parseFloat($(this).data("m"))
+            (
+                parseFloat($(this).data("hp")) + parseFloat($(this).data("m"))
+            ).toFixed(2)
         );
         $("#editModalHarga").modal("show");
     });
@@ -177,12 +221,20 @@ $(document).ready(function () {
             success: (res) => {
                 hideLoader();
                 $("#editModalHarga").modal("hide");
-                Swal.fire("Berhasil!", res.message ?? "Data berhasil diupdate", "success");
+                Swal.fire(
+                    "Berhasil!",
+                    res.message ?? "Data berhasil diupdate",
+                    "success"
+                );
                 table.ajax.reload(null, false);
             },
             error: (xhr) => {
                 hideLoader();
-                Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Terjadi kesalahan", "error");
+                Swal.fire(
+                    "Gagal!",
+                    xhr.responseJSON?.message ?? "Terjadi kesalahan",
+                    "error"
+                );
             },
         });
     });
@@ -207,12 +259,20 @@ $(document).ready(function () {
                 method: "DELETE",
                 success: (res) => {
                     hideLoader();
-                    Swal.fire("Berhasil!", res.message ?? "Data dihapus", "success");
+                    Swal.fire(
+                        "Berhasil!",
+                        res.message ?? "Data dihapus",
+                        "success"
+                    );
                     table.ajax.reload(null, false);
                 },
                 error: (xhr) => {
                     hideLoader();
-                    Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Terjadi kesalahan", "error");
+                    Swal.fire(
+                        "Gagal!",
+                        xhr.responseJSON?.message ?? "Terjadi kesalahan",
+                        "error"
+                    );
                 },
             });
         });
@@ -248,7 +308,11 @@ $(document).ready(function () {
             $("#modalDetailHarga").modal("show");
         }).fail((xhr) => {
             hideLoader();
-            Swal.fire("Gagal!", xhr.responseJSON?.message ?? "Data tidak ditemukan", "error");
+            Swal.fire(
+                "Gagal!",
+                xhr.responseJSON?.message ?? "Data tidak ditemukan",
+                "error"
+            );
         });
     });
 });

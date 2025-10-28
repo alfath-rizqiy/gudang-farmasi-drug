@@ -172,11 +172,11 @@
             </div>
             <div class="modal-card shadow mb-0">
                 <div class="card-body">
-                <ul class="list-group">
-                    <li class="list-group-item"><strong>Supplier:</strong> <span id="detail_nama_supplier"></span></li>
+                <ul class="list-group pb-2">
+                    <li class="list-group-item "><strong>Supplier:</strong> <span id="detail_nama_supplier"></span></li>
                 </ul>
 
-                <table class="table table-bordered">
+                <table class="text-center table table-bordered">
                     <thead>
                         <tr>
                             <th>No</th>

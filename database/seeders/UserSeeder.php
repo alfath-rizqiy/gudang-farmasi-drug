@@ -28,5 +28,13 @@ class UserSeeder extends Seeder
             'password' => bcrypt('123'),
         ]);
         $petugas->assignRole('petugas');
+
+        // User
+        $user = User::create([
+            'name' => 'User',
+            'email' => 'user@example.com',
+            'password' => bcrypt('123'),
+        ]);
+        $user->assignRole('user');
     }
 }

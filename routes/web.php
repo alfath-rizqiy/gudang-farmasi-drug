@@ -8,6 +8,11 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ObatExport;
 use App\Models\Obat;
 use App\Models\Supplier;
+use App\Models\Kemasan;
+use App\Models\SatuanKecil;
+use App\Models\SatuanBesar;
+use App\Models\AturanPakai;
+use App\Models\Kategori;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\KemasanController;
 use App\Http\Controllers\AturanPakaiController;
@@ -40,6 +45,62 @@ Route::get('/supplier/export-pdf', function () {
     return $pdf->download($filename);
 })->name('supplier.export.pdf');
 
+// Pdf Kemasan
+Route::get('/kemasan/export-pdf', function () {
+    $kemasans = Kemasan::all();
+    $pdf = Pdf::loadView('kemasan.pdf', compact('kemasans'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Kemasan {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('kemasan.export.pdf');
+
+// Pdf Satuan Kecil
+Route::get('/satuankecil/export-pdf', function () {
+    $satuankecils = SatuanKecil::all();
+    $pdf = Pdf::loadView('satuankecil.pdf', compact('satuankecils'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Satuan Kecil {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('satuankecil.export.pdf');
+
+// Pdf Satuan Besar
+Route::get('/satuanbesar/export-pdf', function () {
+    $satuanbesars = SatuanBesar::all();
+    $pdf = Pdf::loadView('satuanbesar.pdf', compact('satuanbesars'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Satuan Besar {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('satuanbesar.export.pdf');
+
+// Pdf Aturan Pakai
+Route::get('/aturanpakai/export-pdf', function () {
+    $aturanpakais = AturanPakai::all();
+    $pdf = Pdf::loadView('aturanpakai.pdf', compact('aturanpakais'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Aturan Pakai {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('aturanpakai.export.pdf');
+
+// Pdf Aturan Pakai
+Route::get('/kategori/export-pdf', function () {
+    $kategoris = Kategori::all();
+    $pdf = Pdf::loadView('kategori.pdf', compact('kategoris'));
+
+    $tanggal = now()->format('Y-m-d');
+    $filename = "Data Kategori {$tanggal}.pdf";
+
+    return $pdf->download($filename);
+})->name('kategori.export.pdf');
+
+
 // Excel Obat
 Route::get('obat/export/', [ObatImportExportController::class, 'export'])
 ->name('obat.export.excel');
@@ -47,6 +108,27 @@ Route::get('obat/export/', [ObatImportExportController::class, 'export'])
 // Excel Supplier
 Route::get('supplier/export/', [SupplierController::class, 'export'])
 ->name('supplier.export.excel');
+
+// Excel Supplier
+Route::get('kemasan/export/', [KemasanController::class, 'export'])
+->name('kemasan.export.excel');
+
+// Excel Satuan Kecil
+Route::get('satuankecil/export/', [SatuanKecilController::class, 'export'])
+->name('satuankecil.export.excel');
+
+// Excel Satuan Besar
+Route::get('satuanbesar/export/', [SatuanBesarController::class, 'export'])
+->name('satuanbesar.export.excel');
+
+// Excel Satuan Besar
+Route::get('aturanpakai/export/', [AturanPakaiController::class, 'export'])
+->name('aturanpakai.export.excel');
+
+// Excel Satuan Besar
+Route::get('kategori/export/', [KategoriController::class, 'export'])
+->name('kategori.export.excel');
+
 
 Route::get('/', function () {
     return view('welcome');

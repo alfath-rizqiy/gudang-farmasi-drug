@@ -2,28 +2,28 @@
 
 namespace App\Http\Controllers\Api;  
 
-use App\Http\Controllers\Controller;  
-use Illuminate\Http\Request;  
-use App\Models\Harga;  
-use Illuminate\Support\Facades\Validator;  
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\Harga;
+use App\Models\Obat;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
 
-class HargaController extends Controller  
-{     
-    /** 
-     * 🔹 Ambil semua data harga terbaru untuk tiap obat
-     * Digunakan oleh DataTables di tampilan utama.
-     * Mengambil data harga dengan ID terbesar (harga terbaru per obat).
-     */     
-    public function index()  
-    {     
-        $hargas = Harga::with('obat')  
-            ->whereIn('id', function ($query) {  
-                $query->selectRaw('MAX(id)')  
-                      ->from('hargas')  
-                      ->groupBy('obat_id');  
-            })  
-            ->latest()  
-            ->get();  
+class HargaController extends Controller
+{
+    /**
+     * 🔹 Ambil semua data harga (hanya harga terbaru per obat)
+     */
+    public function index()
+    {
+        $hargas = Harga::with('obat')
+            ->whereIn('id', function ($query) {
+                $query->selectRaw('MAX(id)')
+                      ->from('hargas')
+                      ->groupBy('obat_id');
+            })
+            ->latest()
+            ->get();
 
         return response()->json([
             "data" => $hargas
@@ -31,9 +31,7 @@ class HargaController extends Controller
     }
 
     /**
-     * 🔹 Simpan harga baru
-     * Melakukan validasi input, menghitung otomatis PPN dan harga jual,
-     * lalu menyimpan data harga baru ke tabel `hargas`.
+     * 🔹 Simpan harga baru (support desimal)
      */
     public function store(Request $request)
     {
@@ -51,6 +49,10 @@ class HargaController extends Controller
 
         // Hitung PPN otomatis jika tidak dikirim dari frontend (11%)
         $ppn = $request->ppn ?? 0.11 * $request->harga_pokok;
+        // pastikan nilai desimal di-format 2 angka di belakang koma
+        $hargaPokok = round($request->harga_pokok, 2);
+        $margin = round($request->margin ?? 0, 2);
+        $hargaJual = round($hargaPokok + $margin, 2);
 
         // Hitung harga jual = harga pokok + margin + ppn
         $harga_jual = $request->harga_pokok + ($request->margin ?? 0) + $ppn;
@@ -139,6 +141,14 @@ class HargaController extends Controller
     {
         try {
             $harga = Harga::findOrFail($id);
+
+            // misalnya kamu mau cegah hapus harga yang masih terkait dengan obat
+            if ($harga->obat) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Harga ini masih terkait dengan obat dan tidak bisa dihapus.'
+                ], 400);
+            }
 
             $harga->delete();
 

@@ -12,6 +12,7 @@
 
  <div class="d-flex justify-content-between align-items-center mb-2">
     <div class="d-flex gap-3 space-x-3">
+        
         <!-- Tombol Tambah -->
          @role('admin|petugas')
          <div class="m-2 mb-4">
@@ -24,7 +25,7 @@
             @endrole
 
         <!-- Tombol Download -->
-                 @role('admin|petugas')
+                 @role('admin|petugas|user')
                      <div class="m-2 mb-4">
                      <a href="{{ route('obat.export.pdf') }}" class="btn-sm btn btn-danger">
                         <span class="icon text-white-10">
@@ -35,7 +36,7 @@
                  @endrole
 
         <!-- Tombol Download -->
-                 @role('admin|petugas')
+                 @role('admin|petugas|user')
                      <div class="m-2 mb-4">
                      <a href="{{ route('obat.export.excel') }}" class="btn-sm btn btn-success">
                         <span class="icon text-white-10">
@@ -160,6 +161,8 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+
+            <div class="card shadow mb-0">
             <div class="card-body">
                 <form id="formObat" enctype="multipart/form-data">
                     @csrf
@@ -240,6 +243,7 @@
                     <button type="submit" id="btnSaveObat" class="btn btn-sm btn-primary">Simpan</button>
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
                 </form>
+              </div>
             </div>
         </div>
     </div>
@@ -257,6 +261,7 @@
             </div>
 
 <!-- Form Card Edit -->
+ <div class="card shadow mb-0">
  <div class="modal-body">
         <form id="formEditObat" method="POST">
             @csrf
@@ -337,6 +342,7 @@
         <button type="submit" class="btn btn-sm btn-primary">Update</button>
         <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Batal</button>
       </form>
+      </div>
     </div>
   </div>
 </div>
@@ -348,6 +354,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
         const importObatUrl = "{{ route('obat.import') }}";
+        const userRole = @json(auth()->user()->getRoleNames()[0] ?? 'guest');
         const obatApiUrl = "{{ url('/api/obat') }}"; // sumber data DataTables
     </script>
 

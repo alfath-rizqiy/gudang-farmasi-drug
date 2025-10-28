@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SatuanKecil;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\SatuanKecilExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class SatuanKecilController extends Controller
 {
@@ -93,5 +96,13 @@ class SatuanKecilController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus satuankecil.');
         }
+    }
+
+    public function export()
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Satuan Kecil {$tanggal}.xlsx";
+
+        return Excel::download(new SatuanKecilExport, $filename );
     }
 }

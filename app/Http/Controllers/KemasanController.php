@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kemasan;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\KemasanExport;
+use Maatwebsite\Excel\Facades\Excel;
+
 
 class KemasanController extends Controller
 {
@@ -102,4 +105,13 @@ class KemasanController extends Controller
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus kemasan.');
         }
     }
+
+    public function export()
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Kemasan {$tanggal}.xlsx";
+
+        return Excel::download(new KemasanExport, $filename );
+    }
+
 }

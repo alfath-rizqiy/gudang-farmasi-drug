@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\AturanPakai;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\AturanPakaiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class AturanPakaiController extends Controller
 {
@@ -101,5 +103,13 @@ class AturanPakaiController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus aturan pakai.');
         }
+    }
+
+    public function export()
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Aturan Pakai {$tanggal}.xlsx";
+
+        return Excel::download(new AturanPakaiExport, $filename);
     }
 }

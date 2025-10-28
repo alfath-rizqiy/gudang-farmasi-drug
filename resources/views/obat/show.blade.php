@@ -32,7 +32,7 @@
                             <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
                                 Harga (Baru)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $obat->hargaTerbaru->harga_jual ?? '-' }}
+                                {{ 'Rp ' . number_format($obat->hargaTerbaru->harga_jual ?? 0, 2, ',', '.') ?? '-' }}
                             </div>
                             <p class="harga-tanggal">
                                 {{ $obat->hargaTerbaru?->updated_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? '-' }}
@@ -55,7 +55,7 @@
                             <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
                                 Harga (Lama)</div>
                             <div class="h5 mb-0 font-weight-bold text-gray-800">
-                                {{ $obat->hargaLama->harga_jual ?? '-' }}
+                                {{ 'Rp ' . number_format($obat->hargaLama->harga_jual ?? 0, 2, ',', '.') ?? '-' }}
                             </div>
                             <p class="harga-tanggal">
                                 {{ $obat->hargaLama?->updated_at?->setTimezone('Asia/Jakarta')->format('d M Y H:i') ?? '-' }}
@@ -88,7 +88,8 @@
                                         @forelse($obat->hargas as $harga)
                                             <li>
                                                 <a class="dropdown-item" href="#">
-                                                    Rp{{ number_format($harga->harga_jual) }}
+                                                    {{ 'Rp ' . number_format($harga->harga_jual ?? 0, 2, ',', '.') ?? '-' }}
+                   
                                                     <br>
                                                     <small class="text-muted">
                                                         {{ $harga->created_at->setTimezone('Asia/Jakarta')->format('d M Y H:i') }}
@@ -177,7 +178,7 @@
 
                 <!-- Kolom Keterangan -->
                 <div class="col-md-7">
-                    <p><strong>{{ $obat->nama_obat }}</strong> {{ $obat->deskripsi_obat }}.</p>
+                    <p><strong>{{ $obat->nama_obat }}</strong> {{ $obat->deskripsi_obat }}...</p>
                 </div>
             </div>
         </div>

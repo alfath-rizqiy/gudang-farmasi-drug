@@ -17,6 +17,7 @@ class RolePermissionSeeder extends Seeder
         // Role Admin/Petugas
         $admin = Role::create(['name' => 'admin']);
         $petugas = Role::create(['name' =>'petugas']);
+        $user = Role::create(['name' => 'user']);
 
         // Permission
         $kelolaObat = Permission::create(['name' => 'kelola obat']);
@@ -24,6 +25,7 @@ class RolePermissionSeeder extends Seeder
 
         // Role X Permission
         $admin->givePermissionTo([$kelolaObat]);
-        $petugas->givePermissionTo([$lihatObat]);
+        $petugas->givePermissionTo([$kelolaObat]);
+        $user->givePermissionTo([$lihatObat]);
     }
 }

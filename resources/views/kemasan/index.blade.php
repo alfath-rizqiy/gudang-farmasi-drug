@@ -3,16 +3,46 @@
 @section('title', 'Data Kemasan')
 
 @section('content')
-<h1 class="h3 mb-2 text-gray-800">Data Kemasan</h1>
-<div class="p-6">
+<!-- Page Heading -->
+ <h1 class="h3 mb-2 text-gray-800">Data Kemasan</h1>
+ <div class="p-6">
 
-    @role('admin')
-    <div class="mb-4">
-        <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#modalKemasan">
-            + Tambah Kemasan
-        </a>
-    </div>
-    @endrole
+ <div class="d-flex justify-content-between align-items-center mb-2">
+    <div class="d-flex gap-3 space-x-3">
+        <!-- Tambah -->
+         @role('admin')
+         <div class="m-2 mb-4">
+            <a href="#" class="btn-sm btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalKemasan">
+                <span class="icon text-white-10">
+                    <i class="fa fa-plus"></i>
+                </span>
+                Tambah Kemasan</a>
+            </div>
+            @endrole
+
+    <!-- Tombol Download -->
+     @role('admin|petugas')
+     <div class="m-2 mb-4">
+      <a href="{{ route('kemasan.export.pdf') }}" class="btn-sm btn btn-danger">
+        <span class="icon text-white-10">
+          <i class="fas fa-download"></i>
+        </span>
+        Download PDF</a>
+      </div>
+      @endrole
+
+        <!-- Tombol Download -->
+         @role('admin|petugas')
+         <div class="m-2 mb-4">
+          <a href="{{ route('kemasan.export.excel') }}" class="btn-sm btn btn-success">
+            <span class="icon text-white-10">
+              <i class="fas fa-download"></i>
+            </span>
+            Download Excel</a>
+          </div>
+          @endrole
+   </div>
+</div>
 
     <!-- DataTales Example -->
     <div class="card shadow mb-4">
@@ -45,7 +75,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Tambah Kemasan</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="btn" data-bs-dismiss="modal">
+         <i class="fas fa-times"></i>
+        </button>
       </div>
       <div class="card shadow mb-0">
         <div class="card-body">
@@ -82,7 +114,9 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Edit Kemasan</h5>
-        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <button type="button" class="btn" data-bs-dismiss="modal">
+                    <i class="fas fa-times"></i>
+                </button>
       </div>
       <div class="card shadow mb-0">
         <div class="card-body">

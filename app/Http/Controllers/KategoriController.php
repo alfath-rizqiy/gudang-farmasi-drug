@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Kategori;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\KategoriExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class KategoriController extends Controller
 {
@@ -115,5 +117,13 @@ class KategoriController extends Controller
             // Jika terjadi error saat proses delete
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus kategori.');
         }
+    }
+
+    public function export()
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Kategori {$tanggal}.xlsx";
+
+        return Excel::download(new KategoriExport, $filename);
     }
 }

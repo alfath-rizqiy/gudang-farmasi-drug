@@ -47,8 +47,27 @@
                                 </div>
                             </div>
         @endrole
+        @role('user')
+                        <!-- Admin -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary"> User</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="text-center">
+                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
+                                            src="template/img/undraw_logistics_xpdj.svg" alt="...">
+                                    </div>
+                                    <p>Add some quality, svg illustrations to your project courtesy of <a
+                                            target="_blank" rel="nofollow" href="{{ route('obat.index') }}/">DataObat</a>, a
+                                        constantly updated collection of beautiful svg images that you can use
+                                        completely free and without attribution!</p>
+                                    <a target="_blank" rel="nofollow" href="{{ route('obat.create') }}">Tambahkan Data &rarr;</a>
+                                </div>
+                            </div>
+        @endrole
 
-        @unlessrole('admin|petugas')
+        @unlessrole('admin|petugas|user')
             <p>Role kamu belum dikenali oleh sistem.</p>
         @endunlessrole 
         

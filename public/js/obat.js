@@ -87,16 +87,18 @@ $(document).ready(function () {
             // `;
             //         },
             //     },
-
             {
                 data: "id",
                 orderable: false,
                 searchable: false,
                 render: function (id, type, row) {
-                    return `
+                    let buttons = `
                         <button class="btn btn-info btn-sm btn-show" data-id="${id}">
                             <i class="fas fa-info-circle"></i> Info
                         </button>
+                        `;
+                    if (userRole === "admin") {
+                        buttons += `
                         <button class="btn btn-primary btn-sm btn-edit"
                                 data-id="${id}"
                                 data-nama="${row.nama_obat}"
@@ -116,6 +118,8 @@ $(document).ready(function () {
                             <i class="fas fa-trash"></i> Hapus
                         </button>
                     `;
+                    }
+                    return buttons;
                 },
             },
         ],

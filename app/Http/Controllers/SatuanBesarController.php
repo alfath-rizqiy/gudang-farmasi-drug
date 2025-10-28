@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\SatuanBesar;
 use Illuminate\Support\Facades\Validator;
+use App\Exports\SatuanBesarExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SatuanBesarController extends Controller
 {
@@ -96,5 +98,13 @@ class SatuanBesarController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan saat menghapus satuanbesar.');
         }
+    }
+
+    public function export()
+    {
+        $tanggal = now()->format('Y-m-d');
+        $filename = "Data Satuan Besar {$tanggal}.xlsx";
+
+        return Excel::download(new SatuanBesarExport, $filename);
     }
 }

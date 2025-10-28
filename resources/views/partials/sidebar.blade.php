@@ -37,11 +37,11 @@
             <h6 class="collapse-header">Master Menu</h6>
             <a class="collapse-item {{ request()->is('obat') ? 'active' : '' }}" href="{{ route('obat.index') }}">Obat</a>
             <a class="collapse-item {{ request()->is('supplier') ? 'active' : '' }}" href="{{ route('supplier.index') }}">Supplier</a>
+            <a class="collapse-item {{ request()->is('kategori') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
             <a class="collapse-item {{ request()->is('kemasan') ? 'active' : '' }}" href="{{ route('kemasan.index') }}">Kemasan</a>
             <a class="collapse-item {{ request()->is('satuankecil') ? 'active' : '' }}" href="{{ route('satuankecil.index') }}">Satuan Kecil</a>
             <a class="collapse-item {{ request()->is('satuanbesar') ? 'active' : '' }}" href="{{ route('satuanbesar.index') }}">Satuan Besar</a>
             <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Aturan Pakai</a>
-            <a class="collapse-item {{ request()->is('kategori') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
             <a class="collapse-item {{ request()->is('harga') ? 'active' : '' }}" href="{{ route('harga.index') }}">Harga</a>
         </div>
     </div>

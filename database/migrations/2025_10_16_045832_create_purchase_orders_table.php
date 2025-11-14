@@ -9,8 +9,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('purchase_orders', function (Blueprint $table) {
-            $table->id();
-            $table->string('nomor_po')->unique(); // contoh: POD25102300001
+            $table->bigIncrements('id');
+            $table->string('no_po')->unique(); // contoh: POD25102300001
             $table->date('tgl_po');               // tanggal pembuatan PO
             $table->date('tgl_kirim')->nullable(); // tanggal kirim barang
             $table->string('metode_pembayaran', 50)->nullable(); // Cash / Tempo / L/C

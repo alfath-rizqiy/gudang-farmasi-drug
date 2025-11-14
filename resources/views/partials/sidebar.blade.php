@@ -19,12 +19,19 @@
         </a>
     </li>
 
+    <li class="nav-item {{ request()->is('purchase_orders') ? 'active' : '' }}">
+        <a class="nav-link" href="{{ route('purchase_orders.index') }}">
+            <i class="fas fa-cart-plus"></i>
+            <span>Purchase Order</span>
+        </a>
+    </li>
+
     <!-- Nav Master Data -->
 
     @php
     $isMasterActive = request()->is('obat*') || request()->is('supplier*') || request()->is('kemasan*') ||
                       request()->is('satuankecil*') || request()->is('satuanbesar*') || request()->is('aturanpakai*') ||
-                      request()->is('kategori*') || request()->is('metodepembayaran*') || request()->is('harga*') || request()->is('purchase_orders*');
+                      request()->is('kategori*') || request()->is('metodepembayaran*') || request()->is('harga*');
     @endphp
 
     <li class="nav-item {{ $isMasterActive ? 'active' : '' }}">
@@ -43,10 +50,12 @@
             <a class="collapse-item {{ request()->is('aturanpakai') ? 'active' : '' }}" href="{{ route('aturanpakai.index') }}">Aturan Pakai</a>
             <a class="collapse-item {{ request()->is('kategori') ? 'active' : '' }}" href="{{ route('kategori.index') }}">Kategori</a>
             <a class="collapse-item {{ request()->is('harga') ? 'active' : '' }}" href="{{ route('harga.index') }}">Harga</a>
-            <a class="collapse-item {{ request()->is('purchase_orders') ? 'active' : '' }}" href="{{ route('purchase_orders.index') }}">Purchase Order</a>
+           
         </div>
     </div>
 </li>
+
+
 
     <!-- Divider -->
     <hr class="sidebar-divider d-none d-md-block">

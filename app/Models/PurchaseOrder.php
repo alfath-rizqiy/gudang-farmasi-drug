@@ -11,7 +11,7 @@ class PurchaseOrder extends Model
     use HasFactory;
 
     protected $fillable = [
-        'nomor_po',
+        'no_po',
         'tgl_po',
         'tgl_kirim',
         'metode_pembayaran',
@@ -23,6 +23,30 @@ class PurchaseOrder extends Model
         'created_by',
     ];
 
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::creating(function ($model) {
+            // Format: PO-YYYYMMDD-00001
+            $today = date('Ymd');
+            $latest = self::where('no_po', 'like', "PO-$today-%")
+                ->orderBy('id', 'desc')
+                ->first();
+
+            $nextNumber = $latest ? ((int) substr($latest->no_po, -5)) + 1 : 1;
+            $model->no_po = 'PO-' . $today . '-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+
+            if (empty($model->tgl_po)) {
+                $model->tgl_po = date('Y-m-d');
+            }
+
+            if (empty($model->created_by) && auth()->check()) {
+            $model->created_by = auth()->id();
+        }
+        });
+    }
+
     protected $dates = [
         'tgl_po',
         'tgl_kirim',
@@ -33,6 +57,11 @@ class PurchaseOrder extends Model
     {
         return $this->belongsTo(Obat::class, 'obat_id');
     }
+
+    public function details()
+{
+    return $this->hasMany(PurchaseOrderDetail::class);
+}
 
     // 🔹 Relasi ke supplier
     public function supplier()

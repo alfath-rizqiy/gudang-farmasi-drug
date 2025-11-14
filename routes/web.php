@@ -114,9 +114,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/', [HargaController::class, 'index'])->name('index');
     });
 
-    // ===== PURCHASE ORDER (PO) =====
-Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');
+    Route::get('/purchase_orders', [PurchaseOrderController::class, 'index'])->name('purchase_orders.index');
 
+   Route::get('/purchase-orders/create', [PurchaseOrderController::class, 'create'])->name('purchase_orders.create');
+   Route::post('/purchase-orders', [PurchaseOrderController::class, 'store'])->name('purchase_orders.store');
+   Route::get('/purchase-orders/{id}', [PurchaseOrderController::class, 'show'])->name('purchase_orders.show');
+
+
+   
 });
 });
 

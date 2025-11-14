@@ -21,4 +21,9 @@ class Supplier extends Model
         return $this->hasMany(Obat::class);
     }
 
+    public function purchaseorders()
+    {
+        return $this->hasMany(PurchaseOrder::class);
+    }
+
 }
